@@ -22,9 +22,9 @@ module.exports = {
 
         hot: true,
         https: true,
-        key:  fs.readFileSync('./certificates/localhost+2-key.pem'),
-        cert: fs.readFileSync('./certificates/localhost.pem'),
-        ca:   fs.readFileSync('./certificates/rootCA.pem'),
+        key:  fs.readFileSync('../Certificates/localhost.mac.key.pem'),
+        cert: fs.readFileSync('../Certificates/localhost.mac.cert.pem'),
+        // ca:   fs.readFileSync('../Certificates/rootCA.pem'),
         port: 3000,
         host: '0.0.0.0',
         // noInfo: true,

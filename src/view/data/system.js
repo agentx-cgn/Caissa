@@ -22,7 +22,7 @@ const system = {
 
     plattform:     navigator.platform,
     userAgent:     navigator.userAgent,
-    threads:       navigator.hardwareConcurrency,
+    threads:       navigator.hardwareConcurrency || 4,
     vendor:        navigator.vendor,
     touch :        'ontouchstart' in document.documentElement,
     fetch:         !!window.fetch,
@@ -31,8 +31,10 @@ const system = {
     vibration:     !!window.navigator.vibrate,
     localStorage : !!window.localStorage,
     serviceWorker: !!navigator.serviceWorker,
-    storageEstimate: navigator.storage && navigator.storage.estimate,
-
+    storageEstimate: ( navigator.storage && navigator.storage.estimate ) 
+        ? navigator.storage.estimate
+        : NaN
+    ,
     fullscreen : function () {
         return !!(document.fullscreenEnabled ||
             document.mozFullScreenEnabled ||

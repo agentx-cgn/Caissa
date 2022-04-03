@@ -108,11 +108,15 @@ const DB =  {
                 usage.laststart = Date.now();
                 DB.Usage.update('0', {usage: usage.usage, laststart: Date.now()});
 
-                Promise.all([navigator.storage.estimate(), navigator.storage.persisted()])
-                    .then( ([estimate, persisted]) => {
-                        console.log('Info   :', 'DB', {quota: estimate.quota, usage: estimate.usage, persisted});
-                    })
-                ;
+                if (navigator.storage){
+                    Promise.all([navigator.storage.estimate(), navigator.storage.persisted()])
+                        .then( ([estimate, persisted]) => {
+                            console.log('Info   :', 'DB', {quota: estimate.quota, usage: estimate.usage, persisted});
+                        })
+                    ;
+                } else {
+                    console.log('Info   :', 'DB', {quota: NaN, usage: NaN});
+                }
 
                 console.log('Info   :', 'DB', DB.scheme, DB.Games.length, 'games', 'user:', options['user-data'].name, 'usage:', usage.usage, 'last:', ago, 'ago');
             }
