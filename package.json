@@ -1,20 +1,23 @@
 {
-  "name": "mithril-webpack-5",
-  "version": "0.1.1",
-  "description": "an opinionated mithril polythene webpack seed project",
+  "name": "caissa",
+  "version": "1.0.1",
+  "description": "just another chess analyzer",
   "keywords": [
     "mithril",
     "webpack",
     "seed",
-    "polythene"
+    "polythene",
+    "chess",
+    "pgn",
+    "stockfish"
   ],
-  "homepage": "https://agentx-cgn.github.io/mithril-polythene-webpack5/",
+  "homepage": "https://agentx-cgn.github.io/caissa/",
   "bugs": {
-    "url": "https://github.com/agentx-cgn/mithril-polythene-webpack5/issues"
+    "url": "https://github.com/agentx-cgn/caissa/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/agentx-cgn/mithril-polythene-webpack5"
+    "url": "https://github.com/agentx-cgn/caissa"
   },
   "author": "agentx-cgn",
   "license": "MIT",

@@ -17,17 +17,17 @@ interface IState {
 const BackdropCell: m.Component<IAttrs, IState> & IState = {
 
     show (cb: TVoid) {
-      $('back-drop')!.classList.add('visible');
+      $('cell-backdrop')!.classList.add('visible');
       callback = cb || null;
     },
     hide () {
-      $('back-drop')!.classList.remove('visible');
+      $('cell-backdrop')!.classList.remove('visible');
     },
     view ( vnode ) {
 
       const { callback } = vnode.attrs;
 
-      return m('back-drop', { onclick: (e: IEvent) => {
+      return m('cell-backdrop', { onclick: (e: IEvent) => {
         e.redraw = false;
         BackdropCell.hide();
         callback && callback();
