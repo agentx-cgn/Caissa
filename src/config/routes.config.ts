@@ -1,6 +1,6 @@
 import { IRoutesConfigs } from '@app/domain';
 
-import { LayoutCell as Layout } from '@app/views';
+import { LayoutCell as Layout } from '@app/cells';
 import { NothingAtom } from '@app/atoms';
 import { ContentCell } from '@app/cells';
 import { PreferencesPage, SystemPage, HelpPage, ErrorPage, MenuPage, NothingPage }     from '@app/pages';

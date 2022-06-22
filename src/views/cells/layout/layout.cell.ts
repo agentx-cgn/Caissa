@@ -7,12 +7,12 @@ import { H, DatabaseService as DB } from '@app/services';
 import { ILayoutComponent } from '@app/domain';
 import { LastAtom, NothingAtom } from '@app/atoms';
 
-import { BackdropCell } from './backdrop.cell';
-import { StageCell } from './stage.cell';
-import { HeaderCell } from './header/header.cell';
-import { AsideCell } from './aside/aside.cell';
-import { FooterCell } from './footer/footer.cell';
-import { SplashCell } from './splash/splash.cell';
+import { BackdropCell } from './../backdrop.cell';
+import { StageCell } from './../stage.cell';
+import { HeaderCell } from './../header/header.cell';
+import { AsideCell } from './../aside/aside.cell';
+import { FooterCell } from './../footer/footer.cell';
+import { SplashCell } from './../splash/splash.cell';
 
 let break2: number, break3: number;
 
