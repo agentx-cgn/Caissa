@@ -4,24 +4,36 @@
  * License: MIT, see file 'LICENSE'
  */
 
-export const SQUARE_COORDINATES = [
-    "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1",
-    "a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2",
-    "a3", "b3", "c3", "d3", "e3", "f3", "g3", "h3",
-    "a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4",
-    "a5", "b5", "c5", "d5", "e5", "f5", "g5", "h5",
-    "a6", "b6", "c6", "d6", "e6", "f6", "g6", "h6",
-    "a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7",
-    "a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8"
-]
-
 export class ChessboardState {
 
     constructor() {
         this.squares = new Array(64).fill(null)
-        this.orientation = null
+        this.orientation = undefined
         this.markers = []
-        this.arrows  = []
+        this.inputWhiteEnabled = false
+        this.inputBlackEnabled = false
+        this.inputEnabled = false
+        this.squareSelectEnabled = false
+    }
+
+    getPieces() {
+        const pieces = []
+        const sortBy = ['k', 'q', 'r', 'b', 'n', 'p']
+        const sort = (a, b) => {
+            return sortBy.indexOf(a.name) - sortBy.indexOf(b.name)
+        }
+        for(let i=0; i<64; i++) {
+            const piece = this.squares[i]
+            if(piece) {
+                pieces.push({
+                    name: piece.charAt(1),
+                    color:  piece.charAt(0),
+                    position: this.indexToSquare(i)
+                })
+            }
+        }
+        pieces.sort(sort)
+        return pieces
     }
 
     setPiece(index, piece) {
@@ -29,19 +41,19 @@ export class ChessboardState {
     }
 
     addMarker(index, type) {
-        this.markers.push({index, type})
+        this.markers.push({index: index, type: type})
     }
 
-    removeMarkers(index = null, type = null) {
-        if (index === null && type === null) {
+    removeMarkers(index = undefined, type = undefined) {
+        if (!index && !type) {
             this.markers = []
         } else {
             this.markers = this.markers.filter((marker) => {
-                if (marker.type === null) {
+                if (!marker.type) {
                     if (index === marker.index) {
                         return false
                     }
-                } else if (index === null) {
+                } else if (!index) {
                     if (marker.type === type) {
                         return false
                     }
@@ -50,19 +62,6 @@ export class ChessboardState {
                 }
                 return true
             })
-        }
-    }
-
-    addArrow(from, to, move, attributes) {
-        this.arrows.push({from, to, move, attributes})
-    }
-
-    removeArrows(className = null) {
-        if (className === null) {
-            this.arrows = []
-        } else {
-            // console.log('removeArrows', this.arrows);
-            this.arrows = this.arrows.filter( arrow  => arrow.attributes.class !== className)
         }
     }
 
@@ -100,7 +99,7 @@ export class ChessboardState {
             let spaceCounter = 0
             for (let i = 0; i < 8; i++) {
                 const piece = this.squares[part * 8 + i]
-                if (piece === null) {
+                if (!piece) {
                     spaceCounter++
                 } else {
                     if (spaceCounter > 0) {
@@ -128,6 +127,12 @@ export class ChessboardState {
         const file = square.substr(0, 1).charCodeAt(0) - 97
         const rank = square.substr(1, 1) - 1
         return 8 * rank + file
+    }
+
+    indexToSquare(index) {
+        const file = String.fromCharCode(index % 8 + 97)
+        const rank = Math.floor(index / 8) + 1
+        return file + rank
     }
 
 }

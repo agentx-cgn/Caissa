@@ -1,2 +1,0 @@
-import pgnimport00   from '../../assets/games/famous-chess-games.pgn';
-import pgnimport01   from '../../assets/games/capablanca-best-games.pgn';

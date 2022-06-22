@@ -1,10 +1,14 @@
-@import-normalize; /* bring in normalize.css styles */
-@import './extern/cm-chessboard/cm-chessboard.css';
+// @import-normalize; /* bring in normalize.css styles */
+// @import './extern/cm-chessboard/cm-chessboard.css';
 
 @import './assets/fonts/fontawesome/css/all.css';
 @import './assets/fonts/chess/chess.css';
 @import './assets/fonts/Iosevka/iosevka-term.css';
 @import './assets/fonts/Saira/saira.css';
+
+// @import './components.scss';
+
+@import '@app/atoms/atoms.scss';
 
 // https://www.dafont.com/chess.font
 
@@ -44,21 +48,28 @@ a {
     text-decoration: none;
 }
 
-section.pages {
+
+// Backgrounds
+
+section.stage {
     background-color: rgba(128,128,128, 0.9);
-    background-image: url('/static/background.jpg');
+    background-image: url('assets/images/background.jpg');
     background-size: cover;
 }
 section.content {
     background: #888;
+    // background: transparent;  // debug
 }
-
-// Backgrounds
+section.aside {
+    background: #888;
+    // background: transparent;  // debug
+}
 
 div.pages {
     background-color: #8888;
 }
-page-title {
+atom-section-title {
+    display: block;
     background: rgb(136,102,102);
     background: linear-gradient(0deg, #866 20%, #644 100%);
 }
@@ -67,7 +78,7 @@ div.header-center {
     background-color: #5336;
 }
 div.gm-bar {
-    // background-color: #7553;
+    background-color: #7553;
 }
 
 
@@ -85,13 +96,13 @@ input:focus {
   text-overflow: ellipsis;
 }
 
-.noselect {
-  user-select: none;         /* standard syntax */
-  -webkit-user-select: none; /* webkit (safari, chrome) browsers */
-  -moz-user-select: none;    /* mozilla browsers */
-  -khtml-user-select: none;  /* webkit (konqueror) browsers */
-  -ms-user-select: none;     /* IE10+ */
-}
+// .noselect {
+//   user-select: none;         /* standard syntax */
+//   -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+//   -moz-user-select: none;    /* mozilla browsers */
+//   -khtml-user-select: none;  /* webkit (konqueror) browsers */
+//   -ms-user-select: none;     /* IE10+ */
+// }
 
 button.flexcontrol {
     color: white;
@@ -191,6 +202,3 @@ button.flexcontrol {
     overflow-y: auto;
     overflow-x: auto;
 }
-
-
-

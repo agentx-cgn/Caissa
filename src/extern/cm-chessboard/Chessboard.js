@@ -1,152 +1,157 @@
+/* eslint-disable semi */
 /**
  * Author and copyright: Stefan Haack (https://shaack.com)
  * Repository: https://github.com/shaack/cm-chessboard
  * License: MIT, see file 'LICENSE'
  */
 
-import {ChessboardView} from "./ChessboardView.js"
-import {SQUARE_COORDINATES, ChessboardState} from "./ChessboardState.js"
+import {SQUARE_COORDINATES, ChessboardView} from "./ChessboardView.js"
+import {ChessboardState} from "./ChessboardState.js"
+import {ChessboardViewAccessible} from "./ChessboardViewAccessible.js"
 
 export const COLOR = {
     white: "w",
     black: "b"
 }
-export const MOVE_INPUT_MODE = {
-    viewOnly:   0,
-    dragPiece:  1,
-    dragMarker: 2
-}
 export const INPUT_EVENT_TYPE = {
-    moveStart:    "moveStart",
-    moveDone:     "moveDone",
-    moveCanceled: "moveCanceled",
-    context:      "context"
+    moveStart: "moveStart",
+    moveDone: "moveDone",
+    moveCanceled: "moveCanceled"
+}
+export const SQUARE_SELECT_TYPE = {
+    primary: "primary",
+    secondary: "secondary"
+}
+export const BORDER_TYPE = {
+    none: "none", // no border
+    thin: "thin", // thin border
+    frame: "frame" // wide border with coordinates in it
 }
 export const MARKER_TYPE = {
-    move:            {class: "move",             slice: "marker1"},
-    emphasize:       {class: "emphasize",        slice: "marker2"},
-    pointer:         {class: "pointer",          slice: "marker3"},
-    rectwhite:       {class: "rectwhite",        slice: "marker4"},
-    rectblack:       {class: "rectblack",        slice: "marker5"},
-    selectedmoves:   {class: "selectedmoves",    slice: "selectedmoves"},
-    selectednomoves: {class: "selectednomoves",  slice: "selectednomoves"}
+    frame: {class: "marker-frame", slice: "markerFrame"},
+    square: {class: "marker-square", slice: "markerSquare"},
+    dot: {class: "marker-dot", slice: "markerDot"},
+    circle: {class: "marker-circle", slice: "markerCircle"}
 }
-
 export const PIECE = {
-    whitePawn:   "wp",
-    whiteBishop: "wb",
-    whiteKnight: "wn",
-    whiteRook:   "wr",
-    whiteQueen:  "wq",
-    whiteKing:   "wk",
-    blackPawn:   "bp",
-    blackBishop: "bb",
-    blackKnight: "bn",
-    blackRook:   "br",
-    blackQueen:  "bq",
-    blackKing:   "bk",
+    wp: "wp", wb: "wb", wn: "wn", wr: "wr", wq: "wq", wk: "wk",
+    bp: "bp", bb: "bb", bn: "bn", br: "br", bq: "bq", bk: "bk",
 }
 export const FEN_START_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 export const FEN_EMPTY_POSITION = "8/8/8/8/8/8/8/8"
 
-const DEFAULT_SPRITE_GRID = 40
-const SVG_SPRITES = './assets/images/chessboard-sprite.svg';
-
 export class Chessboard {
 
-    constructor(element, props = {}, callback = null) {
-        this.element = element
-        this.props = {
+    constructor(context, props = {}) {
+        if (!context) {
+            throw new Error("container element is " + context)
+        }
+        this.context = context
+        this.id = (Math.random() + 1).toString(36).substr(2, 6)
+        let defaultProps = {
             position: "empty", // set as fen, "start" or "empty"
             orientation: COLOR.white, // white on bottom
+            accessible: false, // render additional information to improve the usage for people using screen readers (beta)
             style: {
                 cssClass: "default",
                 showCoordinates: true, // show ranks and files
-                showBorder: false, // display a border around the board
+                borderType: BORDER_TYPE.none, // thin: thin border, frame: wide border with coordinates in it, none: no border
+                aspectRatio: 1, // height/width. Set to `undefined`, if you want to define it only in the css.
+                moveFromMarker: MARKER_TYPE.frame, // the marker used to mark the start square
+                moveToMarker: MARKER_TYPE.frame, // the marker used to mark the square where the figure is moving to
             },
-            responsive: false, // resizes the board on window resize, if true
+            responsive: true, // resizes the board based on element size
             animationDuration: 300, // pieces animation duration in milliseconds
-            moveInputMode: MOVE_INPUT_MODE.viewOnly, // set to MOVE_INPUT_MODE.dragPiece or MOVE_INPUT_MODE.dragMarker for interactive movement
             sprite: {
-                url:  SVG_SPRITES, // pieces and markers are stored es svg in the sprite
-                grid: DEFAULT_SPRITE_GRID // the sprite is tiled with one piece every 40px
+                url: "./assets/images/chessboard-sprite.svg", // pieces and markers are stored as svg sprite
+                size: 40, // the sprite size, defaults to 40x40px
+                cache: true // cache the sprite inline, in the HTML
             }
         }
+        this.props = {}
+        Object.assign(this.props, defaultProps)
         Object.assign(this.props, props)
-        if (!this.props.sprite.grid) {
-            this.props.sprite.grid = DEFAULT_SPRITE_GRID
+        this.props.sprite = defaultProps.sprite
+        this.props.style = defaultProps.style
+        if (props.sprite) {
+            Object.assign(this.props.sprite, props.sprite)
+        }
+        if (props.style) {
+            Object.assign(this.props.style, props.style)
+        }
+        if (this.props.style.aspectRatio) {
+            this.context.style.height = (this.context.offsetWidth * this.props.style.aspectRatio) + "px"
         }
         this.state = new ChessboardState()
+        if (this.props.position === "start") {
+            this.state.setPosition(FEN_START_POSITION)
+        } else if (this.props.position === "empty" || this.props.position === undefined) {
+            this.state.setPosition(FEN_EMPTY_POSITION)
+        } else {
+            this.state.setPosition(this.props.position)
+        }
         this.state.orientation = this.props.orientation
-        this.initialization = new Promise((resolve) => {
-            this.view = new ChessboardView(this, () => {
-                if (this.props.position === "start") {
-                    this.state.setPosition(FEN_START_POSITION)
-                } else if (this.props.position === "empty" || this.props.position === null) {
-                    this.state.setPosition(FEN_EMPTY_POSITION)
-                } else {
-                    this.state.setPosition(this.props.position)
-                }
-                setTimeout(() => {
-                    this.view.redraw().then(() => {
-                        resolve()
-                    })
-                })
-            })
-        }).then(() => {
-            if (callback) {
-                console.warn("warning: the constructor callback is deprecated and will be removed in future versions")
-                callback(this)
-            }
-
-        })
+        const viewType = this.props.accessible ? ChessboardViewAccessible : ChessboardView
+        this.view = new viewType(this)
     }
-
 
     // API //
 
     setPiece(square, piece) {
-        return new Promise((resolve) => {
-            this.initialization.then(() => {
-                this.state.setPiece(this.state.squareToIndex(square), piece)
-                this.view.drawPiecesDebounced(this.state.squares, () => {
-                    resolve()
-                })
-            })
-        })
+        this.state.setPiece(this.state.squareToIndex(square), piece)
+        this.view.drawPieces(this.state.squares)
     }
 
     getPiece(square) {
         return this.state.squares[this.state.squareToIndex(square)]
     }
 
-    setPosition(fen, animated = true) {
-        return new Promise((resolve) => {
-            this.initialization.then(() => {
-                const currentFen = this.state.getPosition()
-                const fenParts = fen.split(" ")
-                const fenNormalized = fenParts[0]
-                if (fenNormalized !== currentFen) {
-                    const prevSquares = this.state.squares.slice(0) // clone
-                    if (fen === "start") {
-                        this.state.setPosition(FEN_START_POSITION)
-                    } else if (fen === "empty" || fen === null) {
-                        this.state.setPosition(FEN_EMPTY_POSITION)
-                    } else {
-                        this.state.setPosition(fen)
-                    }
-                    if (animated) {
-                        this.view.animatePieces(prevSquares, this.state.squares.slice(0), () => {
-                            resolve()
-                        })
-                    } else {
-                        this.view.drawPiecesDebounced()
+    movePiece(squareFrom, squareTo, animated = true) {
+        return new Promise((resolve, reject) => {
+            const prevSquares = this.state.squares.slice(0) // clone
+            const pieceFrom = this.getPiece(squareFrom)
+            if(!pieceFrom) {
+                reject("no piece on square " + squareFrom)
+            } else {
+                this.state.squares[this.state.squareToIndex(squareFrom)] = null
+                this.state.squares[this.state.squareToIndex(squareTo)] = pieceFrom
+                if (animated) {
+                    this.view.animatePieces(prevSquares, this.state.squares, () => {
                         resolve()
-                    }
+                    })
                 } else {
+                    this.view.drawPieces(this.state.squares)
                     resolve()
                 }
-            })
+            }
+        })
+    }
+
+    setPosition(fen, animated = true) {
+        return new Promise((resolve) => {
+            if (fen === "start") {
+                fen = FEN_START_POSITION
+            } else if (fen === "empty") {
+                fen = FEN_EMPTY_POSITION
+            }
+            const currentFen = this.state.getPosition()
+            const fenParts = fen.split(" ")
+            const fenNormalized = fenParts[0]
+
+            if (fenNormalized !== currentFen) {
+                const prevSquares = this.state.squares.slice(0) // clone
+                this.state.setPosition(fen)
+                if (animated) {
+                    this.view.animatePieces(prevSquares, this.state.squares.slice(0), () => {
+                        resolve()
+                    })
+                } else {
+                    this.view.drawPieces(this.state.squares)
+                    resolve()
+                }
+            } else {
+                resolve()
+            }
         })
     }
 
@@ -154,27 +159,20 @@ export class Chessboard {
         return this.state.getPosition()
     }
 
-    addMarker(square, type = MARKER_TYPE.emphasize) {
+    addMarker(square, type) {
+        if (!type) {
+            console.error("Error addMarker(), type is " + type)
+        }
         this.state.addMarker(this.state.squareToIndex(square), type)
-        this.view.illustrator.drawMarkersDebounced()
+        this.view.drawMarkers()
     }
 
-    addArrow(from, to, attributes) {
-        this.state.addArrow(
-            this.state.squareToIndex(from),
-            this.state.squareToIndex(to),
-            from + to,
-            attributes
-        )
-        this.view.illustrator.drawArrowsDebounced()
-    }
-
-    getMarkers(square = null, type = null) {
+    getMarkers(square = undefined, type = undefined) {
         const markersFound = []
         this.state.markers.forEach((marker) => {
             const markerSquare = SQUARE_COORDINATES[marker.index]
-            if (square === null && (type === null || type === marker.type) ||
-                type === null && square === markerSquare ||
+            if (!square && (!type || type === marker.type) ||
+                !type && square === markerSquare ||
                 type === marker.type && square === markerSquare) {
                 markersFound.push({square: SQUARE_COORDINATES[marker.index], type: marker.type})
             }
@@ -182,20 +180,15 @@ export class Chessboard {
         return markersFound
     }
 
-    removeMarkers(square = null, type = null) {
-        const index = square !== null ? this.state.squareToIndex(square) : null
+    removeMarkers(square = undefined, type = undefined) {
+        const index = square ? this.state.squareToIndex(square) : undefined
         this.state.removeMarkers(index, type)
-        this.view.illustrator.drawMarkersDebounced()
-    }
-
-    removeArrows(className = null) {
-        this.state.removeArrows(className)
-        this.view.illustrator.drawArrowsDebounced()
+        this.view.drawMarkers()
     }
 
     setOrientation(color) {
         this.state.orientation = color
-        this.view.redraw()
+        return this.view.redraw()
     }
 
     getOrientation() {
@@ -203,60 +196,73 @@ export class Chessboard {
     }
 
     destroy() {
-        return new Promise((resolve) => {
-            this.initialization.then(() => {
-                this.view.destroy()
-                this.view = null
-                this.state = null
-                this.element.removeEventListener("contextmenu", this.contextMenuListener)
-                resolve()
-            })
-        })
+        this.view.destroy()
+        this.view = undefined
+        this.state = undefined
+        if (this.squareSelectListener) {
+            this.context.removeEventListener("contextmenu", this.squareSelectListener)
+            this.context.removeEventListener("mouseup", this.squareSelectListener)
+            this.context.removeEventListener("touchend", this.squareSelectListener)
+        }
     }
 
-    enableMoveInput(eventHandler, color = null) {
-        if (this.props.moveInputMode === MOVE_INPUT_MODE.viewOnly) {
-            throw Error("props.moveInputMode is MOVE_INPUT_MODE.viewOnly")
-        }
-        if (color === COLOR.white) {
-            this.state.inputWhiteEnabled = true
-        } else if (color === COLOR.black) {
-            this.state.inputBlackEnabled = true
-        } else {
-            this.state.inputWhiteEnabled = true
-            this.state.inputBlackEnabled = true
-        }
-        this.moveInputCallback = eventHandler
-        this.view.setCursor()
+    enableMoveInput(eventHandler, color = undefined) {
+        this.view.enableMoveInput(eventHandler, color)
     }
 
     disableMoveInput() {
-        this.state.inputWhiteEnabled = false
-        this.state.inputBlackEnabled = false
-        this.moveInputCallback = null
-        this.view.setCursor()
+        this.view.disableMoveInput()
     }
 
+    // TODO remove deprecated function
+    // noinspection JSUnusedGlobalSymbols
     enableContextInput(eventHandler) {
-        if (this.contextMenuListener) {
-            console.warn("contextMenuListener already existing")
+        console.warn("enableContextInput() is deprecated, use enableSquareSelect()")
+        this.enableSquareSelect(function (event) {
+            if (event.type === SQUARE_SELECT_TYPE.secondary) {
+                eventHandler(event)
+            }
+        })
+    }
+
+    // TODO remove deprecated function
+    // noinspection JSUnusedGlobalSymbols
+    disableContextInput() {
+        this.disableSquareSelect()
+    }
+
+    enableSquareSelect(eventHandler) {
+        if (this.squareSelectListener) {
+            console.warn("squareSelectListener already existing")
             return
         }
-        this.contextMenuListener = function (e) {
-            e.preventDefault()
+        this.squareSelectListener = function (e) {
             const index = e.target.getAttribute("data-index")
+            if (e.type === "contextmenu") {
+                // disable context menu
+                e.preventDefault()
+                return
+            }
             eventHandler({
                 chessboard: this,
-                type: INPUT_EVENT_TYPE.context,
+                type: e.button === 2 ? SQUARE_SELECT_TYPE.secondary : SQUARE_SELECT_TYPE.primary,
                 square: SQUARE_COORDINATES[index]
             })
         }
-
-        this.element.addEventListener("contextmenu", this.contextMenuListener)
+        this.context.addEventListener("contextmenu", this.squareSelectListener)
+        this.context.addEventListener("mouseup", this.squareSelectListener)
+        this.context.addEventListener("touchend", this.squareSelectListener)
+        this.state.squareSelectEnabled = true
+        this.view.visualizeInputState()
     }
 
-    // noinspection JSUnusedGlobalSymbols
-    disableContextInput() {
-        this.element.removeEventListener("contextmenu", this.contextMenuListener)
+    disableSquareSelect() {
+        this.context.removeEventListener("contextmenu", this.squareSelectListener)
+        this.context.removeEventListener("mouseup", this.squareSelectListener)
+        this.context.removeEventListener("touchend", this.squareSelectListener)
+        this.squareSelectListener = undefined
+        this.state.squareSelectEnabled = false
+        this.view.visualizeInputState()
     }
+
 }

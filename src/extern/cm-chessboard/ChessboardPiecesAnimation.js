@@ -10,21 +10,14 @@ const CHANGE_TYPE = {
     disappear: 2
 }
 
-function AnimationRunningException() {
-}
-
 export class ChessboardPiecesAnimation {
 
     constructor(view, fromSquares, toSquares, duration, callback) {
         this.view = view
-        if (this.view.animationRunning) {
-            throw new AnimationRunningException()
-        }
         if (fromSquares && toSquares) {
             this.animatedElements = this.createAnimation(fromSquares, toSquares)
             this.duration = duration
             this.callback = callback
-            this.view.animationRunning = true
             this.frameHandle = requestAnimationFrame(this.animationStep.bind(this))
         }
     }
@@ -45,7 +38,7 @@ export class ChessboardPiecesAnimation {
         }
         appearedList.forEach((appeared) => {
             let shortestDistance = 8
-            let foundMoved = null
+            let foundMoved = undefined
             disappearedList.forEach((disappeared) => {
                 if (appeared.piece === disappeared.piece) {
                     const moveDistance = this.squareDistance(appeared.index, disappeared.index)
@@ -108,8 +101,8 @@ export class ChessboardPiecesAnimation {
             this.frameHandle = requestAnimationFrame(this.animationStep.bind(this))
         } else {
             cancelAnimationFrame(this.frameHandle)
-            this.view.animationRunning = false
             this.callback()
+            return
         }
         const t = Math.min(1, timeDiff / this.duration)
         const progress = t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t // easeInOut

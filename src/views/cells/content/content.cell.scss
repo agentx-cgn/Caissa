@@ -1,0 +1,12 @@
+
+cell-content {
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+
+  flex-grow: 1;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+
+}

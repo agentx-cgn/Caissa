@@ -1,86 +1,65 @@
 {
-  "name": "caissa",
-  "version": "1.0.0",
-  "description": "Caissa helps to analyze your chess games",
-  "main": "index.js",
-  "dependencies": {
-    "@babel/runtime": "^7.8.3",
-    "chess.js": "^0.10.3",
-    "es-event-emitter": "^1.3.9",
-    "interactjs": "^1.9.10",
-    "local-storage": "^2.0.0",
-    "lodash": "^4.17.19",
-    "mithril": "^2.0.4",
-    "regenerator-runtime": "^0.13.3",
-    "screenfull": "^5.0.2",
-    "tachyons": "^4.11.1",
-    "wasm-loader": "^1.3.0",
-    "web-animations-js": "^2.3.2"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.8.3",
-    "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@babel/plugin-transform-runtime": "^7.8.3",
-    "@babel/preset-env": "^7.9.5",
-    "babel-loader": "^8.0.6",
-    "babel-plugin-transform-react-jsx": "^6.24.1",
-    "clean-webpack-plugin": "^3.0.0",
-    "copy-webpack-plugin": "^5.1.1",
-    "core-js": "^3.6.5",
-    "cross-env": "^6.0.3",
-    "css-loader": "^3.5.2",
-    "dotenv-webpack": "^1.7.0",
-    "eslint": "^6.8.0",
-    "eslint-loader": "^3.0.4",
-    "eslint-plugin-mithril": "^0.1.1",
-    "fibers": "5.0.1",
-    "file-loader": "^5.1.0",
-    "fs": "0.0.1-security",
-    "html-loader": "^0.5.5",
-    "html-webpack-plugin": "^3.2.0",
-    "mini-css-extract-plugin": "^0.9.0",
-    "optimize-css-assets-webpack-plugin": "^5.0.3",
-    "postcss-flexbugs-fixes": "^4.1.0",
-    "postcss-loader": "^3.0.0",
-    "postcss-normalize": "^8.0.1",
-    "postcss-preset-env": "^6.7.0",
-    "raw-loader": "^4.0.1",
-    "readline": "^1.3.0",
-    "sass": "^1.45.0",
-    "sass-loader": "^8.0.2",
-    "terser-webpack-plugin": "^2.3.2",
-    "url-loader": "^3.0.0",
-    "webpack": "^4.43.0",
-    "webpack-bundle-analyzer": "^3.7.0",
-    "webpack-cli": "^3.3.9",
-    "webpack-dev-server": "^3.10.1",
-    "webpack-merge": "^4.2.2",
-    "webpack-visualizer-plugin": "^0.1.11",
-    "worker-loader": "^2.0.0",
-    "write-file-webpack-plugin": "^4.5.1"
-  },
-  "scripts": {
-    "start": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.js",
-    "build": "cross-env NODE_ENV=production webpack --progress --config webpack.config.js",
-    "build:analyze": "npm run build -- --env.addon=bundleanalyze --env.addon=bundlevisualizer",
-    "lint:js": "eslint src/ webpack.*.js --cache --fix",
-    "distribute": "./dist-pages.sh"
+  "name": "mithril-webpack-5",
+  "version": "0.1.1",
+  "description": "an opinionated mithril polythene webpack seed project",
+  "keywords": [
+    "mithril",
+    "webpack",
+    "seed",
+    "polythene"
+  ],
+  "homepage": "https://agentx-cgn.github.io/mithril-polythene-webpack5/",
+  "bugs": {
+    "url": "https://github.com/agentx-cgn/mithril-polythene-webpack5/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/agentx-cgn/caissa.git"
+    "url": "https://github.com/agentx-cgn/mithril-polythene-webpack5"
   },
-  "author": "agentx",
+  "author": "agentx-cgn",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/agentx-cgn/caissa/issues"
+  "main": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "cross-env NODE_ENV=development webpack-dev-server --config ./config/webpack/webpack.config.js",
+    "build": "cross-env NODE_ENV=production  webpack --progress --config ./config/webpack/webpack.config.js",
+    "publish": "npm run build && rm -rf ./docs/* && cp -r ./dist/* ./docs && git add . && git commit -m 'update pages' && git push",
+    "chk:lint": "eslint src/**/*.ts",
+    "chk:tsc": "npx tsc --project tsconfig.json --noEmit",
+    "chk:circ": "madge --warning --circular  --ts-config ./tsconfig.json  --extensions ts ./src"
   },
-  "homepage": "https://caissa.js.org",
-  "keywords": [
-    "chess",
-    "uci",
-    "fen",
-    "pgn",
-    "stockfish"
-  ]
+  "dependencies": {
+    "deepmerge": "^4.2.2",
+    "local-storage": "^2.0.0",
+    "mithril": "^2.2.2",
+    "polythene-css": "^1.7.5",
+    "polythene-mithril": "^1.7.5",
+    "screenfull": "^6.0.1"
+  },
+  "devDependencies": {
+    "@types/mithril": "^2.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.26.0",
+    "@typescript-eslint/parser": "^5.26.0",
+    "@typescript/lib-dom": "npm:@types/web@^0.0.67",
+    "copy-webpack-plugin": "^11.0.0",
+    "cross-env": "^7.0.3",
+    "css-loader": "^6.7.1",
+    "eslint": "^8.16.0",
+    "file-loader": "^6.2.0",
+    "gh-pages": "^4.0.0",
+    "html-loader": "^3.1.0",
+    "html-webpack-plugin": "^5.5.0",
+    "mini-css-extract-plugin": "^2.6.0",
+    "sass": "^1.52.1",
+    "sass-loader": "^13.0.0",
+    "style-loader": "^3.3.1",
+    "tachyons": "^4.12.0",
+    "ts-loader": "^9.3.0",
+    "typescript": "^4.7.3",
+    "webpack": "^5.72.1",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.9.0",
+    "webpack-merge": "^5.8.0"
+  }
 }

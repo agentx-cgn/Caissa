@@ -1,70 +1,119 @@
+/* eslint-disable semi */
 /**
  * Author and copyright: Stefan Haack (https://shaack.com)
  * Repository: https://github.com/shaack/cm-chessboard
  * License: MIT, see file 'LICENSE'
  */
 
-import {SQUARE_COORDINATES} from "./ChessboardState.js"
 import {ChessboardMoveInput} from "./ChessboardMoveInput.js"
-import {COLOR, MOVE_INPUT_MODE, INPUT_EVENT_TYPE} from "./Chessboard.js"
+import {COLOR, INPUT_EVENT_TYPE, BORDER_TYPE} from "./Chessboard.js"
 import {ChessboardPiecesAnimation} from "./ChessboardPiecesAnimation.js"
 
-import Illustrator from './illustrator';
-
-const SPRITE_LOADING_STATUS = {
-    notLoaded: 1,
-    loading: 2,
-    loaded: 3
+export const piecesTranslations = {
+    en: {
+        colors: {
+            w: "w", b: "b"
+        },
+        colors_long: {
+            w: "White", b: "Black"
+        },
+        pieces: {
+            p: "p", n: "n", b: "b", r: "r", q: "q", k: "k"
+        },
+        pieces_long: {
+            p: "Pawn", n: "Knight", b: "Bishop", r: "Rook", q: "Queen", k: "King"
+        }
+    },
+    de: {
+        colors: {
+            w: "w", b: "s"
+        },
+        colors_long: {
+            w: "Weiß", b: "Schwarz"
+        },
+        pieces: {
+            p: "b", n: "s", b: "l", r: "t", q: "d", k: "k"
+        },
+        pieces_long: {
+            p: "Bauer", n: "Springer", b: "Läufer", r: "Turm", q: "Dame", k: "König"
+        }
+    }
 }
+
+export function renderPieceTitle(lang, name, color = undefined) {
+    let title = piecesTranslations[lang].pieces_long[name]
+    if(color) {
+        title += " " + piecesTranslations[lang].colors_long[color]
+    }
+    return title
+}
+
+export const SQUARE_COORDINATES = [
+    "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1",
+    "a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2",
+    "a3", "b3", "c3", "d3", "e3", "f3", "g3", "h3",
+    "a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4",
+    "a5", "b5", "c5", "d5", "e5", "f5", "g5", "h5",
+    "a6", "b6", "c6", "d6", "e6", "f6", "g6", "h6",
+    "a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7",
+    "a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8"
+]
 
 export class ChessboardView {
 
-    constructor(chessboard, callbackAfterCreation) {
-
-        this.illustrator = new Illustrator(chessboard, this);
-
+    constructor(chessboard) {
         this.animationRunning = false
-        this.currentAnimation = null
+        this.currentAnimation = undefined
         this.chessboard = chessboard
-        this.spriteLoadWaitingTries = 0
-        this.loadSprite(chessboard.props, () => {
-            this.spriteLoadWaitDelay = 0
-            this.moveInput = new ChessboardMoveInput(this, chessboard.state, chessboard.props,
-                this.moveStartCallback.bind(this),
-                this.moveDoneCallback.bind(this),
-                this.moveCanceledCallback.bind(this)
-            )
-            this.animationQueue = []
-            if (chessboard.props.responsive) {
+        this.moveInput = new ChessboardMoveInput(this,
+            this.moveStartCallback.bind(this),
+            this.moveDoneCallback.bind(this),
+            this.moveCanceledCallback.bind(this)
+        )
+        this.animationQueue = []
+        if (chessboard.props.sprite.cache) {
+            this.cacheSprite()
+        }
+        if (chessboard.props.responsive) {
+            // noinspection JSUnresolvedVariable
+            if (typeof ResizeObserver !== "undefined") {
+                // noinspection JSUnresolvedFunction
+                this.resizeObserver = new ResizeObserver(() => {
+                    this.handleResize()
+                })
+                this.resizeObserver.observe(this.chessboard.context)
+            } else {
                 this.resizeListener = this.handleResize.bind(this)
                 window.addEventListener("resize", this.resizeListener)
             }
-            if (chessboard.props.moveInputMode !== MOVE_INPUT_MODE.viewOnly) {
-                this.pointerDownListener = this.pointerDownHandler.bind(this)
-                this.chessboard.element.addEventListener("mousedown", this.pointerDownListener)
-                this.chessboard.element.addEventListener("touchstart", this.pointerDownListener)
-            }
-            this.createSvgAndGroups()
-            this.updateMetrics()
-            callbackAfterCreation()
-        })
+        }
+
+        this.pointerDownListener = this.pointerDownHandler.bind(this)
+        this.chessboard.context.addEventListener("mousedown", this.pointerDownListener)
+        this.chessboard.context.addEventListener("touchstart", this.pointerDownListener)
+
+        this.createSvgAndGroups()
+        this.updateMetrics()
+        if (chessboard.props.responsive) {
+            this.handleResize()
+        }
+        this.redraw()
     }
 
     pointerDownHandler(e) {
-        e.preventDefault()
         this.moveInput.onPointerDown(e)
     }
 
     destroy() {
         this.moveInput.destroy()
-        window.removeEventListener('resize', this.resizeListener)
-        this.chessboard.element.removeEventListener("mousedown", this.pointerDownListener)
-        this.chessboard.element.removeEventListener("touchstart", this.pointerDownListener)
-        window.clearTimeout(this.resizeDebounce)
-        window.clearTimeout(this.redrawDebounce)
-        window.clearTimeout(this.drawPiecesDebounce)
-        // window.clearTimeout(this.drawMarkersDebounce)
-        // window.clearTimeout(this.drawArrowssDebounce)
+        if (this.resizeObserver) {
+            this.resizeObserver.unobserve(this.chessboard.context)
+        }
+        if (this.resizeListener) {
+            window.removeEventListener("resize", this.resizeListener)
+        }
+        this.chessboard.context.removeEventListener("mousedown", this.pointerDownListener)
+        this.chessboard.context.removeEventListener("touchstart", this.pointerDownListener)
         Svg.removeElement(this.svg)
         this.animationQueue = []
         if (this.currentAnimation) {
@@ -74,107 +123,80 @@ export class ChessboardView {
 
     // Sprite //
 
-    loadSprite(props, callback) {
-        if (ChessboardView.spriteLoadingStatus === SPRITE_LOADING_STATUS.notLoaded) {
-            ChessboardView.spriteLoadingStatus = SPRITE_LOADING_STATUS.loading
-            Svg.loadSprite(props.sprite.url, [
-                "wk", "wq", "wr", "wb", "wn", "wp",
-                "bk", "bq", "br", "bb", "bn", "bp",
-                ...this.illustrator.sprites
-                ].concat(props.sprite.markers), () => {
-                ChessboardView.spriteLoadingStatus = SPRITE_LOADING_STATUS.loaded
-                callback()
-            }, props.sprite.grid)
-        } else if (ChessboardView.spriteLoadingStatus === SPRITE_LOADING_STATUS.loading) {
-            setTimeout(() => {
-                this.spriteLoadWaitingTries++
-                if (this.spriteLoadWaitingTries < 50) {
-                    this.loadSprite(props, callback)
-                } else {
-                    console.error("timeout loading sprite", props.sprite.url)
-                }
-            }, this.spriteLoadWaitDelay)
-            this.spriteLoadWaitDelay += 10
-        } else if (ChessboardView.spriteLoadingStatus === SPRITE_LOADING_STATUS.loaded) {
-            callback()
-        } else {
-            console.error("error ChessboardView.spriteLoadingStatus", ChessboardView.spriteLoadingStatus)
+    cacheSprite() {
+        const wrapperId = "chessboardSpriteCache"
+        if (!document.getElementById(wrapperId)) {
+            const wrapper = document.createElement("div")
+            wrapper.style.display = "none"
+            wrapper.id = wrapperId
+            document.body.appendChild(wrapper)
+            const xhr = new XMLHttpRequest()
+            xhr.open("GET", this.chessboard.props.sprite.url, true)
+            xhr.onload = function () {
+                wrapper.insertAdjacentHTML('afterbegin', xhr.response)
+            }
+            xhr.send()
         }
     }
-
-    // Draw //
 
     createSvgAndGroups() {
         if (this.svg) {
             Svg.removeElement(this.svg)
         }
-        this.svg = Svg.createSvg(this.chessboard.element)
+        this.svg = Svg.createSvg(this.chessboard.context)
+        let description = document.createElement("description")
+        description.innerText = "Chessboard"
+        description.id = "svg-description"
+        this.svg.appendChild(description)
         let cssClass = this.chessboard.props.style.cssClass ? this.chessboard.props.style.cssClass : "default"
-        if (this.chessboard.props.style.showBorder) {
-            this.svg.setAttribute("class", "cm-chessboard has-border " + cssClass)
-        } else {
-            this.svg.setAttribute("class", "cm-chessboard " + cssClass)
-        }
+        this.svg.setAttribute("class", "cm-chessboard border-type-" + this.chessboard.props.style.borderType + " " + cssClass)
+        this.svg.setAttribute("aria-describedby", "svg-description")
+        this.svg.setAttribute("role", "img")
         this.updateMetrics()
-
-        // order here defines SVG Z-Order
         this.boardGroup = Svg.addElement(this.svg, "g", {class: "board"})
         this.coordinatesGroup = Svg.addElement(this.svg, "g", {class: "coordinates"})
-
-        this.illustrator.createSvgAndGroups(this.svg);
-
-        this.piecesGroup  = Svg.addElement(this.svg, "g", {class: "pieces"})
-
-
+        this.markersGroup = Svg.addElement(this.svg, "g", {class: "markers"})
+        this.piecesGroup = Svg.addElement(this.svg, "g", {class: "pieces"})
     }
 
     updateMetrics() {
-        this.width = this.chessboard.element.offsetWidth
-        this.height = this.chessboard.element.offsetHeight
-        if (this.chessboard.props.style.showBorder) {
-            this.borderSize = this.width / 32
-        } else {
+        this.width = this.chessboard.context.clientWidth
+        this.height = this.chessboard.context.clientHeight
+        if (this.chessboard.props.style.borderType === BORDER_TYPE.frame) {
+            this.borderSize = this.width / 25
+        } else if (this.chessboard.props.style.borderType === BORDER_TYPE.thin) {
             this.borderSize = this.width / 320
+        } else {
+            this.borderSize = 0
         }
         this.innerWidth = this.width - 2 * this.borderSize
         this.innerHeight = this.height - 2 * this.borderSize
         this.squareWidth = this.innerWidth / 8
         this.squareHeight = this.innerHeight / 8
-        this.scalingX = this.squareWidth / this.chessboard.props.sprite.grid
-        this.scalingY = this.squareHeight / this.chessboard.props.sprite.grid
-        this.pieceXTranslate = (this.squareWidth / 2 - this.chessboard.props.sprite.grid * this.scalingY / 2)
+        this.scalingX = this.squareWidth / this.chessboard.props.sprite.size
+        this.scalingY = this.squareHeight / this.chessboard.props.sprite.size
+        this.pieceXTranslate = (this.squareWidth / 2 - this.chessboard.props.sprite.size * this.scalingY / 2)
     }
 
     handleResize() {
-        window.clearTimeout(this.resizeDebounce)
-        this.resizeDebounce = setTimeout(() => {
-            if (this.chessboard.element.offsetWidth !== this.width ||
-                this.chessboard.element.offsetHeight !== this.height) {
-                this.updateMetrics()
-                this.redraw()
-            }
-            this.svg.setAttribute("width", "100%") // safari bugfix
-            this.svg.setAttribute("height", "100%")
-        })
+        if (this.chessboard.props.style.aspectRatio) {
+            this.chessboard.context.style.height = (this.chessboard.context.clientWidth * this.chessboard.props.style.aspectRatio) + "px"
+        }
+        if (this.chessboard.context.clientWidth !== this.width ||
+            this.chessboard.context.clientHeight !== this.height) {
+            this.updateMetrics()
+            this.redraw()
+        }
+        this.svg.setAttribute("width", "100%") // safari bugfix
+        this.svg.setAttribute("height", "100%")
     }
 
     redraw() {
-        return new Promise((resolve) => {
-            window.clearTimeout(this.redrawDebounce)
-            this.redrawDebounce = setTimeout(() => {
-                if (!this.boardGroup) return;
-                this.drawBoard()
-                this.drawCoordinates()
-                // this.drawMarkers()
-                // this.drawArrows()
-                this.illustrator.drawMarkers()
-                this.illustrator.drawArrows()
-                this.setCursor()
-            })
-            this.drawPiecesDebounced(this.chessboard.state.squares, () => {
-                resolve()
-            })
-        })
+        this.drawBoard()
+        this.drawCoordinates()
+        this.drawMarkers()
+        this.visualizeInputState()
+        this.drawPieces(this.chessboard.state.squares)
     }
 
     // Board //
@@ -183,17 +205,19 @@ export class ChessboardView {
         while (this.boardGroup.firstChild) {
             this.boardGroup.removeChild(this.boardGroup.lastChild)
         }
-        let boardBorder = Svg.addElement(this.boardGroup, "rect", {width: this.width, height: this.height})
-        boardBorder.setAttribute("class", "border")
-        if (this.chessboard.props.style.showBorder) {
-            const innerPos = this.borderSize - this.borderSize / 9
-            let borderInner = Svg.addElement(this.boardGroup, "rect", {
-                x: innerPos,
-                y: innerPos,
-                width: this.width - innerPos * 2,
-                height: this.height - innerPos * 2
-            })
-            borderInner.setAttribute("class", "border-inner")
+        if (this.chessboard.props.style.borderType !== BORDER_TYPE.none) {
+            let boardBorder = Svg.addElement(this.boardGroup, "rect", {width: this.width, height: this.height})
+            boardBorder.setAttribute("class", "border")
+            if (this.chessboard.props.style.borderType === BORDER_TYPE.frame) {
+                const innerPos = this.borderSize
+                let borderInner = Svg.addElement(this.boardGroup, "rect", {
+                    x: innerPos,
+                    y: innerPos,
+                    width: this.width - innerPos * 2,
+                    height: this.height - innerPos * 2
+                })
+                borderInner.setAttribute("class", "border-inner")
+            }
         }
         for (let i = 0; i < 64; i++) {
             const index = this.chessboard.state.orientation === COLOR.white ? i : 63 - i
@@ -206,7 +230,6 @@ export class ChessboardView {
             squareRect.setAttribute("class", fieldClass)
             squareRect.setAttribute("data-index", "" + index)
         }
-        // console.log('drawBoard');
     }
 
     drawCoordinates() {
@@ -216,23 +239,20 @@ export class ChessboardView {
         while (this.coordinatesGroup.firstChild) {
             this.coordinatesGroup.removeChild(this.coordinatesGroup.lastChild)
         }
-        const inline = !this.chessboard.props.style.showBorder
+        const inline = this.chessboard.props.style.borderType !== BORDER_TYPE.frame
         for (let file = 0; file < 8; file++) {
-            let x = this.borderSize + (18 + this.chessboard.props.sprite.grid * file) * this.scalingX
-            let y = this.height - this.scalingY * 2.6
+            let x = this.borderSize + (17 + this.chessboard.props.sprite.size * file) * this.scalingX
+            let y = this.height - this.scalingY * 3.5
             let cssClass = "coordinate file"
             if (inline) {
                 x = x + this.scalingX * 15.5
-                if (this.chessboard.props.style.showBorder) {
-                    y = y - this.scalingY * 11
-                }
-                cssClass += file % 2 ? " dark" : " light"
+                cssClass += file % 2 ? " white" : " black"
             }
             const textElement = Svg.addElement(this.coordinatesGroup, "text", {
                 class: cssClass,
                 x: x,
                 y: y,
-                style: `font-size: ${this.scalingY * 8}px`
+                style: `font-size: ${this.scalingY * 10}px`
             })
             if (this.chessboard.state.orientation === COLOR.white) {
                 textElement.textContent = String.fromCharCode(97 + file)
@@ -242,11 +262,11 @@ export class ChessboardView {
         }
         for (let rank = 0; rank < 8; rank++) {
             let x = (this.borderSize / 3.7)
-            let y = this.borderSize + 24 * this.scalingY + rank * this.squareHeight
+            let y = this.borderSize + 25 * this.scalingY + rank * this.squareHeight
             let cssClass = "coordinate rank"
             if (inline) {
-                cssClass += rank % 2 ? " light" : " dark"
-                if (this.chessboard.props.style.showBorder) {
+                cssClass += rank % 2 ? " black" : " white"
+                if (this.chessboard.props.style.borderType === BORDER_TYPE.frame) {
                     x = x + this.scalingX * 10
                     y = y - this.scalingY * 15
                 } else {
@@ -258,39 +278,28 @@ export class ChessboardView {
                 class: cssClass,
                 x: x,
                 y: y,
-                style: `font-size: ${this.scalingY * 8}px`
+                style: `font-size: ${this.scalingY * 10}px`
             })
             if (this.chessboard.state.orientation === COLOR.white) {
-                textElement.textContent = 8 - rank
+                textElement.textContent = "" + (8 - rank)
             } else {
-                textElement.textContent = 1 + rank
+                textElement.textContent = "" + (1 + rank)
             }
         }
     }
 
     // Pieces //
 
-    drawPiecesDebounced(squares = this.chessboard.state.squares, callback = null) {
-        window.clearTimeout(this.drawPiecesDebounce)
-        this.drawPiecesDebounce = setTimeout(() => {
-            this.drawPieces(squares)
-            if (callback) {
-                callback()
-            }
-        })
-    }
-
     drawPieces(squares = this.chessboard.state.squares) {
-        if (this.piecesGroup){
-            while (this.piecesGroup.firstChild) {
-                this.piecesGroup.removeChild(this.piecesGroup.lastChild)
+        const childNodes = Array.from(this.piecesGroup.childNodes)
+        for (let i = 0; i < 64; i++) {
+            const pieceName = squares[i]
+            if (pieceName) {
+                this.drawPiece(i, pieceName)
             }
-            for (let i = 0; i < 64; i++) {
-                const pieceName = squares[i]
-                if (pieceName) {
-                    this.drawPiece(i, pieceName)
-                }
-            }
+        }
+        for (const childNode of childNodes) {
+            this.piecesGroup.removeChild(childNode)
         }
     }
 
@@ -302,7 +311,11 @@ export class ChessboardView {
         const transform = (this.svg.createSVGTransform())
         transform.setTranslate(point.x, point.y)
         pieceGroup.transform.baseVal.appendItem(transform)
-        const pieceUse = Svg.addElement(pieceGroup, "use", {"href": `#${pieceName}`, "class": "piece"})
+        const spriteUrl = this.chessboard.props.sprite.cache ? "" : this.chessboard.props.sprite.url
+        const pieceUse = Svg.addElement(pieceGroup, "use", {
+            href: `${spriteUrl}#${pieceName}`,
+            class: "piece"
+        })
         // center on square
         const transformTranslate = (this.svg.createSVGTransform())
         transformTranslate.setTranslate(this.pieceXTranslate, 0)
@@ -330,154 +343,35 @@ export class ChessboardView {
 
     // Markers //
 
-    // drawMarkersDebounced() {
-    //     window.clearTimeout(this.drawMarkersDebounce)
-    //     this.drawMarkersDebounce = setTimeout(() => {
-    //         this.drawMarkers()
-    //     }, 10)
-    // }
+    drawMarkers() {
+        while (this.markersGroup.firstChild) {
+            this.markersGroup.removeChild(this.markersGroup.firstChild)
+        }
+        this.chessboard.state.markers.forEach((marker) => {
+                this.drawMarker(marker)
+            }
+        )
+    }
 
-    // drawMarkers() {
-    //     if (this.markersGroup) {
-    //         while (this.markersGroup.firstChild) {
-    //             this.markersGroup.removeChild(this.markersGroup.firstChild)
-    //         }
-    //         this.chessboard.state.markers.forEach((marker) => {
-    //                 this.drawMarker(marker)
-    //             }
-    //         )
-    //     }
-    // }
-
-    // drawMarker(marker) {
-    //     const markerGroup = Svg.addElement(this.markersGroup, "g")
-    //     markerGroup.setAttribute("data-index", marker.index)
-    //     const point = this.squareIndexToPoint(marker.index)
-    //     const transform = (this.svg.createSVGTransform())
-    //     transform.setTranslate(point.x, point.y)
-    //     markerGroup.transform.baseVal.appendItem(transform)
-    //     const markerUse = Svg.addElement(markerGroup, "use",
-    //         {href: `#${marker.type.slice}`, class: "marker " + marker.type.class})
-    //     const transformScale = (this.svg.createSVGTransform())
-    //     transformScale.setScale(this.scalingX, this.scalingY)
-    //     markerUse.transform.baseVal.appendItem(transformScale)
-    //     return markerGroup
-    // }
-
-    // Arrows //
-
-    // drawArrowsDebounced() {
-    //     window.clearTimeout(this.drawArrowsDebounce)
-    //     this.drawArrowsDebounce = setTimeout(() => {
-    //         this.drawArrows()
-    //     }, 10)
-    // }
-
-    // drawArrows() {
-    //     if (this.arrowsGroup) {
-    //         while (this.arrowsGroup.firstChild) {
-    //             this.arrowsGroup.removeChild(this.arrowsGroup.firstChild)
-    //         }
-    //         this.chessboard.state.arrows.forEach((arrow) => {
-    //                 this.drawArrow(arrow)
-    //             }
-    //         )
-    //     }
-    // }
-
-    // calcAngle (x1, y1, x2, y2) {
-
-    //     return (
-    //         x1 === x2 && y1  <  y2 ?   0 :   // north
-    //         x1  >  x2 && y1 === y2 ?  90 :   // east
-    //         x1 === x2 && y1  >  y2 ? 180 :   // south
-    //         x1  <  x2 && y1 === y2 ? 270 :   // west
-
-    //         x1  >  x2 && y1  <  y2 ?  45 :   // north east
-    //         x1  >  x2 && y1  >  y2 ? 135 :   // south east
-    //         x1  <  x2 && y1  >  y2 ? 225 :   // south west
-    //         x1  <  x2 && y1  <  y2 ? 315 :   // north west
-
-    //         22
-    //     );
-
-    // }
-
-    // addPolyline (parent, points) {
-    //     const polyline = Svg.addElement(parent, "polyline");
-    //     polyline.setAttribute("points", points);
-    //     return polyline;
-    // }
-
-    // drawArrow(arrow) {
-
-    //     let angle, start, end, head;
-
-    //     const
-    //         arrowGroup = Svg.addElement(
-    //             this.arrowsGroup, "g",
-    //             {class: arrow.attributes.class}
-    //         ),
-    //         translate  = this.svg.createSVGTransform(),
-    //         scale      = this.svg.createSVGTransform(),
-    //         rotate     = this.svg.createSVGTransform(),
-    //         from       = this.squareIndexToPoint(arrow.from),
-    //         to         = this.squareIndexToPoint(arrow.to),
-    //         grd2       = this.chessboard.props.sprite.grid/2,
-    //         hd    = grd2 / 2,
-    //         dX    = (from.x - to.x) / this.scalingX,
-    //         dY    = (from.y - to.y) / this.scalingY,
-    //         tx    = grd2 - dX,
-    //         ty    = grd2 - dY,
-    //         t1x   = (Math.abs(dX) > Math.abs(dY)) ? tx : grd2,
-    //         t1y   = (Math.abs(dX) > Math.abs(dY)) ? grd2 : ty
-    //     ;
-
-    //     if (arrow.attributes.onclick) {
-    //         arrowGroup.addEventListener('click', arrow.attributes.onclick);
-    //         arrowGroup.addEventListener('touchstart', arrow.attributes.onclick);
-    //     }
-
-    //     // move group to from
-    //     translate.setTranslate(from.x, from.y)
-    //     arrowGroup.transform.baseVal.appendItem(translate)
-
-    //     // scale arrow to board size
-    //     scale.setScale(this.scalingX, this.scalingY)
-
-    //     // construct arrow
-    //     if (Math.abs(dY) === Math.abs(dX) || dY === 0 || dX === 0) {
-
-    //         // non knight
-    //         start  = this.addPolyline (arrowGroup, `${grd2},${grd2} ${tx},${ty}`);
-    //         head   = this.addPolyline (arrowGroup, `${tx-10},${ty-10} ${tx},${ty} ${tx+10},${ty-10}`);
-    //         angle  = this.calcAngle(from.x, from.y, to.x, to.y);
-
-    //     } else {
-
-    //         // knight
-    //         start  = this.addPolyline (arrowGroup, `${grd2},${grd2} ${t1x},${t1y}`);
-    //         end    = this.addPolyline (arrowGroup, `${t1x},${t1y} ${tx},${ty}`);
-    //         head   = this.addPolyline (arrowGroup, `${tx-hd},${ty-hd} ${tx},${ty} ${tx+hd},${ty-hd}`);
-    //         angle  = this.calcAngle(t1x, t1y, tx, ty);
-    //         end.transform.baseVal.appendItem(scale);
-
-    //     }
-
-    //     rotate.setRotate(angle, tx, ty);
-
-    //     start.transform.baseVal.appendItem(scale);
-    //     head.transform.baseVal.appendItem(scale);
-    //     head.transform.baseVal.appendItem(rotate);
-
-    //     return arrowGroup
-
-    // }
+    drawMarker(marker) {
+        const markerGroup = Svg.addElement(this.markersGroup, "g")
+        markerGroup.setAttribute("data-index", marker.index)
+        const point = this.squareIndexToPoint(marker.index)
+        const transform = (this.svg.createSVGTransform())
+        transform.setTranslate(point.x, point.y)
+        markerGroup.transform.baseVal.appendItem(transform)
+        const spriteUrl = this.chessboard.props.sprite.cache ? "" : this.chessboard.props.sprite.url
+        const markerUse = Svg.addElement(markerGroup, "use",
+            {href: `${spriteUrl}#${marker.type.slice}`, class: "marker " + marker.type.class})
+        const transformScale = (this.svg.createSVGTransform())
+        transformScale.setScale(this.scalingX, this.scalingY)
+        markerUse.transform.baseVal.appendItem(transformScale)
+        return markerGroup
+    }
 
     // animation queue //
 
     animatePieces(fromSquares, toSquares, callback) {
-        // console.log('animatePieces', 'queue#', this.animationQueue.length, 'running?', this.animationRunning);
         this.animationQueue.push({fromSquares: fromSquares, toSquares: toSquares, callback: callback})
         if (!this.animationRunning) {
             this.nextPieceAnimationInQueue()
@@ -487,23 +381,55 @@ export class ChessboardView {
     nextPieceAnimationInQueue() {
         const nextAnimation = this.animationQueue.shift()
         if (nextAnimation !== undefined) {
+            this.animationRunning = true
             this.currentAnimation = new ChessboardPiecesAnimation(this, nextAnimation.fromSquares, nextAnimation.toSquares, this.chessboard.props.animationDuration / (this.animationQueue.length + 1), () => {
-                if (!this.moveInput.dragablePiece) {
+                if (!this.moveInput.draggablePiece) {
                     this.drawPieces(nextAnimation.toSquares)
-                }
-                this.nextPieceAnimationInQueue()
-                if (nextAnimation.callback) {
-                    nextAnimation.callback()
+                    this.animationRunning = false
+                    this.nextPieceAnimationInQueue()
+                    if (nextAnimation.callback) {
+                        nextAnimation.callback()
+                    }
+                } else {
+                    this.animationRunning = false
+                    this.nextPieceAnimationInQueue()
+                    if (nextAnimation.callback) {
+                        nextAnimation.callback()
+                    }
                 }
             })
         }
     }
 
-    // Callbacks //
+    // enable and disable move input //
+
+    enableMoveInput(eventHandler, color = undefined) {
+        if (color === COLOR.white) {
+            this.chessboard.state.inputWhiteEnabled = true
+        } else if (color === COLOR.black) {
+            this.chessboard.state.inputBlackEnabled = true
+        } else {
+            this.chessboard.state.inputWhiteEnabled = true
+            this.chessboard.state.inputBlackEnabled = true
+        }
+        this.chessboard.state.inputEnabled = true
+        this.moveInputCallback = eventHandler
+        this.visualizeInputState()
+    }
+
+    disableMoveInput() {
+        this.chessboard.state.inputWhiteEnabled = false
+        this.chessboard.state.inputBlackEnabled = false
+        this.chessboard.state.inputEnabled = false
+        this.moveInputCallback = undefined
+        this.visualizeInputState()
+    }
+
+    // callbacks //
 
     moveStartCallback(index) {
-        if (this.chessboard.moveInputCallback) {
-            return this.chessboard.moveInputCallback({
+        if (this.moveInputCallback) {
+            return this.moveInputCallback({
                 chessboard: this.chessboard,
                 type: INPUT_EVENT_TYPE.moveStart,
                 square: SQUARE_COORDINATES[index]
@@ -514,8 +440,8 @@ export class ChessboardView {
     }
 
     moveDoneCallback(fromIndex, toIndex) {
-        if (this.chessboard.moveInputCallback) {
-            return this.chessboard.moveInputCallback({
+        if (this.moveInputCallback) {
+            return this.moveInputCallback({
                 chessboard: this.chessboard,
                 type: INPUT_EVENT_TYPE.moveDone,
                 squareFrom: SQUARE_COORDINATES[fromIndex],
@@ -526,25 +452,28 @@ export class ChessboardView {
         }
     }
 
-    moveCanceledCallback() {
-        if (this.chessboard.moveInputCallback) {
-            this.chessboard.moveInputCallback({
+    moveCanceledCallback(reason, fromIndex, toIndex) {
+        if (this.moveInputCallback) {
+            this.moveInputCallback({
                 chessboard: this.chessboard,
-                type: INPUT_EVENT_TYPE.moveCanceled
+                type: INPUT_EVENT_TYPE.moveCanceled,
+                reason: reason,
+                squareFrom: SQUARE_COORDINATES[fromIndex],
+                squareTo: toIndex ? SQUARE_COORDINATES[toIndex] : undefined
             })
         }
     }
 
     // Helpers //
 
-    setCursor() {
-        this.chessboard.initialization.then(() => {
-            if (this.chessboard.state.inputWhiteEnabled || this.chessboard.state.inputBlackEnabled) {
+    visualizeInputState() {
+        if (this.chessboard.state) { // fix https://github.com/shaack/cm-chessboard/issues/47
+            if (this.chessboard.state.inputWhiteEnabled || this.chessboard.state.inputBlackEnabled || this.chessboard.state.squareSelectEnabled) {
                 this.boardGroup.setAttribute("class", "board input-enabled")
             } else {
                 this.boardGroup.setAttribute("class", "board")
             }
-        })
+        }
     }
 
     squareIndexToPoint(index) {
@@ -561,7 +490,8 @@ export class ChessboardView {
 
 }
 
-const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
+const SVG_NAMESPACE = "http://www.w3.org/2000/svg"
+
 export class Svg {
 
     /**
@@ -569,14 +499,14 @@ export class Svg {
      * @param containerElement
      * @returns {Element}
      */
-    static createSvg(containerElement = null) {
-        let svg = document.createElementNS(SVG_NAMESPACE, "svg");
-        if(containerElement) {
-            svg.setAttribute("width", "100%");
-            svg.setAttribute("height", "100%");
-            containerElement.appendChild(svg);
+    static createSvg(containerElement = undefined) {
+        let svg = document.createElementNS(SVG_NAMESPACE, "svg")
+        if (containerElement) {
+            svg.setAttribute("width", "100%")
+            svg.setAttribute("height", "100%")
+            containerElement.appendChild(svg)
         }
-        return svg;
+        return svg
     }
 
     /**
@@ -587,20 +517,22 @@ export class Svg {
      * @returns {Element}
      */
     static addElement(parent, name, attributes) {
-        let element = document.createElementNS(SVG_NAMESPACE, name);
+        let element = document.createElementNS(SVG_NAMESPACE, name)
         if (name === "use") {
-            attributes["xlink:href"] = attributes["href"]; // fix for safari
+            attributes["xlink:href"] = attributes["href"] // fix for safari
         }
         for (let attribute in attributes) {
-            if (attribute.indexOf(":") !== -1) {
-                const value = attribute.split(":");
-                element.setAttributeNS("http://www.w3.org/1999/" + value[0], value[1], attributes[attribute]);
-            } else {
-                element.setAttribute(attribute, attributes[attribute]);
+            if (attributes.hasOwnProperty(attribute)) {
+                if (attribute.indexOf(":") !== -1) {
+                    const value = attribute.split(":")
+                    element.setAttributeNS("http://www.w3.org/1999/" + value[0], value[1], attributes[attribute])
+                } else {
+                    element.setAttribute(attribute, attributes[attribute])
+                }
             }
         }
-        parent.appendChild(element);
-        return element;
+        parent.appendChild(element)
+        return element
     }
 
     /**
@@ -608,60 +540,7 @@ export class Svg {
      * @param element
      */
     static removeElement(element) {
-        element.parentNode.removeChild(element);
+        element.parentNode.removeChild(element)
     }
 
-    /**
-     * Load sprite into html document (as `svg/defs`), elements can be referenced by `use` from all Svgs in page
-     * @param url
-     * @param elementIds array of element-ids, relevant for `use` in the svgs
-     * @param callback called after successful load, parameter is the svg element
-     * @param grid the grid size of the sprite
-     */
-    static loadSprite(url, elementIds, callback, grid = 1) {
-        const request = new XMLHttpRequest();
-        request.open("GET", url);
-        request.send();
-        request.onload = () => {
-            const response = request.response;
-            const parser = new DOMParser();
-            const svgDom = parser.parseFromString(response, "image/svg+xml");
-            // add relevant nodes to sprite-svg
-            const spriteSvg = this.createSvg(document.body);
-            spriteSvg.setAttribute("style", "display: none");
-            const defs = this.addElement(spriteSvg, "defs");
-            // filter relevant nodes
-            elementIds.forEach((elementId) => {
-                let elementNode = svgDom.getElementById(elementId);
-                if (!elementNode) {
-                    console.error("error, node id=" + elementId + " not found in sprite");
-                } else {
-                    const transformList = elementNode.transform.baseVal;
-                    for (let i = 0; i < transformList.numberOfItems; i++) {
-                        const transform = transformList.getItem(i);
-                        // re-transform items on grid
-                        if (transform.type === 2) {
-                            transform.setTranslate(transform.matrix.e % grid, transform.matrix.f % grid);
-                        }
-                    }
-                    // filter all ids in childs of the node
-                    let filterChilds = (childNodes) => {
-                        childNodes.forEach((childNode) => {
-                            if (childNode.nodeType === Node.ELEMENT_NODE) {
-                                childNode.removeAttribute("id");
-                                if (childNode.hasChildNodes()) {
-                                    filterChilds(childNode.childNodes);
-                                }
-                            }
-                        });
-                    };
-                    filterChilds(elementNode.childNodes);
-                    defs.appendChild(elementNode);
-                }
-            });
-            callback(spriteSvg);
-        };
-    }
 }
-
-ChessboardView.spriteLoadingStatus = SPRITE_LOADING_STATUS.notLoaded

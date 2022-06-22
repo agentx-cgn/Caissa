@@ -1,0 +1,61 @@
+atom-form-list {
+
+  flex-direction: column;
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+
+  // overflow-y: auto;
+  // overflow-x: hidden;
+
+  & > * {
+
+    width: 100%;
+    background-color: transparent;
+    border-bottom: 1px solid #ccc;
+    padding: 0.7rem 1rem ;
+
+  //   padding: 0.7rem 1rem ;
+
+      // &:hover {
+      //     background-color: #0e62993b;
+      //     color: white;
+      // }
+      // &.active {
+      //     background-color: darkred;
+      //     color: white;
+      // }
+  }
+
+  atom-form-note {
+    // padding: 0.7rem 1rem ;
+  }
+
+  atom-form-header {
+    // padding: 0.7rem 1rem ;
+  }
+
+  atom-form-textfield {
+
+    background-color: white;
+    padding: 0 1rem 0.7rem 1rem;
+
+    input:focus {
+      outline: none;
+      border: 0;
+      box-shadow: 0 0 0 ;
+      -moz-box-shadow: 0 0 0 ;
+      -webkit-box-shadow: 0 0 0 ;
+    }
+
+  }
+
+  atom-form-checkbox {
+    // padding: 0.7rem 1rem ;
+  }
+
+  atom-form-button {
+    // padding: 0.7rem 1rem ;
+  }
+
+}

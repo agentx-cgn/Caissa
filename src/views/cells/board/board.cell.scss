@@ -1,0 +1,36 @@
+
+cell-board {
+  flex: 0 0 ;
+  width: 100%;
+}
+
+cell-board-sizer  {
+  display: block;
+  width: 0;
+  float: left;
+  padding-bottom: calc(100% - var(--evaluation-width));
+}
+
+cell-board-evaluation {
+  display: block;
+  width: 24px;
+  background-color: rgb(53, 168, 154);
+  float: left;
+
+}
+
+cell-board-container {
+
+  display: grid;
+
+  color: wheat;
+
+  background-color: rgb(121, 97, 97);
+
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: auto;
+
+  float: left
+
+}

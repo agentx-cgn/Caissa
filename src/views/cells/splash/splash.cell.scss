@@ -1,0 +1,16 @@
+
+cell-splash {
+
+  background-color: rgb(177, 177, 177);
+
+  position: fixed;
+  z-index: 20;
+
+  left: calc(50% - 180px);
+  width: 360px;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+}
