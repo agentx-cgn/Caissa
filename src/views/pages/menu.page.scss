@@ -4,19 +4,22 @@ i.menu.fa {
     flex-grow: 0;
     padding: 4px 10px 0 0;
     width: 28px;
+    margin-right: 12px
 }
 // i.menu.fa:hover {
 //     background-color: #806464;
 // }
 
 img.menu {
-    padding-right: 18px;
+    // padding-right: 18px;
+    margin-right: 12px;
     vertical-align: top;
     width: 22px;
     height: 22px;
 }
 
 div.menu.subline {
+    margin-top: 4px;;
     padding-bottom: 0.5rem;
     font-size: 1rem;
     color: #444;

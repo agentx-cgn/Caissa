@@ -4,7 +4,7 @@ import { H }   from '../helper.service';
 import { TableFactory }   from './table.factory';
 import { IDatabase, TTableNames, TDump } from './database.types';
 
-const SCHEME = '2020-07-09a';
+const SCHEME = '2022-06-22a';
 
 const tables = 'Boards Games Options Usage'.split(' ') as TTableNames[];
 

@@ -8,13 +8,11 @@ export const NothingAtom: IComponent = {
     return m('div.nothing.dn');
   },
 };
-
 interface ITitleAttrs {
   className: string;
   style: string;
   onclick: (e: IEvent) => void;
 }
-
 export const SectionTitleAtom: IComponent<ITitleAttrs> = {
   view ( { attrs, children } ) {
     const { className, style, onclick } = attrs;;
@@ -24,21 +22,22 @@ export const SectionTitleAtom: IComponent<ITitleAttrs> = {
   }
 };
 
+
+export const  YScrollAtom: IComponent = {
+  view ( vnode ) {
+    return m('atom-scroll-y', vnode.children);
+  },
+};
+
 export const SpacerAtom: IComponent = {
-  view ( ) {
-    return m('div.spacer', m.trust('&nbsp;'));
+  view ( { attrs } ) {
+    return m('atom-spacer', attrs, m.trust('&nbsp;'));
   },
 };
 
 export const GrowSpacerAtom: IComponent = {
   view ( { attrs } ) {
-    return m('div.spacer.flex-grow', attrs, m.trust('&nbsp;'));
-  },
-};
-
-export const FixedListAtom: IComponent = {
-  view ( vnode ) {
-    return m('div.fixedlist.viewport-y', vnode.attrs, vnode.children);
+    return m('atom-spacer.flex-grow', attrs, m.trust('&nbsp;'));
   },
 };
 
@@ -50,13 +49,17 @@ export const FlexListAtom: IDefCellComponent = {
 
 export const TextLeftAtom: IComponent = {
   view ( vnode ) {
-    return m('div.text-left.tl.fiom.f4.white', m('span', vnode.attrs, vnode.children));
+    return m('atom-text-left.db.tl.fiom.f4.white',
+      m('span', vnode.attrs, vnode.children)
+    );
   },
 };
 
-export const TextCenterAtom: IComponent = {
+export const FlexListTextCenterAtom: IComponent = {
   view ( vnode ) {
-    return m('div.text-center.tc.fiom.f4.white', m('span', vnode.attrs, vnode.children));
+    return m('atom-text-center.db.tc.fiom.f4.white',
+      m('span', vnode.attrs, vnode.children)
+    );
   },
 };
 
@@ -86,11 +89,17 @@ export const FlexListHeaderAtom: IComponent = {
 
 export const FlexListMenuEntryAtom: IComponent<{onclick: (e:IEvent)=>void}>= {
   view ( vnode ) {
-    return m('atom-flexlist-menu-entry', vnode.attrs, vnode.children);
+    return m('atom-flexlist-menu-entry.db', vnode.attrs, vnode.children);
   },
 };
-export const  YScrollAtom: IComponent = {
+
+
+
+
+
+
+export const FixedListAtom: IComponent = {
   view ( vnode ) {
-    return m('atom-scroll-y', vnode.children);
+    return m('div.fixedlist.viewport-y', vnode.attrs, vnode.children);
   },
 };

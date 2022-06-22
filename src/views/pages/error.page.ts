@@ -2,7 +2,7 @@
 import m from 'mithril';
 
 import { FactoryService }  from '@app/services';
-import { SpacerAtom, GrowSpacerAtom, SectionTitleAtom, TextCenterAtom, FlexListAtom } from '@app/atoms';
+import { SpacerAtom, GrowSpacerAtom, SectionTitleAtom, FlexListTextCenterAtom, FlexListAtom } from '@app/atoms';
 import { IPageAttrs } from '@app/domain';
 
 const ErrorPage = FactoryService.create<IPageAttrs>('Error', {
@@ -13,7 +13,7 @@ const ErrorPage = FactoryService.create<IPageAttrs>('Error', {
       m(SectionTitleAtom,  'Error' ),
       m(FlexListAtom, [
         m(SpacerAtom),
-        m(TextCenterAtom,    JSON.stringify(vnode.attrs) ),
+        m(FlexListTextCenterAtom,    JSON.stringify(vnode.attrs) ),
         m(GrowSpacerAtom),
       ]),
     ]);

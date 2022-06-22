@@ -7,7 +7,7 @@ import { H } from './services/helper.service';
 import { App } from './views/app';
 import { RoutesConfig, DefaultRoute } from './config/routes.config';
 
-const DEBUG = true;
+const DEBUG = false;
 
 try {
 

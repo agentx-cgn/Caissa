@@ -38,37 +38,47 @@ atom-flexlist {
 
       background-color: transparent;
 
-        // &:hover {
-        //     background-color: #0e62993b;
-        //     color: white;
-        // }
-        // &.active {
-        //     background-color: darkred;
-        //     color: white;
-        // }
+
 
     }
 
+    atom-flexlist-text {
+        padding: 0.7rem 1rem ;
+        border-bottom: 1px solid #ccc;
 
+    }
+
+    atom-flexlist-image {
+        padding: 0 ;
+        border-bottom: 1px solid #ccc;
+    }
+    atom-flexlist-entry {
+        padding: 0.7rem 1rem ;
+        border-bottom: 1px solid #ccc;
+    }
+
+    atom-flexlist-menu-entry {
+
+        padding: 0.7rem 1rem ;
+        border-bottom: 1px solid #bbb;
+
+        &:last-of-type {
+            border-bottom: 0px solid #ccc;
+        }
+
+        &:hover {
+            background-color: #0e62993b;
+            color: white;
+        }
+        &.active {
+            background-color: darkred;
+            color: white;
+        }
+    }
 
 }
 
-atom-flexlist-text {
-    padding: 0.7rem 1rem ;
-    border-bottom: 1px solid #ccc;
-
-}
 atom-flexlist-header {
-    padding: 0.7rem 1rem ;
-    border-bottom: 1px solid #ccc;
-
-}
-
-atom-flexlist-image {
-    padding: 0 ;
-    border-bottom: 1px solid #ccc;
-}
-atom-flexlist-entry {
     padding: 0.7rem 1rem ;
     border-bottom: 1px solid #ccc;
 }
