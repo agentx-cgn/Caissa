@@ -5,7 +5,7 @@ import './app.scss';
 
 import { H } from './services/helper.service';
 import { App } from './views/app';
-import { RoutesConfig, DefaultRoute } from './config/routes.config';
+import { RoutesConfig, DefaultRoute } from '@app/config';
 
 const DEBUG = false;
 
@@ -20,7 +20,7 @@ try {
 
     // make App available in console
     window.App    = App;
-    window.onload = App.onload;
+    window.addEventListener('load', App.onload);
 
 
 } catch (e) {

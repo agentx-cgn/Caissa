@@ -10,56 +10,72 @@ type TDeco = {
 }
 type TMenuEntry = [ string, string, IParams, TDeco ];
 
-const MenuConfig: TMenuEntry[] = [
-    // route             caption        params
-    // ['/sources/',        'COLLECTIONS', {},                     {
-    //     ifa: 'fa-chess-pawn',
-    //     subline: 'Checkput out games from various collections.',
-    // } ],
-    // ['/games/',          'GAMES',       { idx: 0 },             {
-    //     ifa: 'fa-cogs',
-    //     subline: 'All games from a collection',
-    // } ],  // loads imported games so far
-    // ['/game/',           'GAME',        {},                     {
-    //     ifa: 'fa-cogs',
-    //     subline: 'Currently open games',
-    // } ],
-    // ['/plays/',          'PLAY',        {},                     {
-    //     ifa: 'fa-cogs',
-    //     subline: 'Start a new game',
-    // } ],
-    // ['/openings/',       'OPENINGS',    {},                     {
-    //     ifa: 'fa-cogs',
-    //     subline: 'Explore Chess Openings',
-    // } ],
-    ['/system/:module/', 'SYSTEM',      { module: 'system' },   {
-        ifa: 'fa-microchip' ,
-        subline: 'This is hidden in production',
-    } ],
-    ['/preferences/',    'PREFERENCES', {},                     {
-        ifa: 'fa-cogs',
-        subline: 'Custumize Caissa to your needs',
-    } ],
-    ['/nothing/',    'NOTHING', {},                     {
-        ifa: 'fa-cogs',
-        subline: 'Just a dummy page',
-    } ],
-    ['/help/',    'HELP', {},                     {
-        ifa: 'fa-cogs',
-        subline: 'You need it',
-    } ],
+type TMenuConfig = {
+    [key: string]: TMenuEntry[];
+}
 
-    ['/404/',    '404', {},                     {
-        // ifa: 'fa-cogs',
-        img: iconChess,
-        subline: 'Break it',
-    } ],
+const MenuConfig: TMenuConfig = {
 
-    // ['/analyzer/',       {}, 'ANALYSE'],
-    // ['/help/',           {}, 'HELP'],
+    '/start/': [
 
-    // [`/info/${urls[1]}/`,   'INFO'],
-    // ['/test',     'TEST'],
-];
+        // route             caption        params
+        ['/games/',          'GAMES',       {},             {
+            ifa: 'fa-cogs',
+            subline: 'All games from a collection',
+        } ],  // loads imported games so far
+        ['/openings/',       'OPENINGS',    {},                     {
+            ifa: 'fa-cogs',
+            subline: 'Explore Chess Openings',
+        } ],
+        ['/preferences/',    'PREFERENCES', {},                     {
+            ifa: 'fa-cogs',
+            subline: 'Custumize Caissa to your needs',
+        } ],
+        ['/system/:module/', 'SYSTEM',      { module: 'system' },   {
+            ifa: 'fa-microchip' ,
+            subline: 'This is hidden in production',
+        } ],
+        ['/help/',    'HELP', {},                     {
+            ifa: 'fa-cogs',
+            subline: 'You need it',
+        } ],
+
+        ['/404/',    '404', {},                     {
+            // ifa: 'fa-cogs',
+            img: iconChess,
+            subline: 'Break it',
+        } ],
+    ],
+
+    '/games/': [
+
+        ['/collections/',        'COLLECTIONS', {},                     {
+            ifa: 'fa-chess-pawn',
+            subline: 'Checkput out games from various collections.',
+        } ],
+        ['/import/',        'IMPORT', {},                     {
+            ifa: 'fa-chess-pawn',
+            subline: 'Import games to analyze (*.png).',
+        } ],
+
+    ]
+
+        // ['/game/',           'GAME',        {},                     {
+        //     ifa: 'fa-cogs',
+        //     subline: 'Currently open games',
+        // } ],
+        // ['/plays/',          'PLAY',        {},                     {
+        //     ifa: 'fa-cogs',
+        //     subline: 'Start a new game',
+        // } ],
+        // ['/nothing/',    'NOTHING', {},                     {
+        //     ifa: 'fa-cogs',
+        //     subline: 'Just a dummy page',
+        // } ],
+        // ['/analyzer/',       {}, 'ANALYSE'],
+        // ['/help/',           {}, 'HELP'],
+        // [`/info/${urls[1]}/`,   'INFO'],
+        // ['/test',     'TEST'],
+};
 
 export { MenuConfig, TMenuEntry };

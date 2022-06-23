@@ -3,13 +3,15 @@ import m from 'mithril';
 import { IDefComponent, IEvent, IParams } from '@app/domain';
 import { H, $ } from '@app/services';
 import { App } from '@app/views';
-import { MenuConfig } from '@app/config';
+import { DefaultRoute } from '@app/config';
 
 import { BackdropCell } from '../backdrop.cell';
 
 const NavigationCell: IDefComponent =  {
 
   view ( vnode ) {
+
+    const { route } = vnode.attrs;
 
     // const navi     = PagesConfig[route].navi;
     const clicker  = (route: string, params: IParams ) => {
@@ -24,7 +26,7 @@ const NavigationCell: IDefComponent =  {
 
     const onmenu = (e: IEvent) => {
       e.redraw = false;
-      App.route('/menu/');
+      App.route(DefaultRoute);
     };
 
       return m('nav', [
@@ -46,12 +48,12 @@ const NavigationCell: IDefComponent =  {
           }
         }}),
 
-          m('ul', Array.from(MenuConfig).map( ([route, entry, params]) => {
-            return m('li', {
-              onclick: clicker(route, params),
-              class: route.startsWith('navi') ? 'selected' : 'unselected'}, entry)
-            ;
-          })),
+          // m('ul', Array.from(MenuConfig[route]).map( ([route, entry, params]) => {
+          //   return m('li', {
+          //     onclick: clicker(route, params),
+          //     class: route.startsWith('navi') ? 'selected' : 'unselected'}, entry)
+          //   ;
+          // })),
               // m('li.unselected', m('a.link', {target:'_blank', href: 'https://github.com/agentx-cgn/caissa'}, 'SOURCE')),
               // m('li.unselected', m('a.link', {target:'_blank', href: 'https://caissa.js.org/'}, 'LIVE')),
 

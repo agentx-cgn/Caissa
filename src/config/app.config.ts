@@ -1,17 +1,10 @@
 
-// import { H } from '@app/services';
 
 // import board_svg         from '../../extern/cm-chessboard/chessboard-sprite.svg';
 // import { COLOR, MOVE_INPUT_MODE } from '../../extern/cm-chessboard/Chessboard';
 // import iconChess from './../../assets/static/chess.128.trans.png';
 
-// import { MenuConfig } from '@app/config';
-
 import pjson from '../../package.json';
-
-// console.log(pjson, pjson.version);
-// console.log(String(pjson));
-// console.log(JSON.parse(String(pjson)));
 
 const package_json = JSON.parse(String(pjson));
 

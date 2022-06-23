@@ -8,16 +8,24 @@ import { PreferencesPage, SystemPage, HelpPage, ErrorPage, MenuPage, NothingPage
 const RoutesConfig: IRoutesConfigs = {
 
     // routes must start with '/'
-    // Route                Layout  Page     Content      Options (Title)
-    '/':                  [ Layout, MenuPage,     ContentCell,     { title: 'Menu 1'}      ],
-    '/menu/':             [ Layout, MenuPage,     ContentCell,     { title: 'Menu 2'}      ],
+    // Route                Layout  Page              Content          Options (Title)
+
+    '/':                  [ Layout, MenuPage,         ContentCell,   { title: 'Start 1'}      ],
+    '/start/':            [ Layout, MenuPage,         ContentCell,   { title: 'Start'}        ],
+    '/games/':            [ Layout, MenuPage,         ContentCell,   { title: 'Games'}        ],
+    '/preferences/':      [ Layout, PreferencesPage,  ContentCell,   { title: 'Preferences'}  ],
+    '/nothing/':          [ Layout, NothingPage,      NothingAtom,   { title: 'Nothing'}      ],
+    '/help/':             [ Layout, HelpPage,         NothingAtom,   { title: 'Help'}         ],
+    '/system/':           [ Layout, SystemPage,       NothingAtom,   { title: 'System'}       ],
+    '/system/:module/':   [ Layout, SystemPage,       NothingAtom,   { title: 'System %s'}    ],
+    '/:404...':           [ Layout, ErrorPage,        NothingAtom,   { title: 'Error %s'}     ],
+
     // '/sources/':          [ Layout, Sources,  Board,     { title: 'Sources'}     ],
     // '/games/':            [ Layout, Games,    Board,     { title: 'Games'}       ],
     // '/games/:idx/':       [ Layout, Games,    Board,     { title: 'Games %s'}    ],
     // '/game/:turn/:uuid/': [ Layout, Game,     Board,     { title: 'Game %s'}     ],
     // '/plays/':            [ Layout, Plays,    Board,     { title: 'Plays'}       ],
     // '/plays/:rivals/':    [ Layout, Plays,    Board,     { title: 'Plays'}       ],
-    '/preferences/':      [ Layout, PreferencesPage,  ContentCell, { title: 'Preferences'} ],
 
     // https://mithril.js.org/route.html#variadic-routes
     // '/openings/':                               [ Layout, Openings,   Board,     { title: 'Openings'}    ],
@@ -25,12 +33,6 @@ const RoutesConfig: IRoutesConfigs = {
     // '/openings/:volume/:group/':                [ Layout, Groups,     Board,     { title: 'Openings'}    ],
     // '/openings/:volume/:chapter/':              [ Layout, Chapters,   Board,     { title: 'Openings'}    ],
     // '/openings/:volume/:chapter/:variation':    [ Layout, Variations, Board,     { title: 'Openings'}    ],
-
-    '/nothing/':          [ Layout, NothingPage,  NothingAtom,   { title: 'Help'}      ],
-    '/help/':             [ Layout, HelpPage,     NothingAtom,   { title: 'Help'}      ],
-    '/system/':           [ Layout, SystemPage,   NothingAtom,   { title: 'System'}      ],
-    '/system/:module/':   [ Layout, SystemPage,   NothingAtom,   { title: 'System %s'}   ],
-    '/:404...':           [ Layout, ErrorPage,    NothingAtom,   { title: 'Error %s'}    ],
 
     // '/analyzer/:source/': [ Layout, Source,   Analyzer,  { title: 'System %s'}   ],
 
@@ -41,7 +43,7 @@ const RoutesConfig: IRoutesConfigs = {
 
 };
 
-const DefaultRoute = '/menu/';
+const DefaultRoute = '/start/';
 
 export {
   DefaultRoute,
