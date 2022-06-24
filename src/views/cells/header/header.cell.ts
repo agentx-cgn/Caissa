@@ -17,10 +17,10 @@ const HeaderCell: IDefComponent = {
     return m('header',
       m('div.controls.flex', { style: 'width:' + width }, [
         m(NavigationCell, { route, params, options }),
-        App.canBack
+        App.canBack()
           ? m('i.navi.fa.fa-angle-left',  { onclick: App.onback })
           : m('i.navi.fa.fa-angle-left.ctrans'),
-        App.canFore
+        App.canFore()
           ? m('i.navi.fa.fa-angle-right', { onclick: App.onfore })
           : m('i.navi.fa.fa-angle-right.ctrans'),
 

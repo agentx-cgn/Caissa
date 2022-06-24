@@ -28,8 +28,8 @@ const App = {
 
   onback: HistoryService.onback,
   onfore: HistoryService.onfore,
-  canBack: HistoryService.canBack,
-  canFore: HistoryService.canFore,
+  canBack: () => HistoryService.canBack,
+  canFore: () => HistoryService.canFore,
 
   reset () {
     DB.reset();
