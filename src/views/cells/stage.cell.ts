@@ -52,9 +52,9 @@ const StageCell: IComponent<{}, IState> & IState= {
       // console.log('Stage', slides.names);
 
       return m('.pages', [
-        m(l.page as IPage<any>, {route: l.route, params: l.params,  style, className: classLeft}),
-        m(c.page as IPage<any>, {route: c.route, params: c.params,  style, className: classCenter}),
-        m(r.page as IPage<any>, {route: r.route, params: r.params,  style, className: classRight}),
+        m(l.page as IPage<any>, {route: l.route, params: l.params,  options: l.options, style, className: classLeft}),
+        m(c.page as IPage<any>, {route: c.route, params: c.params,  options: c.options, style, className: classCenter}),
+        m(r.page as IPage<any>, {route: r.route, params: r.params,  options: r.options, style, className: classRight}),
         m.fragment( {
             oncreate: () => setTimeout(onafterupdate, 100),
             onupdate: () => setTimeout(onafterupdate, 100)

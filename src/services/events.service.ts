@@ -1,6 +1,6 @@
 import { IEvent } from '@app/domain';
 import { App } from '@app/views';
-import { FactoryService } from './factory.service';
+
 import { H } from './helper.service';
 import { SystemService as System } from './system.service';
 import { HistoryService as History } from './history.service';
@@ -12,7 +12,7 @@ import { DatabaseService as DB } from './database/database.service';
 
 const DEBUG = false;
 
-let deferredPrompt;
+// let deferredPrompt;
 let lastWidth = 0;
 let lastOrientation: string;
 

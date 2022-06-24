@@ -33,6 +33,7 @@
     "chk:circ": "madge --warning --circular  --ts-config ./tsconfig.json  --extensions ts ./src"
   },
   "dependencies": {
+    "chess.js": "^0.13.2",
     "deepmerge": "^4.2.2",
     "local-storage": "^2.0.0",
     "mithril": "^2.2.2",
@@ -41,6 +42,7 @@
     "screenfull": "^6.0.1"
   },
   "devDependencies": {
+    "@types/chess.js": "^0.13.1",
     "@types/mithril": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.26.0",
     "@typescript-eslint/parser": "^5.26.0",

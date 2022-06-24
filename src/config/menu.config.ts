@@ -78,4 +78,6 @@ const MenuConfig: TMenuConfig = {
         // ['/test',     'TEST'],
 };
 
+MenuConfig['/'] = MenuConfig['/start/'];
+
 export { MenuConfig, TMenuEntry };

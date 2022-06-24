@@ -1,7 +1,6 @@
 import m from 'mithril';
 
-import { IComponent, IDefCellComponent, IDefComponent, IEvent, IPage} from '@app/domain';
-import { FactoryService as Factory } from "@app/services";
+import { IComponent, IDefCellComponent, IEvent} from '@app/domain';
 
 export const NothingAtom: IComponent = {
   view ( ) {
@@ -17,7 +16,7 @@ export const SectionTitleAtom: IComponent<ITitleAttrs> = {
   view ( { attrs, children } ) {
     const { className, style, onclick } = attrs;;
     return m('atom-section-title', { className, onclick },
-      m('span', { style }, children),
+      m('h2.f3.sair.white.pl2.mt3', { style }, children),
     );
   }
 };

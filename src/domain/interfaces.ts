@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import m, { Attributes } from 'mithril';
+import { Move } from 'chess.js';
+
 
 // export interface IAttrs {
 //   // [k: string]: string | number;
@@ -14,9 +16,15 @@ export interface IObj extends Record<string, any> {}
 export interface IMsg extends IObj {}
 // export interface IAttrs extends Record<string, string | number> {}
 
+export type TPageOptions = {
+  title: string;
+  description: string;
+};
+
 export interface IDefaultAttrs {
   route: string;
   params: m.Params;
+  options: TPageOptions
 }
 export interface IDefaultCellAttrs {
   className: string;
@@ -94,7 +102,7 @@ export interface IPage<A=IPageAttrs> extends m.FactoryComponent<A> {
   // preventUpdates: boolean;
 };
 
-export type TRouteConfig = [ILayoutComponent, IPage<IPageAttrs>, IComponent<any>, { title: string }];
+export type TRouteConfig = [ILayoutComponent, IPage<IPageAttrs>, IComponent<any>, TPageOptions];
 export interface IRoutesConfigs {
   [route: string]: TRouteConfig;
 }
@@ -114,4 +122,104 @@ export interface IRouteOptions {
 export interface IEvent extends Event {
   redraw?: boolean;
   code?:   string;
+}
+
+
+
+const gametemplate = {
+
+  uuid:        'G0000000',     // string, 6 or 8 alphanums
+  over:         true,
+  rivals:      'h-h',
+  turn:         -1,
+  moves:        [],
+  score:       {
+      maxcp:    0,
+      maxmate:  0,
+  },
+  header:      {
+      // STR (Seven Tag Roster)
+      White:       'White',        // name of white player
+      Black:       'Black',        // name of black player
+      Event:       '',
+      Site:        'caissa.js.org',
+      Round:       '',
+      Date:        '',
+      Result:      '',
+      Termination: '',
+      TimeControl: '',
+  },
+  pgn:         '',             // game moves in pgn notation
+
+};
+
+
+
+export type TMove = Move & {
+  from: string;
+  to: string;
+  fen: string;
+  turn: number;
+  move: string;
+  san: string;
+}
+
+
+export type TPgnHeader = {
+  White:       string;
+  Black:       string;
+  Event:       string;
+  Site:        string;
+  Round:       string;
+  Date:        string;
+  EventDate?:        string;
+  UTCDate?:        string;
+  Result:      string;
+  Termination: string;
+  TimeControl: string;
+}
+
+export type TGame = {
+  uuid:         string;     // string, 6 or 8 alphanums
+  date:         string;     // string, ISO date
+  timestamp?:   number;     // number, unix timestamp
+  over:         boolean;
+  rivals:       string;
+  turn:         number;
+  moves:        TMove[];
+  plycount:     number;
+  score:       {
+      maxcp:    number;
+      maxmate:  number;
+  },
+  header:      TPgnHeader
+  pgn:         string;             // game moves in pgn notation
+  searchtext:  string;             // search text
+}
+
+export type TOpponent = 'h' | 's' | 'l';
+export type IOpponents = {
+  [k in TOpponent]: string;
+};
+export type TDifficulty = '0' | '3' | '5' | '10' | '20' | '30';
+export type IDifficulties = {
+  [k in TDifficulty]: string;
+};
+
+
+
+
+export type TCollectionItem = {
+  idx: number;
+  key: string;
+  caption: string;
+  icon: string;
+  source: string;
+  constructor: string;
+  subline?: string;
+  subtext?: string;
+  info?: string;
+  games?: TGame[];
+  error?: string;
+  progress?: number;
 }

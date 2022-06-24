@@ -1,7 +1,8 @@
 
-import { IComponent, IDefaultCellAttrs, IDefCellComponent } from '@app/domain';
 import m from 'mithril';
 import './form.atoms.scss';
+
+import { IComponent, IDefCellComponent } from '@app/domain';
 
 // DEMO: https://arthurclemens.github.io/polythene-demos/mithril/#/
 // https://github.com/ArthurClemens/polythene/tree/master/docs/components
@@ -10,8 +11,8 @@ import {
   CheckboxCSS,
   ButtonCSS,
   TextFieldCSS,
-  SwitchCSS,
-  ButtonGroupCSS
+  // SwitchCSS,
+  // ButtonGroupCSS
 } from 'polythene-css';
 
 import {

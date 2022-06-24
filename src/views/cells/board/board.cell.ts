@@ -1,11 +1,12 @@
 import m from 'mithril';
-import { $ } from '@app/services';
 
 import './board.cell.scss';
 
 import testImage from '/assets/pictures/chess.test.png';
 
 import { IDefCellComponent } from '@app/domain';
+
+const $ = document.querySelector.bind(document);
 
 const listener = (e: Event) => {
 

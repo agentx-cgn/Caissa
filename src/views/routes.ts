@@ -1,24 +1,36 @@
-import { IRoutesConfigs } from '@app/domain';
+import m from 'mithril';
 
-import { LayoutCell as Layout } from '@app/cells';
-import { NothingAtom } from '@app/atoms';
-import { ContentCell } from '@app/cells';
-import { PreferencesPage, SystemPage, HelpPage, ErrorPage, MenuPage, NothingPage }     from '@app/pages';
+import { IRoutesConfigs, IComponent } from '@app/domain';
+import { LayoutCell, ContentCell } from '@app/cells';
+import {
+  MenuPage,
+  SystemPage,
+  ErrorPage,
+  PreferencesPage,
+  CollectionsPage,
+  HelpPage,
+}     from '@app/pages';
+
+const Nothing: IComponent = {
+  view ( ) {
+    return m('div.nothing.dn');
+  },
+};
 
 const RoutesConfig: IRoutesConfigs = {
 
     // routes must start with '/'
     // Route                Layout  Page              Content          Options (Title)
 
-    '/':                  [ Layout, MenuPage,         ContentCell,   { title: 'Start 1'}      ],
-    '/start/':            [ Layout, MenuPage,         ContentCell,   { title: 'Start'}        ],
-    '/games/':            [ Layout, MenuPage,         ContentCell,   { title: 'Games'}        ],
-    '/preferences/':      [ Layout, PreferencesPage,  ContentCell,   { title: 'Preferences'}  ],
-    '/nothing/':          [ Layout, NothingPage,      NothingAtom,   { title: 'Nothing'}      ],
-    '/help/':             [ Layout, HelpPage,         NothingAtom,   { title: 'Help'}         ],
-    '/system/':           [ Layout, SystemPage,       NothingAtom,   { title: 'System'}       ],
-    '/system/:module/':   [ Layout, SystemPage,       NothingAtom,   { title: 'System %s'}    ],
-    '/:404...':           [ Layout, ErrorPage,        NothingAtom,   { title: 'Error %s'}     ],
+    '/':                  [ LayoutCell, MenuPage,         ContentCell,   { title: 'Start 1',      description: ''}      ],
+    '/start/':            [ LayoutCell, MenuPage,         ContentCell,   { title: 'Start',        description: ''}        ],
+    '/games/':            [ LayoutCell, MenuPage,         ContentCell,   { title: 'Games',        description: ''}        ],
+    '/collections/':      [ LayoutCell, CollectionsPage,  ContentCell,   { title: 'Collections',  description: ''}  ],
+    '/preferences/':      [ LayoutCell, PreferencesPage,  ContentCell,   { title: 'Preferences',  description: ''}  ],
+    '/help/':             [ LayoutCell, HelpPage,         Nothing,       { title: 'Help',         description: ''}         ],
+    '/system/':           [ LayoutCell, SystemPage,       Nothing,       { title: 'System',       description: ''}       ],
+    '/system/:module/':   [ LayoutCell, SystemPage,       Nothing,       { title: 'System %s',    description: ''}    ],
+    '/:404...':           [ LayoutCell, ErrorPage,        Nothing,       { title: 'Error %s',     description: ''}     ],
 
     // '/sources/':          [ Layout, Sources,  Board,     { title: 'Sources'}     ],
     // '/games/':            [ Layout, Games,    Board,     { title: 'Games'}       ],

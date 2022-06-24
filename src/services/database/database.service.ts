@@ -1,3 +1,6 @@
+
+// TODO: https://www.npmjs.com/package/idb
+
 import * as ls from 'local-storage';
 
 import { H }   from '../helper.service';

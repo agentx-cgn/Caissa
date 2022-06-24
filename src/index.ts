@@ -5,7 +5,7 @@ import './app.scss';
 
 import { H } from './services/helper.service';
 import { App } from './views/app';
-import { RoutesConfig, DefaultRoute } from '@app/config';
+import { RoutesConfig, DefaultRoute } from'./views/routes';
 
 const DEBUG = false;
 

@@ -5,7 +5,7 @@ import './layout.cell.scss';
 import { H, DatabaseService as DB } from '@app/services';
 
 import { ILayoutComponent } from '@app/domain';
-import { LastAtom, NothingAtom } from '@app/atoms';
+import { NothingAtom } from '@app/atoms';
 
 import { BackdropCell } from './../backdrop.cell';
 import { StageCell } from './../stage.cell';
@@ -25,7 +25,7 @@ const LayoutCell: ILayoutComponent = {
 
   view ( vnode ) {
 
-    const { center, page, route, params } = vnode.attrs;
+    const { center, options, route, params } = vnode.attrs;
     const showSplash = DB.Options.first.ui.waitscreen;
 
     return m('cell-layout',
@@ -33,19 +33,17 @@ const LayoutCell: ILayoutComponent = {
       !showSplash
         ? [
           m(BackdropCell),
-          m(HeaderCell, { route, params }),
+          m(HeaderCell, { route, params, options }),
           m('main', [
             m('section.stage',   {}, m(StageCell)),
             m('section.content', {}, innerWidth >= break2 ? m( center )  : m(NothingAtom)),
             m('section.aside',   {}, m(AsideCell)), //innerWidth >= break3 ? m(AsideCell) : m(NothingAtom))
           ]),
           m(FooterCell),
-          m(LastAtom, { msecs: Date.now() }),
         ]
         : [
           m(BackdropCell),
           m(SplashCell),
-          m(LastAtom, { msecs: Date.now() }),
         ]
       );
 

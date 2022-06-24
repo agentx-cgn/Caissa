@@ -2,14 +2,16 @@ import m from 'mithril';
 
 import { H }       from './helper.service';
 import { App }     from '@app/views';
-import { NothingPage } from '@app/pages';
-import { IEvent, IPage, IPageAttrs, IParams, IRouteOptions } from '@app/domain';
+import { IEvent, IPage, IPageAttrs, IParams, IRouteOptions, TPageOptions } from '@app/domain';
+import { FactoryService } from './factory.service';
 
-interface IEntry extends IRouteOptions {
+interface IEntry  {
   key:     string;
   route:   string;
   params:  IParams;
   page:    IPage<IPageAttrs>;
+  options: TPageOptions;
+  routeOptions: IRouteOptions;
 }
 
 const DEBUG = false;
@@ -28,6 +30,14 @@ const detected  = {
   hashchange:  false,
   noanimation: false,
 };
+
+const NothingPage = FactoryService.create<IPageAttrs>('Nothing', {
+  view ( vnode ) {
+    const { className } = vnode.attrs;
+    return m('div.page.nothing', { className },
+    );
+  },
+});
 
 const History = {
 
@@ -104,14 +114,14 @@ const History = {
       ;
     },
 
-    prepare (route: string, params={}, options: IRouteOptions={replace: false}) {
+    prepare (route: string, params={}, options: TPageOptions, routeOptions: IRouteOptions={replace: false}) {
         /**
          *  called from onmatch/route,
          *  creates candidate on new route
          *  lots of special cases
         */
         const key: string = m.buildPathname(route, params);
-        const entry: IEntry = { key, route, params, ...options, page: NothingPage };
+        const entry: IEntry = { key, route, params, options, page: NothingPage, routeOptions };
 
         // fresh stack, e.g. after reload
         if (isNaN(pointer)) {
@@ -128,29 +138,29 @@ const History = {
             DEBUG && console.log('history.prepare.ignored.same', key);
 
         // e.g. pages.afteranimate
-        } else if (options.redraw) {
+        } else if (routeOptions.redraw) {
             detected.redraw = true;
             DEBUG && console.log('history.prepare.redraw', key);
 
         // route.set w/ replace e.g. game+turn
-        } else if (options.replace || detected.replace) {
+        } else if (routeOptions.replace || detected.replace) {
             candidate[key] = entry; //{ ...options };
             detected.replace = true;
             DEBUG && console.log('history.prepare.replace', key, '=>', stack[pointer].key), H.shrink(options);
 
         // back from caissa
-        } else if (options.back || detected.back) {
+        } else if (routeOptions.back || detected.back) {
             detected.back = true;
-            if (typeof options.noanimation !== 'undefined'){
-                detected.noanimation = !!options.noanimation;
+            if (typeof routeOptions.noanimation !== 'undefined'){
+                detected.noanimation = !!routeOptions.noanimation;
             }
             DEBUG && console.log('history.prepare.back', key, H.shrink(options));
 
         // fore from caissa
-        } else if (options.fore || detected.fore) {
+        } else if (routeOptions.fore || detected.fore) {
             detected.fore = true;
-            if (typeof options.noanimation !== 'undefined'){
-                detected.noanimation = !!options.noanimation;
+            if (typeof routeOptions.noanimation !== 'undefined'){
+                detected.noanimation = !!routeOptions.noanimation;
             }
             DEBUG && console.log('history.prepare.fore', key, H.shrink(options));
 
@@ -181,11 +191,11 @@ const History = {
 
         } else {
             candidate[key] = entry; //{ ...options };
-            DEBUG && console.log('history.prepare.done', key, H.shrink(options));
+            DEBUG && console.log('history.prepare.done', key, H.shrink(routeOptions));
         }
     },
 
-    finalize (route: string, params: IParams, page: IPage<IPageAttrs>) {
+    finalize (route: string, params: IParams, options: TPageOptions, page: IPage<IPageAttrs>) {
 
         const key = m.buildPathname(route, params);
 
@@ -220,7 +230,7 @@ const History = {
                 const entry = stack.pop();
                 DEBUG && console.log('history.finalize.next.popped', pointer, stack.length, entry);
             }
-            pointer = stack.push(H.create({key, route, params, page}) as IEntry) -1;
+            pointer = stack.push(H.create({key, route, params, options, page}) as IEntry) -1;
             delete candidate[key];
             DEBUG && console.log('history.finalize.next.done', key, stack[pointer]);
         }
@@ -251,7 +261,7 @@ const History = {
           entries: [] as IEntry[],
         };
 
-        const noEntry: IEntry = { key: '', page: NothingPage, route: '', params: {} };
+        const noEntry: IEntry = { key: '', page: NothingPage, route: '', params: {}, options: {} as TPageOptions , routeOptions: {} as IRouteOptions };
 
         function collectFrom(start: number) {
           [0, 1, 2].forEach((diff: number) => {

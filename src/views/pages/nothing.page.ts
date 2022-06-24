@@ -2,7 +2,7 @@ import m from 'mithril';
 
 import { FactoryService } from '@app/services';
 import { IPageAttrs } from '@app/domain';
-import { SectionTitleAtom, SpacerAtom } from '@app/atoms';
+// import { SectionTitleAtom, SpacerAtom } from '@app/atoms';
 
 const NothingPage = FactoryService.create<IPageAttrs>('Nothing', {
 
@@ -11,8 +11,8 @@ const NothingPage = FactoryService.create<IPageAttrs>('Nothing', {
     const { className } = vnode.attrs;
 
     return m('div.page.nothing', { className },
-      m(SectionTitleAtom, 'Nothing'),
-      m(SpacerAtom),
+      // m(SectionTitleAtom, 'Nothing'),
+      // m(SpacerAtom),
     );
 
   },

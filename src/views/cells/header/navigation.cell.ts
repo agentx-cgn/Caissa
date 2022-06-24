@@ -1,32 +1,30 @@
 import m from 'mithril';
 
-import { IDefComponent, IEvent, IParams } from '@app/domain';
-import { H, $ } from '@app/services';
+import { IDefComponent, IEvent } from '@app/domain';
 import { App } from '@app/views';
-import { DefaultRoute } from '@app/config';
 
-import { BackdropCell } from '../backdrop.cell';
+// const $ = document.querySelector.bind(document);
 
 const NavigationCell: IDefComponent =  {
 
-  view ( vnode ) {
+  view ( ) {
 
-    const { route } = vnode.attrs;
+    // const { route } = vnode.attrs;
 
-    // const navi     = PagesConfig[route].navi;
-    const clicker  = (route: string, params: IParams ) => {
-      return (e: IEvent) => {
-        e.redraw = false;
-        BackdropCell.hide();
-        ($('#toggle-mobile-menu') as HTMLInputElement).checked = false;
-        App.route(route, params);
-        return H.eat(e);
-      };
-    };
+    // // const navi     = PagesConfig[route].navi;
+    // const clicker  = (route: string, params: IParams ) => {
+    //   return (e: IEvent) => {
+    //     e.redraw = false;
+    //     ($('#toggle-mobile-menu') as HTMLInputElement).checked = false;
+    //     App.route(route, params);
+    //     // return H.eat(e);
+    //     return false;
+    //   };
+    // };
 
     const onmenu = (e: IEvent) => {
       e.redraw = false;
-      App.route(DefaultRoute);
+      App.route('/start/');
     };
 
       return m('nav', [
@@ -35,18 +33,18 @@ const NavigationCell: IDefComponent =  {
         // m('label', {for:'toggle-mobile-menu', 'aria-label':'Menu'},
         m('label', {'aria-label':'Menu', onclick: onmenu},
           m('i.hamburger.fa.fa-bars '),
-          m('span.home.f4.fiom.white.pl3', 'Caissa'),
+          m('h1.home.f4.fiom.white.pl3.di', 'Caissa'),
         ),
 
         // toggle, needs id for label
-        m('input[type=checkbox]', {id: 'toggle-mobile-menu', oninput: (e: IEvent) => {
-          e.redraw = false;
-          if ((e.target as HTMLInputElement).checked) {
-            BackdropCell.show( () => {
-              ($('#toggle-mobile-menu') as HTMLInputElement).checked = false;
-            });
-          }
-        }}),
+        // m('input[type=checkbox]', {id: 'toggle-mobile-menu', oninput: (e: IEvent) => {
+        //   e.redraw = false;
+        //   if ((e.target as HTMLInputElement).checked) {
+        //     BackdropCell.show( () => {
+        //       ($('#toggle-mobile-menu') as HTMLInputElement).checked = false;
+        //     });
+        //   }
+        // }}),
 
           // m('ul', Array.from(MenuConfig[route]).map( ([route, entry, params]) => {
           //   return m('li', {

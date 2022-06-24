@@ -1,10 +1,11 @@
 import m from 'mithril';
 
-import { IDefComponent, IEvent, IParams, IRouteOptions, TRouteConfig  } from '@app/domain';
+import { IDefComponent, IEvent, IParams, IRouteOptions, TPageOptions, TRouteConfig  } from '@app/domain';
 import { AppConfig, OptionsConfig as Options} from '@app/config';
-import { RoutesConfig } from '../config/routes.config';
 
-import { H, $,
+import { RoutesConfig } from './routes';
+
+import { H,
   SystemService as System,
   DatabaseService as DB,
   LoggerService as Logger,
@@ -24,6 +25,11 @@ const App = {
   H, DB, System,
 
   Env: '',
+
+  onback: HistoryService.onback,
+  onfore: HistoryService.onfore,
+  canBack: HistoryService.canBack,
+  canFore: HistoryService.canFore,
 
   reset () {
     DB.reset();
@@ -92,25 +98,25 @@ const App = {
   redraw (e:IEvent|undefined=undefined) {
     DEBUG && console.log(' ');
     e && (e.redraw = false);
-    HistoryService.prepare('',  {}, {redraw: true});
+    HistoryService.prepare('',  {}, {} as TPageOptions, {redraw: true});
     m.redraw();
   },
 
   // wrapper for m.route.set
-  route ( route: string, params: IParams={}, options: IRouteOptions={replace:false} ) {
+  route ( route: string, params: IParams={}, routeOptions: IRouteOptions={replace:false} ) {
 
     DEBUG && console.log(' ');
-    DEBUG && console.log('%cApp.route.in %s %s %s', 'color:darkred; font-weight: 800', route, H.shrink(params), H.shrink(options) );
+    DEBUG && console.log('%cApp.route.in %s %s %s', 'color:darkred; font-weight: 800', route, H.shrink(params), H.shrink(routeOptions) );
 
     const cfgRoute = RoutesConfig[route];
 
     if (cfgRoute) {
-      HistoryService.prepare(route, params, options);
-      m.route.set(route, params, { title: cfgRoute[3].title, ...options });
+      HistoryService.prepare(route, params, {} as TPageOptions, routeOptions);
+      m.route.set(route, params, routeOptions);
 
     } else {
-      console.warn('caissa.route.error', route, params, options);
-      m.route.set('/404/', {}, { title: 'Page not found', ...options });
+      console.warn('caissa.route.error', route, params, routeOptions);
+      m.route.set('/404/', {}, { ...routeOptions});
 
     }
 
@@ -118,7 +124,7 @@ const App = {
 
   resolver (route: string, routeConfig: TRouteConfig): m.RouteResolver {
 
-    const routePage = routeConfig[1];
+    const [ layout, page, center, options ] = routeConfig;
 
     return {
       onmatch ( params: IParams ) {
@@ -132,7 +138,7 @@ const App = {
             console.log('%cApp.onmatch.in %s %s ', 'color:darkblue; font-weight: 800', target, current);
           }
 
-          HistoryService.prepare(route, params);
+          HistoryService.prepare(route, params, options);
 
         } catch (e) {console.log(JSON.stringify(e), e);}
 
@@ -146,9 +152,9 @@ const App = {
           console.log('%cApp.render.in %s %s', style, target, current);
         }
 
-        HistoryService.finalize(route, vnode.attrs, routePage);
+        HistoryService.finalize(route, vnode.attrs, options, page);
 
-        return m(App.comp, { route, params: vnode.attrs });
+        return m(App.comp, { route, params: vnode.attrs, options });
       },
     };
 
@@ -158,8 +164,8 @@ const App = {
 
     view ( vnode ) {
 
-      const { route, params } = vnode.attrs;
-      const [ layout, page, center, pageOptions ] = RoutesConfig[route];
+      const { route, params, options } = vnode.attrs;
+      const [ layout, page, center ] = RoutesConfig[route];
 
       if ( DEBUG ) {
         const target = m.buildPathname(route, params);
@@ -168,9 +174,9 @@ const App = {
       }
 
       //TODO: this is actually dynamic
-      document.title = pageOptions.title;
+      document.title = options.title;
 
-      return m(layout, { route, params, page, center } );
+      return m(layout, { route, params, options, page, center } );
 
     },
 

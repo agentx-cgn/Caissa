@@ -1,6 +1,8 @@
 import m from 'mithril';
+
 import { IEvent, TVoid } from '@app/domain';
-import { $ } from '@app/services';
+
+const $ = document.querySelector.bind(document);
 
 let callback = null;
 

@@ -1,8 +1,8 @@
 import m from 'mithril';
 
+import { IPageAttrs } from '@app/domain';
 import { FactoryService } from '@app/services';
 import { SectionTitleAtom, SpacerAtom } from '@app/atoms';
-import { IPageAttrs } from '@app/domain';
 
 const HelpPage = FactoryService.create<IPageAttrs>('Help', {
 

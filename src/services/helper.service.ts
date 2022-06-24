@@ -5,6 +5,71 @@ import { IObj } from '@app/domain';
 
 const H = {
 
+
+    each (obj: any, fn: (key: string, val: any) => void) {
+      for(let prop in obj){
+          if(Object.prototype.hasOwnProperty.call(obj, prop)){
+              fn(prop, obj[prop]);
+          }
+      }
+    },
+
+
+    padZero (num: number, len=2){
+      return ('000000' + String(num)).slice(-(len));
+    },
+
+
+    date2isoUtc (date: Date) {
+      const d = date || new Date();
+      return [
+          d.getUTCFullYear(),
+          H.padZero(d.getUTCMonth() +1),
+          H.padZero(d.getUTCDate()),
+      ].join('-') + ' ' + [
+          H.padZero(d.getUTCHours()),
+          H.padZero(d.getUTCMinutes()),
+          H.padZero(d.getUTCSeconds()),
+      ].join(':');
+    },
+
+
+    /**    D O M     */
+
+    isVisibleInView ( ele: Element | null, view: Element | null ): boolean  {
+
+      if (ele && view) {
+
+          // https://stackoverflow.com/questions/487073/how-to-check-if-element-is-visible-after-scrolling/41754707#
+
+          const { top, bottom, height } = ele.getBoundingClientRect();
+          const holderRect = view.getBoundingClientRect();
+
+          return top <= holderRect.top
+              ? holderRect.top - top <= height
+              : bottom - holderRect.bottom <= height
+          ;
+      } else {
+          return true;
+
+      }
+    },
+
+  hash (string: string) {
+    // http://davidjohnstone.net/pages/hash-collision-probability
+    // 32bit has a 1% chance of collision with 10,000 item
+      let i, char, hash = 0;
+      if (string.length === 0) {
+          throw('Can\'t do this');
+      }
+      for (i = 0; i < string.length; i++) {
+          char  = string.charCodeAt(i);
+          hash  = (( hash << 5) - hash) + char;
+          hash |= 0;
+      }
+      return hash.toString(36);
+  },
+
   cssvar ( name: string ): string {
 
     const isSameDomain = (styleSheet: any) => {
@@ -57,7 +122,7 @@ const H = {
     return obj;
   },
 
-  range (st: number, ed: number, sp: number): number[] {
+  range (st: number, ed: number, sp=1): number[] {
     var i, r=[] as number[], al=arguments.length;
     if(al===0){return r;}
     if(al===1){ed=st;st=0;sp=1;}
@@ -112,6 +177,17 @@ const H = {
 
   },
 
+  map (o: any, fn: (k:string, v: any)=> any ){
+    var a, r={} as any;
+    for(a in o){
+      if(o.hasOwnProperty(a)){
+        r[a] = (typeof fn==='function') ? fn(a, o[a]) : fn;
+      }
+    }
+    return r;
+  },
+
+
   transform (obj: any, fn: (key: string, value: any) => any): any {
 
     const out = H.create();
@@ -134,7 +210,7 @@ const H = {
       }
     });
     return copy;
-},
+  },
 
   // very short log version of obj
   shrink (obj: any): string {

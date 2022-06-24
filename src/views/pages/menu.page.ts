@@ -1,10 +1,10 @@
 import m from 'mithril';
 import './menu.page.scss';
 
-import { MenuConfig, RoutesConfig, TMenuEntry, DefaultRoute } from '@app/config';
+import { MenuConfig, TMenuEntry } from '@app/config';
 import { App } from '@app/views';
 import { IEvent, IPageAttrs, IParams } from '@app/domain';
-import { FactoryService, HistoryService } from '@app/services';
+import { FactoryService } from '@app/services';
 import { SectionTitleAtom, SpacerAtom, FlexListAtom, TextLeftAtom, FlexListMenuEntryAtom, NothingAtom} from '@app/atoms';
 
 const onclick  = (route: string, params: IParams) => {
@@ -13,7 +13,7 @@ const onclick  = (route: string, params: IParams) => {
       e.redraw = false;
       App.route(route, params);
     }
-    : HistoryService.onback
+    : App.onback
   ;
 };
 
@@ -34,9 +34,9 @@ const MenuPage = FactoryService.create<IPageAttrs>('Menu', {
 
   view ( vnode ) {
 
-    const { route, className, style } = vnode.attrs;
+    const { route, options, className, style } = vnode.attrs;
 
-    const pageTitle = RoutesConfig[route][3].title;
+    const pageTitle = options.title;
     const menuList  = MenuConfig[route];
 
     return m('div.page.menu', { className, style },
@@ -46,7 +46,7 @@ const MenuPage = FactoryService.create<IPageAttrs>('Menu', {
         ...menuList.map( ( menuEntry: TMenuEntry ) => {
           return createMenuEntry(menuEntry);
         }),
-        route !== DefaultRoute
+        route !== '/start/'
           ? createMenuEntry(['BACK', '', {}, {}] as TMenuEntry)
           : m(NothingAtom)
       ]),

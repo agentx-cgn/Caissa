@@ -2,14 +2,14 @@ import m from 'mithril';
 import './splash.cell.scss';
 import opera_gif from '/assets/pictures/opera.game.small.gif';
 
+import { IDefCellComponent, IFormValues } from '@app/domain';
+import { package_json as pjson } from '@app/config';
 import { App } from '@app/views';
 import { DatabaseService as DB } from '@app/services';
-
-import { IDefCellComponent, IFormValues } from '@app/domain';
 import { ButtonGroup, SectionTitleAtom, FlexListTextAtom, FlexListAtom, YScrollAtom, FlexListHeaderAtom, FlexListEntryAtom, AtomButton } from '@app/atoms';
+
 import { FormCell } from '../form/form.cell';
 
-import { package_json as pjson } from '@app/config';
 
 export const SplashCell: IDefCellComponent = {
 
