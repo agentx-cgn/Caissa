@@ -22,12 +22,11 @@ const listener = (e: Event) => {
 
 };
 
-window.addEventListener('resize', listener);
 
 export const ChessboardCell: IDefCellComponent = {
 
   oncreate(vnode) {
-
+    window.addEventListener('resize', listener);
   },
 
   view ( vnode ) {
