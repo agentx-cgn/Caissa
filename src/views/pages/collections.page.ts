@@ -1,12 +1,21 @@
 
 import m from 'mithril';
 
-import { IPageAttrs } from '@app/domain';
-import { CollectionsConfig } from '@app/config';
-import { FactoryService }  from '@app/services';
-import { YScrollAtom, SectionTitleAtom, FlexListHeaderAtom, FlexListAtom, FlexListCollectionAtom } from '@app/atoms';
+import { IPageAttrs, IParams } from '@app/domain';
+import { H, FactoryService, ProviderService }  from '@app/services';
+import { YScrollAtom, SectionTitleAtom, FlexListHeaderAtom, FlexListAtom, FlexListProviderAtom } from '@app/atoms';
 
 const CollectionsPage = FactoryService.create<IPageAttrs>('Collections', {
+
+  async onmatch (route: string, params: IParams): Promise<boolean> {
+
+    console.log('CollectionsPage.onmatch', route, params);
+
+    await H.wait(200);
+
+    return Promise.resolve(true);
+
+  },
 
   view ( vnode) {
 
@@ -17,8 +26,9 @@ const CollectionsPage = FactoryService.create<IPageAttrs>('Collections', {
       m(FlexListHeaderAtom, `lore ipsum dolor sit amet, consectetur adipiscing elit.` ),
       m(YScrollAtom,
         m(FlexListAtom, [
-          ...CollectionsConfig.map( ( collection ) => {
-            return m(FlexListCollectionAtom, { collection });
+          ...ProviderService.collections.map( ( collection ) => {
+            const provider = ProviderService.createProvider(collection);
+            return m(FlexListProviderAtom, { provider });
           })
         ]
         )

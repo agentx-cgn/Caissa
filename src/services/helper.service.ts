@@ -5,6 +5,13 @@ import { IObj } from '@app/domain';
 
 const H = {
 
+    wait (msecs: number) {
+      return new Promise(resolve => setTimeout(resolve, msecs));
+    },
+
+    interprete (val: any): any{
+        return typeof val === 'function' ? val() : val;
+    },
 
     each (obj: any, fn: (key: string, val: any) => void) {
       for(let prop in obj){
@@ -12,6 +19,16 @@ const H = {
               fn(prop, obj[prop]);
           }
       }
+    },
+
+    map (o: any, fn: ( k:string, v: any ) => any ): any[]{
+      var a, r=[] as any;
+      for(a in o){
+        if(Object.prototype.hasOwnProperty.call(o, a)){
+          r.push(fn(a, o[a]));
+        }
+      }
+      return r;
     },
 
 
@@ -177,15 +194,7 @@ const H = {
 
   },
 
-  map (o: any, fn: (k:string, v: any)=> any ){
-    var a, r={} as any;
-    for(a in o){
-      if(o.hasOwnProperty(a)){
-        r[a] = (typeof fn==='function') ? fn(a, o[a]) : fn;
-      }
-    }
-    return r;
-  },
+
 
 
   transform (obj: any, fn: (key: string, value: any) => any): any {

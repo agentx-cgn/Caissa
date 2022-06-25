@@ -57,7 +57,7 @@ const PgnService = {
             games.push(game);
         }
 
-        true && console.log('Info   :', 'Parsed', games.length, 'pgns in', Date.now() - t0, 'msecs');
+        DEBUG && console.log('Info   :', 'Parsed', games.length, 'pgns in', Date.now() - t0, 'msecs');
 
         return games;
 
@@ -65,6 +65,7 @@ const PgnService = {
     },
 
     sanitizeGames (games: TGame[]): TGame[] {
+
       return games.map( game => {
 
         // https://en.wikipedia.org/wiki/Portable_Game_Notation#Tag_pairs
@@ -79,7 +80,7 @@ const PgnService = {
           '????.??.??'
         );
 
-        H.map(game.header, (key: string, val) => {
+        H.each(game.header, (key: string, val) => {
           val === undefined && delete game.header[key as keyof TPgnHeader];
         });
 
@@ -93,6 +94,7 @@ const PgnService = {
         return game;
 
       });
+
     },
 
 };

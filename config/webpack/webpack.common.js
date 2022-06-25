@@ -55,6 +55,12 @@ const common = {
             template: paths.templatePath,
         }),
         new MiniCssExtractPlugin(),
+        new CopyPlugin({
+          patterns: [
+            { from: "assets/static", to: "static" },
+            // { from: "other", to: "public" },
+          ],
+        }),
     ],
 };
 

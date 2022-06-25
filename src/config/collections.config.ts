@@ -4,55 +4,51 @@ import pgnimport01   from '/assets/games/capablanca-best-games.pgn';
 import imgLichess    from '/assets/images/lichess.trans.128.png';
 import imgFloppy     from '/assets/images/floppy.256.png';
 
-import { TCollectionItem } from '@app/domain';
+import { ICollection } from '@app/domain';
 
-const CollectionsConfig: TCollectionItem[] = [
+const CollectionsConfig: ICollection[] = [
 
   {
-      idx:         0,
-      key:         'pgnimport00',
+      uuid:        'pgnimport00',
       caption:     'Famous Chess Games',
-      subline:     'Collection included with Caissa',
+      subline:     'Collection included with Caissa, 21 games',
       icon:        imgFloppy,
       source:      pgnimport00,
-      constructor: 'ImportProvider',
+      provider:    'ImportProvider',
   },
   {
-      idx:         1,
-      key:         'pgnimport01',
+      uuid:        'pgnimport01',
       caption:     'Capablanca\'s Best Games',
-      subline:     'José Raúl Capablanca, 1888 – 1942',
+      subline:     'José Raúl Capablanca (*1888 †1942), 11 games',
       icon:        imgFloppy,
       source:      pgnimport01,
-      constructor: 'ImportProvider',
+      provider:    'ImportProvider',
   },
   {
-      idx:         2,
-      key:         'pgnurl00',
+      uuid:        'pgnurl00',
       caption:     'Alekhine\'s Best Games',
-      subline:     'Alexander Alekhine, 1882 – 1946',
+      subline:     'Alexander Alekhine (*1882 †1946), 10 games',
       icon:        imgLichess,
-      source:      '/static/pgn/alekhine-best-games.pgn',
-      info:        'https://en.wikipedia.org/wiki/Alexander_Alekhine',
-      constructor: 'UrlProvider',
+      source:      '/static/pgn/alekhine-best-games.coll.pgn',
+      infolink:    'https://en.wikipedia.org/wiki/Alexander_Alekhine',
+      provider:    'UrlProvider',
   },
   {
-      idx:         3,
-      key:         'pgnurl01',
-      caption:     'Kateryna Lagno',
-      subtext:     'Russian GM, 919 games from 1988-2013',
-      icon:        imgLichess,
-      source:      '/static/pgn/kateryna-lahno.pgn',
-      constructor: 'UrlProvider',
-  },
-  {
-      idx:         4,
-      key:         'pgnurl02',
+      uuid:        'pgnurl01',
       caption:     'Mikhail Tal',
-      subtext:     'Mikhail Tal was a Soviet Latvian chess player and the eighth World Chess Champion. 2431 games from 1952-1982',
+      subline:     'Mikhail Tal (*1936 †1992) was a Soviet Latvian chess player and the eighth World Chess Champion. 2431 games from 1952-1982',
       icon:        imgLichess,
-      source:      '/static/pgn/tal.pgn',
-      constructor: 'UrlProvider',
+      source:      '/static/pgn/mikhail-tal.coll.pgn',
+      provider:    'UrlProvider',
+  },
+  {
+      uuid:        'pgnurl02',
+      caption:     'Kateryna Lagno',
+      subline:     'Russian GM (*1989), 919 games from 1988-2013',
+      icon:        imgLichess,
+      source:      '/static/pgn/kateryna-lagno.coll.pgn',
+      infolink:    'https://en.wikipedia.org/wiki/Kateryna_Lagno',
+      provider:    'UrlProvider',
   },
 
 ];

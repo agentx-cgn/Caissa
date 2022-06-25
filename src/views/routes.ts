@@ -9,6 +9,7 @@ import {
   PreferencesPage,
   CollectionsPage,
   HelpPage,
+  GamesPage,
 }     from '@app/pages';
 
 const Nothing: IComponent = {
@@ -26,6 +27,7 @@ const RoutesConfig: IRoutesConfigs = {
     '/start/':            [ LayoutCell, MenuPage,         ContentCell,   { title: 'Start',        description: ''}        ],
     '/games/':            [ LayoutCell, MenuPage,         ContentCell,   { title: 'Games',        description: ''}        ],
     '/collections/':      [ LayoutCell, CollectionsPage,  ContentCell,   { title: 'Collections',  description: ''}  ],
+    '/games/:uuid/':      [ LayoutCell, GamesPage,        ContentCell,   { title: 'Games %s',     description: ''}    ],
     '/preferences/':      [ LayoutCell, PreferencesPage,  ContentCell,   { title: 'Preferences',  description: ''}  ],
     '/help/':             [ LayoutCell, HelpPage,         Nothing,       { title: 'Help',         description: ''}         ],
     '/system/':           [ LayoutCell, SystemPage,       Nothing,       { title: 'System',       description: ''}       ],
@@ -34,7 +36,6 @@ const RoutesConfig: IRoutesConfigs = {
 
     // '/sources/':          [ Layout, Sources,  Board,     { title: 'Sources'}     ],
     // '/games/':            [ Layout, Games,    Board,     { title: 'Games'}       ],
-    // '/games/:idx/':       [ Layout, Games,    Board,     { title: 'Games %s'}    ],
     // '/game/:turn/:uuid/': [ Layout, Game,     Board,     { title: 'Game %s'}     ],
     // '/plays/':            [ Layout, Plays,    Board,     { title: 'Plays'}       ],
     // '/plays/:rivals/':    [ Layout, Plays,    Board,     { title: 'Plays'}       ],

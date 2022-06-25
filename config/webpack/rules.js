@@ -3,11 +3,12 @@ const isProduction = env === 'production';
 
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 
-import { resolve } from 'path';
-import { paths } from './paths.js';
 
-const imageInlineSizeLimit = 10000;
-const fontInlineSizeLimit  = 10000;
+// import { resolve } from 'path';
+// import { paths } from './paths.js';
+
+// const imageInlineSizeLimit = 10000;
+// const fontInlineSizeLimit  = 10000;
 
 /**
     asset/resource : Equivalent to file-loader.
@@ -34,6 +35,13 @@ const rules = [
         test: /\.tsx?$/,
         use: 'ts-loader',
         exclude: /node_modules/,
+    },
+    {
+        test: /\.(txt|pgn)$/i,
+        type: 'asset/source',
+        generator: {
+            filename: 'games/[name][ext]',
+        },
     },
     {
         test: /\.(svg|ttf|otf|eot|woff(2)?)(\?[a-z0-9]+)?$/,
@@ -71,13 +79,7 @@ const rules = [
     //         filename: './images/[name][ext]',
     //     },
     // },
-    {
-        test: /\.(txt|pgn)$/i,
-        type: 'asset/source',
-        generator: {
-            filename: 'games/[name][ext]',
-        },
-    },
+
     {
         test: /\.(sa|sc|c)ss$/,
         use: [
@@ -98,6 +100,7 @@ const rules = [
             },
         ],
     },
+
 ];
 
 export { rules };

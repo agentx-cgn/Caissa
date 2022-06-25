@@ -4,4 +4,5 @@ export * from './system.page';
 export * from './error.page';
 export * from './nothing.page';
 export * from './collections.page';
+export * from './games.page';
 export * from './help.page';

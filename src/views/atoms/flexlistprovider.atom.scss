@@ -1,0 +1,50 @@
+
+atom-flexlist-provider {
+
+  display: block;
+  padding: 0.7rem 1rem ;
+  border-bottom: 1px solid #bbb;
+
+  &:hover {
+    background-color: #0e62993b;
+    // color: white;
+  }
+
+  img.source-icon {
+    width:  1.2rem;
+    height: 1.3rem;
+    margin-right: 16px;
+  }
+  div.source-caption {
+    font-family: 'SairaCondensed-Regular';
+    display: inline-block;
+    color: white;
+    font-size: 1.5rem;
+  }
+  div.source-subline {
+    padding-top: 4px;
+    font-family: 'Iosevka-Term-Medium';
+    color: #333;
+    font-size: 1.0rem;
+  }
+  div.source-loaded {
+    text-align: right;
+    padding: 0.125rem 1rem 0 0;
+    font-family: 'Iosevka-Term-Regular';
+    font-size: 1rem;
+    color: #ddd;
+  }
+  div.source-error {
+    font-family: 'Iosevka-Term-Regular';
+    display: inline-block;
+    color: darkred;
+  }
+  div.source-progress-on {
+    background: darkgreen;
+  }
+  div.source-progress-off {
+    background: transparent;
+    width: 0;
+  }
+
+}

@@ -1,9 +1,8 @@
 import m from 'mithril';
 
-import { IDefComponent, IEvent, IParams, IRouteOptions, TPageOptions, TRouteConfig  } from '@app/domain';
+import { IComponent, IDefComponent, IEvent, IParams, IRouteOptions, TPageOptions, TRouteConfig, IFakePage  } from '@app/domain';
 import { AppConfig, OptionsConfig as Options} from '@app/config';
-
-import { RoutesConfig } from './routes';
+import { RoutesConfig, DefaultRoute } from './routes';
 
 import { H,
   SystemService as System,
@@ -33,7 +32,7 @@ const App = {
 
   reset () {
     DB.reset();
-    App.route('/menu/');
+    App.route(DefaultRoute);
     location.reload();
   },
 
@@ -79,12 +78,13 @@ const App = {
     ;
 
     // take over error handling
-    window.onerror = function (...args) {
-      const [message, source, lineno, colno, error] = args;
-      if ((message as string).includes('Uncaught')) return;
-      console.warn('Error :', arguments);
+    window.onerror = function (...args): void {
+      // const [message, source, lineno, colno, error] = args;
+      const [ message ] = args;
+      if ((message as string).includes('Uncaught')) { return; }
+      console.warn('Error :', args);
     };
-    window.onunhandledrejection = function (e) {
+    window.onunhandledrejection = function (e): void {
       e.preventDefault();
       console.warn('Error :', e.type, e.reason, e);
     };
@@ -105,18 +105,16 @@ const App = {
   // wrapper for m.route.set
   route ( route: string, params: IParams={}, routeOptions: IRouteOptions={replace:false} ) {
 
-    DEBUG && console.log(' ');
-    DEBUG && console.log('%cApp.route.in %s %s %s', 'color:darkred; font-weight: 800', route, H.shrink(params), H.shrink(routeOptions) );
-
     const cfgRoute = RoutesConfig[route];
 
     if (cfgRoute) {
+      DEBUG && console.log('%cApp.route.in %s %s %s', 'color:darkred; font-weight: 800', route, H.shrink(params), H.shrink(routeOptions) );
       HistoryService.prepare(route, params, {} as TPageOptions, routeOptions);
       m.route.set(route, params, routeOptions);
 
     } else {
       console.warn('caissa.route.error', route, params, routeOptions);
-      m.route.set('/404/', {}, { ...routeOptions});
+      m.route.set('/404/', params, routeOptions);
 
     }
 
@@ -127,7 +125,9 @@ const App = {
     const [ layout, page, center, options ] = routeConfig;
 
     return {
-      onmatch ( params: IParams ) {
+
+      // The onmatch hook is called when the router needs to find a component to render.
+      onmatch ( params: IParams, requestedPath: string, route: string ): IComponent | Promise<IDefComponent> | void {
 
         try {
 
@@ -135,21 +135,30 @@ const App = {
             redraws && console.log(' ');
             const target  = m.buildPathname(route, params);
             const current = HistoryService.isCurrent(target) ? 'current' : 'new';
-            console.log('%cApp.onmatch.in %s %s ', 'color:darkblue; font-weight: 800', target, current);
+            // console.log('%cApp.onmatch.in %s %s ', 'color:darkblue; font-weight: 800', target, current);
           }
 
           HistoryService.prepare(route, params, options);
 
+          const onmatch = (page as unknown as IFakePage)().onmatch;
+          if (onmatch) {
+            return onmatch(route, params)
+              .then( () => Promise.resolve(App.comp))
+            ;
+          }
+
         } catch (e) {console.log(JSON.stringify(e), e);}
 
       },
+
+      // The render method is called on every redraw for a matching route.
       render ( vnode ) {
 
         if (DEBUG){
           const target  = m.buildPathname(route, vnode.attrs);
           const current = HistoryService.isCurrent(target) ? 'current' : 'new';
           const style   = 'color:darkorange; font-weight: 800';
-          console.log('%cApp.render.in %s %s', style, target, current);
+          // console.log('%cApp.render.in %s %s', style, target, current);
         }
 
         HistoryService.finalize(route, vnode.attrs, options, page);
@@ -170,13 +179,13 @@ const App = {
       if ( DEBUG ) {
         const target = m.buildPathname(route, params);
         const style  = 'color:darkgreen; font-weight: 800';
-        console.log('%cApp.view.in %s %s', style, target, HistoryService.animation);
+        // console.log('%cApp.view.in %s %s', style, target, HistoryService.animation);
       }
 
       //TODO: this is actually dynamic
       document.title = options.title;
 
-      return m(layout, { route, params, options, page, center } );
+      return m(layout, { route, params, options, center } );
 
     },
 

@@ -5,7 +5,9 @@
 // import imgFloppy     from '../../assets/images/floppy.256.png';
 
 import { PgnService } from './pgn.service';
-import { TGame, TCollectionItem } from '@app/domain';
+import { TGame, ICollection, ICollectionProvider } from '@app/domain';
+import { CollectionsConfig } from '@app/config';
+
 
 /*
 
@@ -61,8 +63,10 @@ Games are always pgn files and the provider also parses them into moves
 // console.log(providers);
 
 
+const providers = [] as ICollectionProvider[];
 
-const ImportProvider = function (collection: TCollectionItem) {
+
+const ImportProvider = function (collection: ICollection): ICollectionProvider {
 
     const provider = {
 
@@ -81,6 +85,7 @@ const ImportProvider = function (collection: TCollectionItem) {
                 provider.progress = 60;
                 provider.games    = PgnService.sanitizeGames(provider.games);
                 provider.progress = 0;
+                console.log(provider.caption, provider.games.length);
                 resolve();
             });
         },
@@ -89,7 +94,7 @@ const ImportProvider = function (collection: TCollectionItem) {
     return provider;
 };
 
-const UrlProvider = function (collection: TCollectionItem) {
+const UrlProvider = function (collection: ICollection): ICollectionProvider {
 
     const provider = {
 
@@ -118,8 +123,7 @@ const UrlProvider = function (collection: TCollectionItem) {
                 .then( games => {
                     provider.progress = 70;
                     provider.games = PgnService.sanitizeGames(games);
-                })
-                .then( () => {
+                    console.log(provider.caption, provider.games.length);
                     provider.progress = 0;
                 })
                 .catch( e => {
@@ -134,4 +138,51 @@ const UrlProvider = function (collection: TCollectionItem) {
 
 };
 
-export { ImportProvider, UrlProvider };
+const ProviderService = {
+
+  collections: CollectionsConfig,
+
+  createProvider (collection: ICollection): ICollectionProvider {
+
+    const provider = (
+      collection.provider === 'UrlProvider'    ? UrlProvider(collection)    :
+      // collection.provider === 'ImportProvider' ? ImportProvider(collection) :
+      ImportProvider(collection)
+    );
+
+    providers.push(provider);
+    return provider;
+
+  },
+
+  async get ( uuid: string ): Promise<ICollectionProvider | undefined>  {
+
+    let provider = providers.find( p => p.uuid === uuid);
+
+    if (provider) {
+      return provider;
+
+    } else {
+      const collection = CollectionsConfig.find( c => c.uuid === uuid );
+      if (collection) {
+        provider = this.createProvider(collection);
+        await provider.fetch();
+        return provider;
+      }
+
+    }
+
+    console.log('ProviderService', `Provider or Collection ${uuid} not found`);
+
+    return undefined;
+
+
+  },
+
+  find ( fn: (p: ICollectionProvider) => boolean): ICollectionProvider | undefined {
+    return providers.find(fn);
+  }
+
+};
+
+export { ProviderService };

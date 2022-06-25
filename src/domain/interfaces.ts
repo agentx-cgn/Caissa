@@ -2,6 +2,7 @@
 
 import m, { Attributes } from 'mithril';
 import { Move } from 'chess.js';
+import { ICheckboxAttrs } from '@app/atoms';
 
 
 // export interface IAttrs {
@@ -39,7 +40,7 @@ export interface IPageAttrs extends IDefaultAttrs {
 }
 
 interface ILayoutAttrs  extends IDefaultAttrs {
-  page: IPage<IPageAttrs>;
+  // page: IPage<IPageAttrs>;
   center: m.Component;
 }
 
@@ -72,6 +73,11 @@ export interface IFormValues {
   [name: string]: string | number | boolean;
 };
 
+export interface IFakePage {
+  (): {
+    onmatch?: (route: string, params: IParams) => Promise<boolean>
+  };
+}
 
 export interface IParams extends m.Params {};
 
@@ -86,6 +92,7 @@ export interface IPageTemplate<A={}> extends IComponent<A> {
   // onresize?: (width: number, height: number) => void;
   onregister?: (dispatcher: IDispatcher) => void;
   onmessage?: (source: string, msg: IMsg) => void;
+  onmatch?: (route: string, params: IParams) => Promise<boolean>;
 };
 
 // type FactoryComponent<A = {}> = (vnode: Vnode<A>) => Component<A>;
@@ -124,37 +131,6 @@ export interface IEvent extends Event {
   code?:   string;
 }
 
-
-
-const gametemplate = {
-
-  uuid:        'G0000000',     // string, 6 or 8 alphanums
-  over:         true,
-  rivals:      'h-h',
-  turn:         -1,
-  moves:        [],
-  score:       {
-      maxcp:    0,
-      maxmate:  0,
-  },
-  header:      {
-      // STR (Seven Tag Roster)
-      White:       'White',        // name of white player
-      Black:       'Black',        // name of black player
-      Event:       '',
-      Site:        'caissa.js.org',
-      Round:       '',
-      Date:        '',
-      Result:      '',
-      Termination: '',
-      TimeControl: '',
-  },
-  pgn:         '',             // game moves in pgn notation
-
-};
-
-
-
 export type TMove = Move & {
   from: string;
   to: string;
@@ -163,7 +139,6 @@ export type TMove = Move & {
   move: string;
   san: string;
 }
-
 
 export type TPgnHeader = {
   White:       string;
@@ -209,17 +184,20 @@ export type IDifficulties = {
 
 
 
-export type TCollectionItem = {
-  idx: number;
-  key: string;
+export type ICollection = {
+  uuid: string;
   caption: string;
   icon: string;
   source: string;
-  constructor: string;
-  subline?: string;
-  subtext?: string;
-  info?: string;
-  games?: TGame[];
-  error?: string;
-  progress?: number;
+  provider: string;
+  subline: string;
+  infolink?: string;
+}
+
+export interface ICollectionProvider extends ICollection {
+  games: TGame[];
+  error: string;
+  progress: number;
+  header: () => string;
+  fetch: () => Promise<void>;
 }
