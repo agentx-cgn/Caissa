@@ -1,6 +1,6 @@
 import m from 'mithril';
 
-import { IComponent, IDefComponent, IEvent, IParams, IRouteOptions, TPageOptions, TRouteConfig, IFakePage  } from '@app/domain';
+import { IComponent, IDefComponent, IEvent, IParams, IRouteOptions, TPageOptions, TRouteConfig, IFakePage, IPageData, IPageNode  } from '@app/domain';
 import { AppConfig, OptionsConfig as Options} from '@app/config';
 import { RoutesConfig, DefaultRoute } from './routes';
 
@@ -140,9 +140,11 @@ const App = {
 
           HistoryService.prepare(route, params, options);
 
-          const onmatch = (page as unknown as IFakePage)().onmatch;
-          if (onmatch) {
-            return onmatch(route, params)
+          const comp = (page as unknown as IFakePage)();
+          // const comp: IPageNode = page();
+          if (comp.onmatch) {
+            Object.assign(comp.data, { test2: 'test2' });
+            return comp.onmatch(route, params, comp.data)
               .then( () => Promise.resolve(App.comp))
             ;
           }

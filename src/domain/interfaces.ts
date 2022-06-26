@@ -73,9 +73,14 @@ export interface IFormValues {
   [name: string]: string | number | boolean;
 };
 
+export interface IPageData {
+  [name: string]: string | number | boolean | any;
+};
+
 export interface IFakePage {
   (): {
-    onmatch?: (route: string, params: IParams) => Promise<boolean>
+    data: IPageData;
+    onmatch?: (route: string, params: IParams, data: IPageData) => Promise<boolean>
   };
 }
 
@@ -89,16 +94,16 @@ export interface IFormCellComponent extends m.Component<IFormAttrs> {};
 
 
 export interface IPageTemplate<A={}> extends IComponent<A> {
-  // onresize?: (width: number, height: number) => void;
-  onregister?: (dispatcher: IDispatcher) => void;
+  // onregister?: (dispatcher: IDispatcher) => void;
   onmessage?: (source: string, msg: IMsg) => void;
-  onmatch?: (route: string, params: IParams) => Promise<boolean>;
+  onmatch?: (route: string, params: IParams, data: IPageData) => Promise<boolean>;
 };
 
 // type FactoryComponent<A = {}> = (vnode: Vnode<A>) => Component<A>;
 
 export interface IPageNode<A=IDefaultAttrs> extends IComponent<A>, IPageTemplate<A> {
   name: string;
+  data: IPageData,
   preventUpdates: boolean;
 };
 

@@ -1,7 +1,7 @@
 
 import m from 'mithril';
 
-import { ICollectionProvider, IPageAttrs, IParams } from '@app/domain';
+import { ICollectionProvider, IPageAttrs, IPageData, IParams } from '@app/domain';
 import { H, FactoryService, ProviderService }  from '@app/services';
 import { YScrollAtom, SectionTitleAtom, FlexListHeaderAtom, FlexListAtom, FlexListProviderAtom, FlexListEntryAtom } from '@app/atoms';
 
@@ -14,9 +14,11 @@ let filter  = '';
 
 const GamesPage = FactoryService.create<IPageAttrs>('Games', {
 
-  async onmatch (route: string, params: IParams): Promise<boolean> {
+  async onmatch (route: string, params: IParams, data: IPageData): Promise<boolean> {
 
     console.log('GamesPage.onmatch', route, params);
+
+    Object.assign(data, { test3: 'test3' });
 
     await ProviderService.get(params.uuid as string);
 
@@ -44,6 +46,8 @@ const GamesPage = FactoryService.create<IPageAttrs>('Games', {
     view ( vnode ) {
 
         const { params: { uuid }, className, style, options } = vnode.attrs;
+
+        console.log((vnode.state as any).data);
 
         const provider = ProviderService.find( p => p.uuid === uuid );
 

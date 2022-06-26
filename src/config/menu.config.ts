@@ -4,14 +4,14 @@ import iconChess from '/assets/images/chess.128.trans.png';
 import { IParams } from '@app/domain';
 
 type TDeco = {
-    ifa?: string;
-    img?: string;
-    subline: string;
+  ifa?: string;
+  img?: string;
+  subline: string;
 }
 type TMenuEntry = [ string, string, IParams, TDeco ];
 
 type TMenuConfig = {
-    [key: string]: TMenuEntry[];
+  [key: string]: TMenuEntry[];
 }
 
 const MenuConfig: TMenuConfig = {

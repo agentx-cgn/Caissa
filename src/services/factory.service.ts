@@ -32,11 +32,12 @@ const FactoryService = {
     let preventUpdates  = false;
 
     // before first view
-    if (typeof tplPage.onregister === 'function') { tplPage.onregister(Dispatcher(name)); }
+    // if (typeof tplPage.onregister === 'function') { tplPage.onregister(Dispatcher(name)); }
     // if (typeof tplPage.onresize   === 'function') { tplPage.onresize(innerWidth, innerHeight); }
 
     const pageNode: IPageNode<A> = Object.assign({
       name,
+      data: { test: 'test' },
       onbeforeupdate( /* vnode, old */) {
 
         // https://mithril.js.org/lifecycle-methods.html#onbeforeupdate
