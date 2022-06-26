@@ -1,12 +1,26 @@
 import m from 'mithril';
+import { Ripple as RipplePoly } from 'polythene-mithril';
 
 import { IAtomAttrs, IAtomComponent, IEvent} from '@app/domain';
+
+const RippleAtom: IAtomComponent = {
+  view ( ) {
+    return m(RipplePoly, {
+      startOpacity: 0.7,
+      duration: 0.5,
+      style: {
+        color: "#fff8"
+      }
+    });
+  },
+};
 
 export const NothingAtom: IAtomComponent = {
   view ( ) {
     return m('div.nothing.dn');
   },
 };
+
 interface ITitleAttrs extends IAtomAttrs {
   onclick?: (e: IEvent) => void;
   title: string;
@@ -16,8 +30,8 @@ export const SectionTitleAtom: IAtomComponent<ITitleAttrs> = {
   view ( { attrs } ) {
     const { title, description, onclick } = attrs;;
     return m('atom-section-title', { onclick },
-      m('h2.f3.sair.white.pl2.mt3',  title),
-      m('div.f4.sair.white.pl2.mt3',  description),
+      m('h2',  title),
+      m('div',  description),
     );
   }
 };
@@ -38,7 +52,7 @@ export const FlexListAtom: IAtomComponent = {
 export const FlexListHeaderAtom: IAtomComponent = {
   view ( vnode ) {
     return m('atom-flexlist-header',
-      m('h3.cfff.sair', vnode.children)
+      m('h3.white.sail', vnode.children)
     );
   },
 };
@@ -82,7 +96,8 @@ export const FlexListTextAtom: IAtomComponent = {
 export const FlexListEntryAtom: IAtomComponent = {
   view ( vnode ) {
     return m('atom-flexlist-entry', vnode.attrs,
-      m('div', vnode.children)
+      m('div', vnode.children),
+      // m(Ripple)
     );
   },
 };
@@ -91,7 +106,9 @@ export const FlexListEntryAtom: IAtomComponent = {
 
 export const FlexListMenuEntryAtom: IAtomComponent = {
   view ( vnode ) {
-    return m('atom-flexlist-menu-entry.db', vnode.attrs, vnode.children);
+    return m('atom-flexlist-menu-entry.db.relative', vnode.attrs,
+    m(RippleAtom),
+    vnode.children);
   },
 };
 

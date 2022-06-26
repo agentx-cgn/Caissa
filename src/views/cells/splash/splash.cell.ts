@@ -51,7 +51,7 @@ export const SplashCell: ICellComponent = {
           m(FlexListEntryAtom, { style: 'padding: 0' },
             m('img', { src: opera_gif, alt: 'The Opera Game', title: 'The Opera Game', width: '100%' })
           ),
-          m(FlexListTextAtom, 'Morphy - Brunswick, Isoard, Paris 02.11.1858'),
+          m(FlexListTextAtom, 'The Opera Game: Morphy - Brunswick, Isoard, Paris 02.11.1858'),
 
           m(FlexListEntryAtom,
             m(ButtonGroup, [

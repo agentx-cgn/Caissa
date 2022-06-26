@@ -3,24 +3,24 @@ atom-scroll-y   {
     overflow: overlay;
     overflow-y: auto;
     overflow-x: hidden;
-    //   scrollbar-gutter: auto;
 }
 
 atom-section-title {
 
     height: 5.25rem;
     min-height: 5.25rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding: 0.8rem 0 0 1rem;
     overflow-y: hidden;
 
-    span {
-        display: inline-block;
-        width: 100%;
-        margin-top: 1rem;
-        font-size: 1.7rem;
-        color: #eee;
+    h2 {
+        color: #fff;
         font-family: 'SairaCondensed-Medium';
+        font-size: 1.7rem;
+    }
+    div {
+        color: #aaa;
+        font-family: 'SairaCondensed-Light';
+        font-size: 1rem;
     }
 
 }
