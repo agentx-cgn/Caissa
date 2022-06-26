@@ -1,14 +1,14 @@
-import { IPage, IPageTemplate, IDispatcher, IPageNode } from "@app/domain";
+import { IDispatcher, IPageComponent, IPageTemplate, IPageNode } from "@app/domain";
 
 const DEBUG = false;
 
-const freezer = [] as IPageNode<unknown>[];
+const freezer = [] as IPageNode[];
 
 const Dispatcher = function (source: string): IDispatcher {
 
   return {
     send (msg) {
-      freezer.forEach( (page: IPageNode<unknown>) => {
+      freezer.forEach( (page: any) => {
         if (typeof page.onmessage === 'function' && source !== page.name){
           DEBUG && console.log('dispatcher.sending', msg, 'to', page.name, 'from', source);
           page.onmessage(source, msg);
@@ -22,7 +22,7 @@ const Dispatcher = function (source: string): IDispatcher {
 const FactoryService = {
 
   // create<A, S={}> (name: string, tplPage: IPageTemplate<A, S> ): IPage<A, S> {
-  create<A> (name: string, tplPage: IPageTemplate<A> ): IPage<A>  {
+  create (name: string, tplPage: IPageTemplate ): IPageComponent  {
 
     //TODO: check for duplicates,
     // make onafterupdates special in dispatcher
@@ -35,7 +35,7 @@ const FactoryService = {
     // if (typeof tplPage.onregister === 'function') { tplPage.onregister(Dispatcher(name)); }
     // if (typeof tplPage.onresize   === 'function') { tplPage.onresize(innerWidth, innerHeight); }
 
-    const pageNode: IPageNode<A> = Object.assign({
+    const pageNode: IPageNode = Object.assign({
       name,
       data: { test: 'test' },
       onbeforeupdate( /* vnode, old */) {
@@ -71,7 +71,7 @@ const FactoryService = {
       //   };
       // }
 
-    freezer.push(pageNode as IPageNode<unknown>);
+    freezer.push(pageNode as IPageNode);
 
     return () => pageNode;
 

@@ -2,7 +2,7 @@
 import m from 'mithril';
 import './form.atoms.scss';
 
-import { IComponent, IDefCellComponent } from '@app/domain';
+// import { IComponent, IDefCellComponent } from '@app/domain';
 
 // DEMO: https://arthurclemens.github.io/polythene-demos/mithril/#/
 // https://github.com/ArthurClemens/polythene/tree/master/docs/components
@@ -36,7 +36,7 @@ ButtonCSS.addStyle(`.atom-button`, {
 
 interface IButtonAttrs extends Partial<polyButton> { }
 
-const FormButton: IComponent<IButtonAttrs> = {
+const FormButton: m.Component<IButtonAttrs> = {
   view: ( vnode ) => m('atom-form-button',
     m(polyButton, Object.assign({
       className: 'atom-button',
@@ -47,7 +47,7 @@ const FormButton: IComponent<IButtonAttrs> = {
   )),
 };
 
-const AtomButton: IComponent<IButtonAttrs> = {
+const AtomButton: m.Component<IButtonAttrs> = {
   view: ( vnode ) => m(polyButton, Object.assign({
       className: 'atom-button',
       raised: true,
@@ -67,7 +67,7 @@ CheckboxCSS.addStyle(".atom-checkbox", {
 
 interface ICheckboxAttrs extends Partial<polyCheckbox> { }
 
-const FormCheckbox: IComponent<ICheckboxAttrs> = {
+const FormCheckbox: m.Component<ICheckboxAttrs> = {
   view: ( vnode ) => m('atom-form-checkbox.fior',
     m(polyCheckbox, { ...vnode.attrs,
       className: 'atom-checkbox',
@@ -90,7 +90,7 @@ TextFieldCSS.addStyle(`.atom-textfield`, {
 
 interface ITextFieldAttrs extends Partial<polyTextField> { }
 
-const FormTextField: IComponent<ITextFieldAttrs> = {
+const FormTextField: m.Component<ITextFieldAttrs> = {
   view: ( vnode ) => m('atom-form-textfield.fior',
     m(polyTextField, { ...vnode.attrs,
       className: 'atom-textfield',
@@ -104,7 +104,7 @@ const FormTextField: IComponent<ITextFieldAttrs> = {
 
 interface INoteAttrs { label: string }
 
-const FormNote: IComponent<INoteAttrs> = {
+const FormNote: m.Component<INoteAttrs> = {
   view: ( vnode ) => {
     return m('atom-form-note',
       m('.fior', vnode.attrs.label)
@@ -116,7 +116,7 @@ const FormNote: IComponent<INoteAttrs> = {
 
 interface IHeaderAttrs { label: string }
 
-const FormHeader: IComponent<IHeaderAttrs> = {
+const FormHeader: m.Component<IHeaderAttrs> = {
   view: ( vnode ) => {
     return m('atom-form-header',
       m('h3.cfff.sair', vnode.attrs.label)
@@ -127,7 +127,7 @@ const FormHeader: IComponent<IHeaderAttrs> = {
 // m('h3.pv2.ph3.cfff.sair', label),
 
 // List
-const FormListAtom: IDefCellComponent = {
+const FormListAtom: m.Component = {
   view ( vnode ) {
     return m('atom-form-list', vnode.attrs, vnode.children);
   },

@@ -1,6 +1,6 @@
 import m from 'mithril';
 
-import { IComponent, IDefComponent, IEvent, IParams, IRouteOptions, TPageOptions, TRouteConfig, IFakePage, IPageData, IPageNode  } from '@app/domain';
+import { IEvent, IParams, IRouteOptions, TPageOptions, TRouteConfig, IAppComponent, IPageComponent  } from '@app/domain';
 import { AppConfig, OptionsConfig as Options} from '@app/config';
 import { RoutesConfig, DefaultRoute } from './routes';
 
@@ -127,7 +127,7 @@ const App = {
     return {
 
       // The onmatch hook is called when the router needs to find a component to render.
-      onmatch ( params: IParams, requestedPath: string, route: string ): IComponent | Promise<IDefComponent> | void {
+      onmatch ( params: IParams, requestedPath: string, route: string ): m.Component | Promise<IPageComponent> | void {
 
         try {
 
@@ -140,7 +140,8 @@ const App = {
 
           HistoryService.prepare(route, params, options);
 
-          const comp = (page as unknown as IFakePage)();
+          // const comp = (page as unknown as IFakePage)();
+          const comp = (page as any)();
           // const comp: IPageNode = page();
           if (comp.onmatch) {
             Object.assign(comp.data, { test2: 'test2' });
@@ -191,7 +192,7 @@ const App = {
 
     },
 
-  } as IDefComponent,
+  } as IAppComponent,
 
 };
 

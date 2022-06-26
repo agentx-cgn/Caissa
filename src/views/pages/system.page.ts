@@ -2,7 +2,7 @@
 import './system.page.scss';
 
 import m from 'mithril';
-import { IComponent, IEvent, IPageAttrs } from '@app/domain';
+import { IEvent, IPageAttrs } from '@app/domain';
 
 import { App } from '@app/views';
 import { AppConfig } from '@app/config';
@@ -12,7 +12,7 @@ import { FlexListAtom, JsonAtom, TOptions } from '@app/atoms';
 let search   = '';
 // const jsonEcos = ecos.tree;
 
-const Json: IComponent<{ tree: object, options?: TOptions}> =  {
+const Json: m.Component<{ tree: object, options?: TOptions}> =  {
   view ( {attrs : { tree } } ) {
     return m('div.w-100.viewport-y.h-100.bg-ccc', [
       m('div.fior.pv2', { class: 'json-tree'}, [
@@ -41,7 +41,7 @@ const Logs = {
   },
 };
 
-const SystemPage = FactoryService.create<IPageAttrs>('System', {
+const SystemPage = FactoryService.create('System', {
 
   view ( vnode ) {
 

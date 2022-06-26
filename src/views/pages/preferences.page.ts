@@ -2,9 +2,8 @@ import m from 'mithril';
 
 import { FactoryService, DatabaseService as DB } from '@app/services';
 import { SectionTitleAtom } from '@app/atoms';
-import { IPageAttrs } from '@app/domain';
 
-const PreferencesPage = FactoryService.create<IPageAttrs>('Preferences', {
+const PreferencesPage = FactoryService.create('Preferences', {
 
   view ( vnode ) {
 

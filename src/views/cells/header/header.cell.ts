@@ -3,12 +3,14 @@ import screenfull  from 'screenfull';
 import './header.scss';
 
 import { App } from '@app/views';
-import { IDefComponent, IEvent } from '@app/domain';
+import { IAppAttrs, ICellAttrs, ICellComponent, IEvent } from '@app/domain';
 import { NavigationCell }  from './navigation.cell';
 
-const HeaderCell: IDefComponent = {
+// interface IAttrs extends ICellAttrs, IAppAttrs {}
 
-  view( {attrs: { route, params, options }} ) {
+const HeaderCell: ICellComponent = {
+
+  view () {
 
     const toggle = (e: IEvent) => {e.redraw = false; screenfull.isEnabled && screenfull.toggle();};
     const reload = (e: IEvent) => {e.redraw = false; window.location.reload();};
@@ -16,7 +18,7 @@ const HeaderCell: IDefComponent = {
 
     return m('header',
       m('div.controls.flex', { style: 'width:' + width }, [
-        m(NavigationCell, { route, params, options }),
+        m(NavigationCell),
         App.canBack()
           ? m('i.navi.fa.fa-angle-left',  { onclick: App.onback })
           : m('i.navi.fa.fa-angle-left.ctrans'),

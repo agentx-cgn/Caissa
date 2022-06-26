@@ -1,11 +1,11 @@
 import m from 'mithril';
 
-import { IDefComponent, IEvent } from '@app/domain';
+import { ICellComponent, IEvent } from '@app/domain';
 import { App } from '@app/views';
 
 // const $ = document.querySelector.bind(document);
 
-const NavigationCell: IDefComponent =  {
+const NavigationCell: ICellComponent =  {
 
   view ( ) {
 
@@ -22,7 +22,7 @@ const NavigationCell: IDefComponent =  {
     //   };
     // };
 
-    const onmenu = (e: IEvent) => {
+    const onclick = (e: IEvent) => {
       e.redraw = false;
       App.route('/start/');
     };
@@ -31,7 +31,7 @@ const NavigationCell: IDefComponent =  {
 
         // hamburger
         // m('label', {for:'toggle-mobile-menu', 'aria-label':'Menu'},
-        m('label', {'aria-label':'Menu', onclick: onmenu},
+        m('label', {'aria-label':'Menu', onclick},
           m('i.hamburger.fa.fa-bars '),
           m('h1.home.f4.fiom.white.pl3.di', 'Caissa'),
         ),

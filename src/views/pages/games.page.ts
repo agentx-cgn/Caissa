@@ -1,9 +1,9 @@
 
 import m from 'mithril';
 
-import { ICollectionProvider, IPageAttrs, IPageData, IParams } from '@app/domain';
+import { IPageData, IParams } from '@app/domain';
 import { H, FactoryService, ProviderService }  from '@app/services';
-import { YScrollAtom, SectionTitleAtom, FlexListHeaderAtom, FlexListAtom, FlexListProviderAtom, FlexListEntryAtom } from '@app/atoms';
+import { YScrollAtom, SectionTitleAtom, FlexListHeaderAtom, FlexListAtom } from '@app/atoms';
 
 // import { ListFilter, FlexListEntry, PageTitle } from '../../components/misc';
 
@@ -12,7 +12,7 @@ const DEBUG = true;
 const read  = H.interprete;
 let filter  = '';
 
-const GamesPage = FactoryService.create<IPageAttrs>('Games', {
+const GamesPage = FactoryService.create('Games', {
 
   async onmatch (route: string, params: IParams, data: IPageData): Promise<boolean> {
 

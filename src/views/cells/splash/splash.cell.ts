@@ -2,7 +2,8 @@ import m from 'mithril';
 import './splash.cell.scss';
 import opera_gif from '/assets/pictures/opera.game.small.gif';
 
-import { IDefCellComponent, IFormValues } from '@app/domain';
+import { ICellComponent } from '@app/domain';
+import { IFormValues } from './../form/form.cell';
 import { package_json as pjson } from '@app/config';
 import { App } from '@app/views';
 import { DatabaseService as DB } from '@app/services';
@@ -11,7 +12,7 @@ import { ButtonGroup, SectionTitleAtom, FlexListTextAtom, FlexListAtom, YScrollA
 import { FormCell } from '../form/form.cell';
 
 
-export const SplashCell: IDefCellComponent = {
+export const SplashCell: ICellComponent = {
 
   view ( vnode ) {
 

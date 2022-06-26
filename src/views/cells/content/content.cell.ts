@@ -4,10 +4,10 @@ import './content.cell.scss';
 
 import { ToolbarCell } from '../toolbar/toolbar.cell';
 import { ChessboardCell } from '../board/board.cell';
-import { IDefCellComponent } from '@app/domain';
+import { ICellComponent } from '@app/domain';
 import { SectionTitleAtom } from '@app/atoms';
 
-export const ContentCell: IDefCellComponent = {
+export const ContentCell: ICellComponent = {
   view ( vnode ) {
 
     const { className, style } = vnode.attrs;

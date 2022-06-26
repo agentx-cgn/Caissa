@@ -1,16 +1,15 @@
 
 import m from 'mithril';
-import { IEvent, IComponent } from '@app/domain';
+import { IEvent, ICellComponent, ICellAttrs } from '@app/domain';
 
 // import GameEcos   from './game-ecos';
 
-interface IPanelAttrs {
-  className: string;
+interface IPanelAttrs extends ICellAttrs {
   show: boolean;
   onclick: (e: IEvent) => void;
 }
 
-const PanelHeader: IComponent<IPanelAttrs> = {
+const PanelHeader: ICellComponent<IPanelAttrs> = {
   view ( vnode ) {
     const { onclick, show, className } = vnode.attrs;
     return m('div.panel-header.flex.flex-row', { className, onclick }, [
@@ -20,7 +19,7 @@ const PanelHeader: IComponent<IPanelAttrs> = {
   },
 };
 
-const Panel: IComponent<IPanelAttrs> = {
+const Panel: ICellComponent<IPanelAttrs> = {
   view ( vnode ) {
     const { show, className } = vnode.attrs;
     const [ caption, panel ] = vnode.children as [string, m.Vnode<IPanelAttrs>[]];

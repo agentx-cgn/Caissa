@@ -1,17 +1,15 @@
 
 import m from 'mithril';
-import './flexlistprovider.atom.scss';
+import './flexlistprovider.cell.scss';
 
-import { IComponent, ICollectionProvider, IEvent } from '@app/domain';
+import { ICollectionProvider, IEvent, ICellComponent, ICellAttrs } from '@app/domain';
 import { App } from '@app/views';
 
-type TGameEntryAttrs = {
+interface IAttrs extends ICellAttrs {
   provider: ICollectionProvider;
-  className?: string;
-  style?: string;
 }
 
-const FlexListProviderAtom: IComponent<TGameEntryAttrs> = {
+const FlexListProviderCell: ICellComponent<IAttrs> = {
 
   view ( vnode ) {
 
@@ -29,7 +27,7 @@ const FlexListProviderAtom: IComponent<TGameEntryAttrs> = {
       }
     };
 
-    return m('atom-flexlist-provider', { onclick, class: 'sources' }, [
+    return m('cell-flexlist-provider', { onclick, class: 'sources' }, [
 
       m('img.source-icon',          {src: provider.icon}),
       m('div.source-caption.f4',          provider.caption),
@@ -53,4 +51,4 @@ const FlexListProviderAtom: IComponent<TGameEntryAttrs> = {
 
 };
 
-export { FlexListProviderAtom };
+export { FlexListProviderCell };

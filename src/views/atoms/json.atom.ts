@@ -2,7 +2,7 @@
 
 import m from 'mithril';
 
-import { IComponent, IObj } from '@app/domain';
+import { IObj } from '@app/domain';
 
 type TOptions = {
   collapseAfter: number;
@@ -90,7 +90,7 @@ interface IAttrs {
     options: any;
 }
 
-const JsonAtom = function ( ): IComponent<IAttrs> {
+const JsonAtom = function ( ): m.Component<IAttrs> {
 
   const statusLookup = {};
 

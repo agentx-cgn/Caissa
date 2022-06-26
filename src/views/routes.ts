@@ -1,6 +1,6 @@
 import m from 'mithril';
 
-import { IRoutesConfigs, IComponent } from '@app/domain';
+import { ICellComponent, IRoutesConfigs } from '@app/domain';
 import { LayoutCell, ContentCell } from '@app/cells';
 import {
   MenuPage,
@@ -12,7 +12,7 @@ import {
   GamesPage,
 }     from '@app/pages';
 
-const Nothing: IComponent = {
+const Nothing: ICellComponent = {
   view ( ) {
     return m('div.nothing.dn');
   },

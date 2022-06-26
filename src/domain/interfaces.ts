@@ -2,7 +2,7 @@
 
 import m, { Attributes } from 'mithril';
 import { Move } from 'chess.js';
-import { ICheckboxAttrs } from '@app/atoms';
+// import { ICheckboxAttrs } from '@app/atoms';
 
 
 // export interface IAttrs {
@@ -17,104 +17,134 @@ export interface IObj extends Record<string, any> {}
 export interface IMsg extends IObj {}
 // export interface IAttrs extends Record<string, string | number> {}
 
-export type TPageOptions = {
-  title: string;
-  description: string;
-};
 
-export interface IDefaultAttrs {
-  route: string;
-  params: m.Params;
-  options: TPageOptions
-}
-export interface IDefaultCellAttrs {
-  className: string;
-  style: string;
-}
-
-export interface IPageAttrs extends IDefaultAttrs {
-  className: string;
-  style: string;
-  module?: string;  // SystemPage
-  url: string;                 // HelpPage
-}
-
-interface ILayoutAttrs  extends IDefaultAttrs {
-  // page: IPage<IPageAttrs>;
-  center: m.Component;
-}
-
-
-interface IFormAttrs  {
-  onsubmit: (v: IFormValues) => void;
-  onchange?: (v: IFormValues) => void;
-  fields: IFormField[];
-  values: IFormValues;
-  className?: string;
-  style?: string;
-}
-
-export interface IFormField {
-  name: string;
-  type: 'submit' | 'button' | 'textfield' | 'select' | 'checkbox' | 'radio' | 'file' | 'note' | 'header';
-  label: string;
-  value?: string | number | boolean;
-  help?: string;
-  className?: string;
-  style?: string;
-};
-
-export interface IFormGroup {
-  type: 'group';
-  childs: IFormField[];
-};
-
-export interface IFormValues {
-  [name: string]: string | number | boolean;
-};
-
+export interface IParams extends m.Params {};
 export interface IPageData {
   [name: string]: string | number | boolean | any;
 };
 
-export interface IFakePage {
-  (): {
-    data: IPageData;
-    onmatch?: (route: string, params: IParams, data: IPageData) => Promise<boolean>
-  };
+export interface IAtomAttrs {
+  className?: string;
+  style?: string;
+  onclick?: (e:IEvent) => void;
 }
+export interface IAtomComponent<A=IAtomAttrs> extends m.Component<A> {};
 
-export interface IParams extends m.Params {};
+export interface ICellAttrs {
+  className: string;
+  style: string;
+  onclick?: (e:IEvent) => void;
+}
+export interface ICellComponent<A=ICellAttrs> extends m.Component<A> {};
 
-export interface IComponent<A={}, S={}> extends m.Component<A,S> {};
-export interface IDefComponent extends m.Component<IDefaultAttrs> {};
-export interface IDefCellComponent extends m.Component<IDefaultCellAttrs> {};
+export interface IAppAttrs {
+  route: string;
+  params: m.Params;
+  options: TPageOptions
+}
+export interface IAppComponent extends m.Component<IAppAttrs> {};
+
+
+interface ILayoutAttrs extends IAppAttrs {
+  center: ICellComponent;
+}
 export interface ILayoutComponent extends m.Component<ILayoutAttrs> {};
-export interface IFormCellComponent extends m.Component<IFormAttrs> {};
 
 
-export interface IPageTemplate<A={}> extends IComponent<A> {
-  // onregister?: (dispatcher: IDispatcher) => void;
+export interface IPageAttrs extends ICellAttrs, IAppAttrs {}
+export interface IPageState {
   onmessage?: (source: string, msg: IMsg) => void;
   onmatch?: (route: string, params: IParams, data: IPageData) => Promise<boolean>;
-};
+}
+interface ITemplate {
+  onmessage?: (source: string, msg: IMsg) => void;
+  onmatch?: (route: string, params: IParams, data: IPageData) => Promise<boolean>;
+}
 
+export interface IPageTemplateAttrs extends IPageAttrs {}
+
+export interface IPageNode extends m.Component<IPageTemplateAttrs> {}
+export interface IPageTemplate extends m.Component<IPageTemplateAttrs, IPageState>, ITemplate {}
+export type IPageComponent<A=IPageAttrs, S=IPageState> = (vnode: m.Vnode<A,S>) => m.Component<A,S>;
+
+// export interface IPageComponent<A=IPageAttrs,S=IPageState> extends m.FactoryComponent<A,S> {
+// export interface IPageComponent extends m.Component<IPageAttrs, IPageState> {};
 // type FactoryComponent<A = {}> = (vnode: Vnode<A>) => Component<A>;
 
-export interface IPageNode<A=IDefaultAttrs> extends IComponent<A>, IPageTemplate<A> {
-  name: string;
-  data: IPageData,
-  preventUpdates: boolean;
-};
+
+
+
+
+
+
+
+
+//   export interface IDefaultAttrs {
+//   route: string;
+//   params: m.Params;
+//   options: TPageOptions
+// }
+// export interface IDefaultCellAttrs {
+//   className: string;
+//   style: string;
+// }
+
+// export interface IPageAttrs extends IDefaultAttrs {
+//   className: string;
+//   style: string;
+//   module?: string;  // SystemPage
+//   url: string;                 // HelpPage
+// }
+
+// interface ILayoutAttrs  extends IDefaultAttrs {
+//   // page: IPage<IPageAttrs>;
+//   center: m.Component;
+// }
+
+
+
+
+// export interface IFakePage {
+//   (): {
+//     data: IPageData;
+//     onmatch?: (route: string, params: IParams, data: IPageData) => Promise<boolean>
+//   };
+// }
+
+// export interface IParams extends m.Params {};
+
+// export interface IComponent<A={}, S={}> extends m.Component<A,S> {};
+// export interface IDefComponent extends m.Component<IDefaultAttrs> {};
+// export interface IDefCellComponent extends m.Component<IDefaultCellAttrs> {};
+
+
+// export interface ILayoutComponent extends m.Component<ILayoutAttrs> {};
+
+
+// export interface IPageTemplate<A={}> extends IComponent<A> {
+//   // onregister?: (dispatcher: IDispatcher) => void;
+//   onmessage?: (source: string, msg: IMsg) => void;
+//   onmatch?: (route: string, params: IParams, data: IPageData) => Promise<boolean>;
+// };
+
+// // type FactoryComponent<A = {}> = (vnode: Vnode<A>) => Component<A>;
+
+// export interface IPageNode<A=IDefaultAttrs> extends IComponent<A>, IPageTemplate<A> {
+//   name: string;
+//   data: IPageData,
+//   preventUpdates: boolean;
+// };
 
 // export interface IPage<A=IDefaultAttrs> extends m.FactoryComponent<A>, IPageTemplate<A> {
 // https://melvingeorge.me/blog/add-properties-to-functions-typescript
-export interface IPage<A=IPageAttrs> extends m.FactoryComponent<A> {
-  // name: string;
-  // preventUpdates: boolean;
-};
+// export interface IPage<A=IPageAttrs> extends m.FactoryComponent<A> {
+//   // name: string;
+//   // preventUpdates: boolean;
+// };
 
-export type TRouteConfig = [ILayoutComponent, IPage<IPageAttrs>, IComponent<any>, TPageOptions];
+
+
+export type TRouteConfig = [ILayoutComponent, IPageComponent<IPageAttrs>, ICellComponent, TPageOptions];
 export interface IRoutesConfigs {
   [route: string]: TRouteConfig;
 }
@@ -122,7 +152,6 @@ export interface IRoutesConfigs {
 export interface IDispatcher {
   send: (msg: IMsg) => void;
 }
-
 export interface IRouteOptions {
   redraw?: boolean;
   replace?: boolean;
@@ -130,6 +159,11 @@ export interface IRouteOptions {
   fore?: boolean;
   noanimation?: boolean;
 }
+
+export type TPageOptions = {
+  title: string;
+  description: string;
+};
 
 export interface IEvent extends Event {
   redraw?: boolean;

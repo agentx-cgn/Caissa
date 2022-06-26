@@ -30,7 +30,8 @@ const createMenuEntry = ( [route, label, params, extras]: TMenuEntry) => {
   ]);
 };
 
-const MenuPage = FactoryService.create<IPageAttrs>('Menu', {
+
+const MenuPage = FactoryService.create('Menu', {
 
   view ( vnode ) {
 

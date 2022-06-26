@@ -1,9 +1,9 @@
 import m from 'mithril';
 
 import './footer.cell.scss';
-import { IDefCellComponent } from '@app/domain';
+import { ICellComponent } from '@app/domain';
 
-export const FooterCell: IDefCellComponent = {
+export const FooterCell: ICellComponent = {
   view ( vnode ) {
 
     const { className, style } = vnode.attrs;

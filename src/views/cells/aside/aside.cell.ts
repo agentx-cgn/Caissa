@@ -1,10 +1,10 @@
 import m from 'mithril';
 
 import './aside.cell.scss';
-import { IDefCellComponent } from '@app/domain';
+import { ICellComponent } from '@app/domain';
 import { SectionTitleAtom } from '@app/atoms';
 
-export const AsideCell: IDefCellComponent = {
+export const AsideCell: ICellComponent = {
   view ( vnode ) {
 
     const { className, style } = vnode.attrs;

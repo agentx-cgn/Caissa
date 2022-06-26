@@ -3,9 +3,8 @@ import m from 'mithril';
 
 import { FactoryService }  from '@app/services';
 import { SpacerAtom, GrowSpacerAtom, SectionTitleAtom, FlexListTextCenterAtom, FlexListAtom, FlexListTextAtom } from '@app/atoms';
-import { IPageAttrs } from '@app/domain';
 
-const ErrorPage = FactoryService.create<IPageAttrs>('Error', {
+const ErrorPage = FactoryService.create('Error', {
 
   view ( vnode) {
 

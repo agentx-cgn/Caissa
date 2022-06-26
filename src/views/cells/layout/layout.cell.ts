@@ -33,7 +33,7 @@ const LayoutCell: ILayoutComponent = {
       !showSplash
         ? [
           m(BackdropCell),
-          m(HeaderCell, { route, params, options }),
+          m(HeaderCell),
           m('main', [
             m('section.stage',   {}, m(StageCell)),
             m('section.content', {}, innerWidth >= break2 ? m( center )  : m(NothingAtom)),

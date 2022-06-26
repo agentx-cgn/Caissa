@@ -2,14 +2,15 @@ import m from 'mithril';
 
 import { H }       from './helper.service';
 import { App }     from '@app/views';
-import { IEvent, IPage, IPageAttrs, IParams, IRouteOptions, TPageOptions } from '@app/domain';
+import { IEvent, IPageComponent, IParams, IRouteOptions, TPageOptions } from '@app/domain';
 import { FactoryService } from './factory.service';
 
 interface IEntry  {
   key:     string;
   route:   string;
   params:  IParams;
-  page:    IPage<IPageAttrs>;
+  // page:    IPage<IPageAttrs>;
+  page:    IPageComponent;
   options: TPageOptions;
   routeOptions: IRouteOptions;
 }
@@ -31,7 +32,7 @@ const detected  = {
   noanimation: false,
 };
 
-const NothingPage = FactoryService.create<IPageAttrs>('Nothing', {
+const NothingPage = FactoryService.create('Nothing', {
   view ( vnode ) {
     const { className } = vnode.attrs;
     return m('div.page.nothing', { className },
@@ -195,7 +196,7 @@ const History = {
         }
     },
 
-    finalize (route: string, params: IParams, options: TPageOptions, page: IPage<IPageAttrs>) {
+    finalize (route: string, params: IParams, options: TPageOptions, page: IPageComponent) {
 
         const key = m.buildPathname(route, params);
 

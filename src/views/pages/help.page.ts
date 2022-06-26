@@ -1,10 +1,9 @@
 import m from 'mithril';
 
-import { IPageAttrs } from '@app/domain';
 import { FactoryService } from '@app/services';
 import { SectionTitleAtom, SpacerAtom } from '@app/atoms';
 
-const HelpPage = FactoryService.create<IPageAttrs>('Help', {
+const HelpPage = FactoryService.create('Help', {
 
   view ( vnode ) {
 

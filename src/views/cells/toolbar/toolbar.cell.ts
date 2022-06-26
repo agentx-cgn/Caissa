@@ -2,9 +2,9 @@ import m from 'mithril';
 
 import './toolbar.cell.scss';
 
-import { IDefCellComponent, IDefComponent } from '@app/domain';
+import { ICellComponent } from '@app/domain';
 
-export const ToolbarCell: IDefCellComponent = {
+export const ToolbarCell: ICellComponent = {
   view ( vnode ) {
 
     const { className, style } = vnode.attrs;

@@ -1,13 +1,14 @@
 
 import m from 'mithril';
 
-import { IPageAttrs, IParams } from '@app/domain';
+import { IPageData, IParams } from '@app/domain';
 import { H, FactoryService, ProviderService }  from '@app/services';
-import { YScrollAtom, SectionTitleAtom, FlexListHeaderAtom, FlexListAtom, FlexListProviderAtom } from '@app/atoms';
+import { YScrollAtom, SectionTitleAtom, FlexListHeaderAtom, FlexListAtom } from '@app/atoms';
+import { FlexListProviderCell } from '@app/cells';
 
-const CollectionsPage = FactoryService.create<IPageAttrs>('Collections', {
+const CollectionsPage = FactoryService.create('Collections', {
 
-  async onmatch (route: string, params: IParams): Promise<boolean> {
+  async onmatch (route: string, params: IParams, data: IPageData): Promise<boolean> {
 
     console.log('CollectionsPage.onmatch', route, params);
 
@@ -28,7 +29,7 @@ const CollectionsPage = FactoryService.create<IPageAttrs>('Collections', {
         m(FlexListAtom, [
           ...ProviderService.collections.map( ( collection ) => {
             const provider = ProviderService.createProvider(collection);
-            return m(FlexListProviderAtom, { provider });
+            return m(FlexListProviderCell, { className: '', style: '', provider });
           })
         ]
         )

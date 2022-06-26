@@ -1,6 +1,6 @@
 import m from 'mithril';
 
-import { IComponent, IPage, IPageAttrs } from '@app/domain';
+// import { IComponent, IPage, IPageAttrs, IPageComponent } from '@app/domain';
 import { App } from '@app/views';
 import { $, HistoryService as History, StageService } from '@app/services';
 
@@ -20,7 +20,7 @@ interface IState {
   onresize: (width: number) => void
 }
 
-const StageCell: IComponent<{}, IState> & IState= {
+const StageCell: m.Component<{}, IState> & IState= {
 
     oninit () {
       StageService.listen();
@@ -52,9 +52,9 @@ const StageCell: IComponent<{}, IState> & IState= {
       // console.log('Stage', slides.names);
 
       return m('.pages', [
-        m(l.page as IPage<any>, {route: l.route, params: l.params,  options: l.options, style, className: classLeft}),
-        m(c.page as IPage<any>, {route: c.route, params: c.params,  options: c.options, style, className: classCenter}),
-        m(r.page as IPage<any>, {route: r.route, params: r.params,  options: r.options, style, className: classRight}),
+        m(l.page as any, {route: l.route, params: l.params,  options: l.options, style, className: classLeft}),
+        m(c.page as any, {route: c.route, params: c.params,  options: c.options, style, className: classCenter}),
+        m(r.page as any, {route: r.route, params: r.params,  options: r.options, style, className: classRight}),
         m.fragment( {
             oncreate: () => setTimeout(onafterupdate, 100),
             onupdate: () => setTimeout(onafterupdate, 100)

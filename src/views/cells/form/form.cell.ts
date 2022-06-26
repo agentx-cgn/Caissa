@@ -2,13 +2,45 @@ import m from 'mithril';
 import stream from "mithril/stream";
 import './form.cell.scss';
 
-import { IEvent, IFormCellComponent, IFormField, IFormValues } from '@app/domain';
+// import { IEvent, IFormCellComponent, IFormField, IFormValues } from '@app/domain';
+import { IEvent } from '@app/domain';
 import { FormListAtom, FormButton, FormCheckbox, FormTextField, FormNote, FormHeader } from '@app/atoms';
 
 type TState = stream<string | boolean | number>;
 type TStates = {
   [key: string]: TState;
 }
+
+interface IFormAttrs  {
+  onsubmit: (v: IFormValues) => void;
+  onchange?: (v: IFormValues) => void;
+  fields: IFormField[];
+  values: IFormValues;
+  className?: string;
+  style?: string;
+}
+export interface IFormCellComponent extends m.Component<IFormAttrs> {};
+
+export interface IFormField {
+  name: string;
+  type: 'submit' | 'button' | 'textfield' | 'select' | 'checkbox' | 'radio' | 'file' | 'note' | 'header';
+  label: string;
+  value?: string | number | boolean;
+  help?: string;
+  className?: string;
+  style?: string;
+};
+
+// export interface IFormGroup {
+//   type: 'group';
+//   childs: IFormField[];
+// };
+
+export interface IFormValues {
+  [name: string]: string | number | boolean;
+};
+
+
 
 const controls = {
   button:     FormButton,
@@ -93,7 +125,7 @@ export const FormCell: IFormCellComponent = {
 
     return m('cell-form', { className, style }, [
 
-      m(FormListAtom, { className, style }, [
+      m(FormListAtom,  [
         fields.map((field: IFormField) => {
           return renderField(field, state[field.name], onformchange, onformsubmit);
         })

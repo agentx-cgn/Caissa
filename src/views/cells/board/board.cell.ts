@@ -4,7 +4,7 @@ import './board.cell.scss';
 
 import testImage from '/assets/pictures/chess.test.png';
 
-import { IDefCellComponent } from '@app/domain';
+import { ICellComponent } from '@app/domain';
 
 const $ = document.querySelector.bind(document);
 
@@ -23,7 +23,7 @@ const listener = (e: Event) => {
 };
 
 
-export const ChessboardCell: IDefCellComponent = {
+export const ChessboardCell: ICellComponent = {
 
   oncreate(vnode) {
     window.addEventListener('resize', listener);
