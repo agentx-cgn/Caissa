@@ -13,7 +13,7 @@ const onclick  = (route: string, params: IParams) => {
       e.redraw = false;
       App.route(route, params);
     }
-    : App.onback
+    : App.onbackormenu
   ;
 };
 
@@ -47,7 +47,7 @@ const MenuPage = FactoryService.create('Menu', {
           return createMenuEntry(menuEntry);
         }),
         route !== '/start/'
-          ? createMenuEntry(['BACK', '', {}, {}] as TMenuEntry)
+          ? createMenuEntry(['BACK', 'BACK', {}, {}] as TMenuEntry)
           : m(NothingAtom)
       ]),
     );

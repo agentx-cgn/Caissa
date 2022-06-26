@@ -16,7 +16,7 @@ interface IState {
   show: (cb: TVoid) => void;
 }
 
-const BackdropCell: m.Component<IAttrs, IState> & IState = {
+const BackdropCell: m.Component<IAttrs> & IState = {
 
     show (cb: TVoid) {
       $('cell-backdrop')!.classList.add('visible');

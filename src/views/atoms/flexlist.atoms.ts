@@ -29,6 +29,20 @@ export const  YScrollAtom: IAtomComponent = {
   },
 };
 
+export const FlexListAtom: IAtomComponent = {
+  view ( vnode ) {
+    return m('atom-flexlist', vnode.attrs, vnode.children);
+  },
+};
+
+export const FlexListHeaderAtom: IAtomComponent = {
+  view ( vnode ) {
+    return m('atom-flexlist-header',
+      m('h3.cfff.sair', vnode.children)
+    );
+  },
+};
+
 export const SpacerAtom: IAtomComponent = {
   view ( { attrs } ) {
     return m('atom-spacer', attrs, m.trust('&nbsp;'));
@@ -38,12 +52,6 @@ export const SpacerAtom: IAtomComponent = {
 export const GrowSpacerAtom: IAtomComponent = {
   view ( { attrs } ) {
     return m('atom-spacer.flex-grow', attrs, m.trust('&nbsp;'));
-  },
-};
-
-export const FlexListAtom: IAtomComponent = {
-  view ( vnode ) {
-    return m('atom-flexlist', vnode.attrs, vnode.children);
   },
 };
 
@@ -79,13 +87,7 @@ export const FlexListEntryAtom: IAtomComponent = {
   },
 };
 
-export const FlexListHeaderAtom: IAtomComponent = {
-  view ( vnode ) {
-    return m('atom-flexlist-header',
-      m('h3.cfff.sair', vnode.children)
-    );
-  },
-};
+
 
 export const FlexListMenuEntryAtom: IAtomComponent = {
   view ( vnode ) {
@@ -98,8 +100,8 @@ export const FlexListMenuEntryAtom: IAtomComponent = {
 
 
 
-export const FixedListAtom: IAtomComponent = {
-  view ( vnode ) {
-    return m('div.fixedlist.viewport-y', vnode.attrs, vnode.children);
-  },
-};
+// export const FixedListAtom: IAtomComponent = {
+//   view ( vnode ) {
+//     return m('div.fixedlist.viewport-y', vnode.attrs, vnode.children);
+//   },
+// };

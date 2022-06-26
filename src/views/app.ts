@@ -25,10 +25,17 @@ const App = {
 
   Env: '',
 
-  onback: HistoryService.onback,
-  onfore: HistoryService.onfore,
-  canBack: () => HistoryService.canBack,
   canFore: () => HistoryService.canFore,
+  canBack: () => HistoryService.canBack,
+  onfore: HistoryService.onfore,
+  onback: HistoryService.onback,
+  onbackormenu: (e: IEvent) => {
+    if (HistoryService.canBack) {
+      HistoryService.onback(e);
+    } else {
+      App.route('/start/');
+    }
+  },
 
   reset () {
     DB.reset();

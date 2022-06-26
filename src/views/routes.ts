@@ -7,7 +7,7 @@ import {
   SystemPage,
   ErrorPage,
   PreferencesPage,
-  CollectionsPage,
+  // CollectionsPage,
   HelpPage,
   GamesPage,
 }     from '@app/pages';
@@ -26,7 +26,7 @@ const RoutesConfig: IRoutesConfigs = {
     '/':                  [ LayoutCell, MenuPage,         ContentCell,   { title: 'Start 1',      description: ''}      ],
     '/start/':            [ LayoutCell, MenuPage,         ContentCell,   { title: 'Start',        description: ''}        ],
     '/games/':            [ LayoutCell, MenuPage,         ContentCell,   { title: 'Games',        description: ''}        ],
-    '/collections/':      [ LayoutCell, CollectionsPage,  ContentCell,   { title: 'Collections',  description: ''}  ],
+    '/collections/':      [ LayoutCell, MenuPage,         ContentCell,   { title: 'Collections',  description: ''}  ],
     '/collection/:uuid/': [ LayoutCell, GamesPage,        ContentCell,   { title: 'Collection',   description: ''}  ],
     '/games/:uuid/':      [ LayoutCell, GamesPage,        ContentCell,   { title: 'Games %s',     description: ''}    ],
     '/preferences/':      [ LayoutCell, PreferencesPage,  ContentCell,   { title: 'Preferences',  description: ''}  ],

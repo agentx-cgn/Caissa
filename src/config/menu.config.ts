@@ -2,6 +2,7 @@
 import iconChess from '/assets/images/chess.128.trans.png';
 
 import { IParams } from '@app/domain';
+import { CollectionsConfig } from './collections.config';
 
 type TDeco = {
   ifa?: string;
@@ -46,6 +47,14 @@ const MenuConfig: TMenuConfig = {
             subline: 'Break it',
         } ],
     ],
+
+    '/collections/': CollectionsConfig.map( coll => {
+        return [ '/collection/:uuid/', coll.caption, { uuid: coll.uuid }, {
+            img: coll.icon,
+            subline: coll.subline,
+        } ];
+    }),
+
 
     '/games/': [
 
