@@ -9,7 +9,6 @@ interface IEntry  {
   key:     string;
   route:   string;
   params:  IParams;
-  // page:    IPage<IPageAttrs>;
   page:    IPageComponent;
   options: TPageOptions;
   routeOptions: IRouteOptions;

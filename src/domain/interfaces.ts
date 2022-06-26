@@ -50,23 +50,31 @@ interface ILayoutAttrs extends IAppAttrs {
 }
 export interface ILayoutComponent extends m.Component<ILayoutAttrs> {};
 
+interface IPage {
+  name: string;
+  data: IPageData;
+  preventUpdates: boolean;
+}
 
-export interface IPageAttrs extends ICellAttrs, ITemplate, IAppAttrs {}
-export interface IPageState {
-  onmessage?: (source: string, msg: IMsg) => void;
-  onmatch?: (route: string, params: IParams, data: IPageData) => Promise<boolean>;
+interface IDispatcher {
+  send: (msg: IMsg) => void;
 }
 interface ITemplate {
+  onregister?: (dispatcher: IDispatcher) => void;
   onmessage?: (source: string, msg: IMsg) => void;
   onmatch?: (route: string, params: IParams, data: IPageData) => Promise<boolean>;
 }
+
+export interface IPageAttrs extends ICellAttrs, IAppAttrs {}
 
 export interface IPageTemplateAttrs extends IPageAttrs {}
 
-export interface IPageNode extends m.Component<IPageTemplateAttrs> {}
-export interface IPageTemplate extends m.Component<IPageTemplateAttrs, IPageState>, ITemplate {}
-export type IPageComponent<A=IPageAttrs, S=IPageState> = (vnode: m.Vnode<A,S>) => m.Component<A,S>;
-export type IAppPageComponent<A=IPageAttrs, S=IPageState> = () => m.Component<A,S>;
+export interface IPageTemplate extends m.Component<IPageTemplateAttrs, IPage>, ITemplate {};
+
+export interface IPageNode extends m.Component<IPageTemplateAttrs, IPage>, ITemplate, IPage {};
+
+export type IPageComponent<A=IPageAttrs, S=IPage> = (vnode: m.Vnode<A,S>) => IPageNode;
+export type IAppPageComponent = () => IPageNode;
 
 // export interface IPageComponent<A=IPageAttrs,S=IPageState> extends m.FactoryComponent<A,S> {
 // export interface IPageComponent extends m.Component<IPageAttrs, IPageState> {};

@@ -1,7 +1,7 @@
 
 import m from 'mithril';
 
-import { IPageData, IParams } from '@app/domain';
+import { IPageData, IParams, TGame } from '@app/domain';
 import { FactoryService, ProviderService }  from '@app/services';
 import { YScrollAtom, SectionTitleAtom, FlexListHeaderAtom, FlexListAtom } from '@app/atoms';
 
@@ -47,7 +47,7 @@ const GamesPage = FactoryService.create('Games', {
 
         const { params: { uuid }, className, style, options } = vnode.attrs;
 
-        console.log((vnode.state as any).data);
+        console.log(vnode.state.data);
 
         const provider = ProviderService.find( p => p.uuid === uuid );
 
@@ -91,7 +91,7 @@ const GamesPage = FactoryService.create('Games', {
               m(FlexListHeaderAtom, `lore ipsum dolor sit amet, consectetur adipiscing elit.` ),
               m(YScrollAtom,
                 m(FlexListAtom, [
-                  ...provider.games.map( ( game: any ) => {
+                  ...provider.games.map( ( game: TGame ) => {
                     return m('div', game.header.White);
                   } ),
                 ])

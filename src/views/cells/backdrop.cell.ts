@@ -27,8 +27,6 @@ const BackdropCell: m.Component<IAttrs, IState> & IState = {
     },
     view ( ) {
 
-      // const { callback } = vnode.attrs;
-
       return m('cell-backdrop', { onclick: (e: IEvent) => {
         e.redraw = false;
         BackdropCell.hide();

@@ -1,26 +1,26 @@
-import { IPageComponent, IPageTemplate, IPageNode } from "@app/domain";
+import { IPageComponent, IPageTemplate, IPageNode, IMsg } from "@app/domain";
 
 const DEBUG = false;
 
 const freezer = [] as IPageNode[];
 
-// interface IDispatcher {
-//   send: (msg: IMsg) => void;
-// }
-// const Dispatcher = function (source: string): IDispatcher {
+interface IDispatcher {
+  send: (msg: IMsg) => void;
+}
+const Dispatcher = function (source: string): IDispatcher {
 
-//   return {
-//     send (msg) {
-//       freezer.forEach( (page: any) => {
-//         if (typeof page.onmessage === 'function' && source !== page.name){
-//           DEBUG && console.log('dispatcher.sending', msg, 'to', page.name, 'from', source);
-//           page.onmessage(source, msg);
-//         }
-//       });
-//     },
-//   };
+  return {
+    send (msg) {
+      freezer.forEach( (page) => {
+        if (typeof page.onmessage === 'function' && source !== page.name){
+          DEBUG && console.log('dispatcher.sending', msg, 'to', page.name, 'from', source);
+          page.onmessage(source, msg);
+        }
+      });
+    },
+  };
 
-// };
+};
 
 const FactoryService = {
 
@@ -31,11 +31,10 @@ const FactoryService = {
     // make onafterupdates special in dispatcher
     // ensure comps have oncreate, with onafterupdates
 
-    // let vnode: INodeDOM<T>;
     let preventUpdates  = false;
 
     // before first view
-    // if (typeof tplPage.onregister === 'function') { tplPage.onregister(Dispatcher(name)); }
+    if (typeof tplPage.onregister === 'function') { tplPage.onregister(Dispatcher(name)); }
     // if (typeof tplPage.onresize   === 'function') { tplPage.onresize(innerWidth, innerHeight); }
 
     // https://mithril.js.org/lifecycle-methods.html#onbeforeupdate
@@ -61,18 +60,6 @@ const FactoryService = {
         preventUpdates = value;
       },
     }, tplPage);
-
-      // // monkeypatching
-      // page.oncreate = function (...args) {
-      //   // vnode = orgvnode;
-      //   tplPage.oncreate && tplPage.oncreate(...args);
-      // };
-      // if (page.onupdate){
-      //   page.onupdate = function (...args) {
-      //     // vnode = orgvnode;
-      //     tplPage.onupdate && tplPage.onupdate(...args);
-      //   };
-      // }
 
     freezer.push(pageNode as IPageNode);
 

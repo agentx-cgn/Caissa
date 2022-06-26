@@ -1,6 +1,5 @@
 import m from 'mithril';
 
-// import { IComponent, IPage, IPageAttrs, IPageComponent } from '@app/domain';
 import { App } from '@app/views';
 import { $, HistoryService as History, StageService } from '@app/services';
 
@@ -37,7 +36,7 @@ const StageCell: m.Component<{}, IState> & IState= {
 
     view ( ) {
 
-      const style = {};
+      const style = '';
       const slides = History.slides();
       const [ l, c, r ] = slides.entries;
 
@@ -50,9 +49,9 @@ const StageCell: m.Component<{}, IState> & IState= {
       // });
 
       return m('.pages', [
-        m(l.page as any, {route: l.route, params: l.params,  options: l.options, style, className: classLeft}),
-        m(c.page as any, {route: c.route, params: c.params,  options: c.options, style, className: classCenter}),
-        m(r.page as any, {route: r.route, params: r.params,  options: r.options, style, className: classRight}),
+        m(l.page as never, {route: l.route, params: l.params,  options: l.options, style, className: classLeft}),
+        m(c.page as never, {route: c.route, params: c.params,  options: c.options, style, className: classCenter}),
+        m(r.page as never, {route: r.route, params: r.params,  options: r.options, style, className: classRight}),
         m.fragment( {
             oncreate: () => setTimeout(onafterupdate, 100),
             onupdate: () => setTimeout(onafterupdate, 100)
