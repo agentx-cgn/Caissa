@@ -11,7 +11,7 @@ export const ContentCell: ICellComponent = {
   view ( ) {
 
     return m('cell-content', [
-      m(SectionTitleAtom, { className: '', style: '', onclick: ()=> {} }, 'Content'),
+      m(SectionTitleAtom, { title: 'Content', description: 'description' }, 'Content'),
       m(ToolbarCell,      { className: '', style: '' } ),
       m(ToolbarCell,      { className: '', style: '' } ),
       m(ChessboardCell,   { className: '', style: '' } ),

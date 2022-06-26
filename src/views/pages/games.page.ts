@@ -45,7 +45,7 @@ const GamesPage = FactoryService.create('Games', {
 
     view ( vnode ) {
 
-        const { params: { uuid }, className, style, options } = vnode.attrs;
+        const { params: { uuid }, className, style, options: { title, description } } = vnode.attrs;
 
         console.log(vnode.state.data);
 
@@ -54,7 +54,7 @@ const GamesPage = FactoryService.create('Games', {
         if (!provider) {
 
           return m('div.page.games', { className, style }, [
-            m(SectionTitleAtom, options.title ),
+            m(SectionTitleAtom, { title, description } ),
             m(FlexListHeaderAtom, `No gmaes found for '${uuid}'` ),
           ]);
 
@@ -87,7 +87,7 @@ const GamesPage = FactoryService.create('Games', {
 
             return m('div.page.games', { className, style }, [
 
-              m(SectionTitleAtom, options.title ),
+              m(SectionTitleAtom, { title, description } ),
               m(FlexListHeaderAtom, `lore ipsum dolor sit amet, consectetur adipiscing elit.` ),
               m(YScrollAtom,
                 m(FlexListAtom, [

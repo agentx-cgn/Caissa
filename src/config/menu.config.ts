@@ -19,9 +19,9 @@ const MenuConfig: TMenuConfig = {
     '/start/': [
 
         // route             caption        params
-        ['/games/',          'GAMES',       {},             {
+        ['/collections/',          'COLLECTIONS ',       {},             {
             ifa: 'fa-cogs',
-            subline: 'All games from a collection',
+            subline: 'Collections with remarkable chess games',
         } ],  // loads imported games so far
         ['/openings/',       'OPENINGS',    {},                     {
             ifa: 'fa-cogs',

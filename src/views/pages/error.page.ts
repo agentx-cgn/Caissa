@@ -8,10 +8,10 @@ const ErrorPage = FactoryService.create('Error', {
 
   view ( vnode) {
 
-    const { route } = vnode.attrs;
+    const { route, options: { title, description } } = vnode.attrs;
 
     return m('div.page.error', vnode.attrs, [
-      m(SectionTitleAtom,  'Error' ),
+      m(SectionTitleAtom,  { title, description } ),
       m(FlexListAtom, [
         m(SpacerAtom),
         m(FlexListTextAtom, `Route: ${route}` ),

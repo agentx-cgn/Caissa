@@ -8,10 +8,10 @@ const PreferencesPage = FactoryService.create('Preferences', {
   view ( vnode ) {
 
     const formgroups = Object.keys(DB.Options.first);
-    const { className, style } = vnode.attrs;
+    const { className, style, options: { title, description } } = vnode.attrs;
 
     return m('div.page.options', { className, style }, [
-      m(SectionTitleAtom, 'Preferences'),
+      m(SectionTitleAtom, { title, description }),
       m('div.viewport-y', [
         //TODO: use formgrous to hide uuid
         ...formgroups.map( formgroup => {

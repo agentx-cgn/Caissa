@@ -31,7 +31,7 @@ export const SplashCell: ICellComponent = {
 
     return m('cell-splash', { className, style }, [
 
-      m(SectionTitleAtom, { className: '', style: '', onclick: ()=>{} }, 'Welcome'),
+      m(SectionTitleAtom, { title: 'Welcome', description: '' }),
       m(FlexListHeaderAtom, `${pjson.name} - ${pjson.description}`),
 
       m(YScrollAtom, [

@@ -27,6 +27,7 @@ const RoutesConfig: IRoutesConfigs = {
     '/start/':            [ LayoutCell, MenuPage,         ContentCell,   { title: 'Start',        description: ''}        ],
     '/games/':            [ LayoutCell, MenuPage,         ContentCell,   { title: 'Games',        description: ''}        ],
     '/collections/':      [ LayoutCell, CollectionsPage,  ContentCell,   { title: 'Collections',  description: ''}  ],
+    '/collection/:uuid/': [ LayoutCell, GamesPage,        ContentCell,   { title: 'Collection',   description: ''}  ],
     '/games/:uuid/':      [ LayoutCell, GamesPage,        ContentCell,   { title: 'Games %s',     description: ''}    ],
     '/preferences/':      [ LayoutCell, PreferencesPage,  ContentCell,   { title: 'Preferences',  description: ''}  ],
     '/help/':             [ LayoutCell, HelpPage,         Nothing,       { title: 'Help',         description: ''}         ],

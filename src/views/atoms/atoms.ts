@@ -8,15 +8,16 @@ export const NothingAtom: IAtomComponent = {
   },
 };
 interface ITitleAttrs extends IAtomAttrs {
-  className: string;
-  style: string;
-  onclick: (e: IEvent) => void;
+  onclick?: (e: IEvent) => void;
+  title: string;
+  description: string;
 }
 export const SectionTitleAtom: IAtomComponent<ITitleAttrs> = {
-  view ( { attrs, children } ) {
-    const { className, style, onclick } = attrs;;
-    return m('atom-section-title', { className, onclick },
-      m('h2.f3.sair.white.pl2.mt3', { style }, children),
+  view ( { attrs } ) {
+    const { title, description, onclick } = attrs;;
+    return m('atom-section-title', { onclick },
+      m('h2.f3.sair.white.pl2.mt3',  title),
+      m('div.f4.sair.white.pl2.mt3',  description),
     );
   }
 };

@@ -19,10 +19,10 @@ const CollectionsPage = FactoryService.create('Collections', {
 
   view ( vnode) {
 
-    const { options, className, style } = vnode.attrs;
+    const { className, style, options: { title, description } } = vnode.attrs;
 
     return m('div.page.collections', { className, style }, [
-      m(SectionTitleAtom, options.title ),
+      m(SectionTitleAtom, { title, description } ),
       m(FlexListHeaderAtom, `lore ipsum dolor sit amet, consectetur adipiscing elit.` ),
       m(YScrollAtom,
         m(FlexListAtom, [

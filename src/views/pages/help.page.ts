@@ -7,8 +7,10 @@ const HelpPage = FactoryService.create('Help', {
 
   view ( vnode ) {
 
+    const { options: { title, description } } = vnode.attrs;
+
     return m('div.page.help', vnode.attrs,
-      m(SectionTitleAtom, 'Help'),
+      m(SectionTitleAtom, { title, description }),
       m(SpacerAtom),
     );
 

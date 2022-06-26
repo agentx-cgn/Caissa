@@ -10,7 +10,7 @@ export const AsideCell: ICellComponent = {
     const { className, style } = vnode.attrs;
 
     return m('cell-aside', { className, style }, [
-      m(SectionTitleAtom, { className: '', style: '', onclick: ()=> {} }, 'Analyzer'),
+      m(SectionTitleAtom, { title: 'Analysis', description: 'Engine results' }),
       m('engine-output', { className: '', style: 'height: 100%; width: 100%; background-color: yellow'  }, 'Engine output'),
     ]);
 

@@ -35,13 +35,12 @@ const MenuPage = FactoryService.create('Menu', {
 
   view ( vnode ) {
 
-    const { route, options, className, style } = vnode.attrs;
+    const { route, className, style, options: { title, description } } = vnode.attrs;
 
-    const pageTitle = options.title;
     const menuList  = MenuConfig[route];
 
     return m('div.page.menu', { className, style },
-      m(SectionTitleAtom, pageTitle),
+      m(SectionTitleAtom, { title, description }),
       m(SpacerAtom),
       m(FlexListAtom, [
         ...menuList.map( ( menuEntry: TMenuEntry ) => {
