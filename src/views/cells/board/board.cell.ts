@@ -8,7 +8,7 @@ import { ICellComponent } from '@app/domain';
 
 const $ = document.querySelector.bind(document);
 
-const listener = (e: Event) => {
+const listener = () => {
 
   const $board  = $('cell-board') as HTMLElement;
   const $img    = $('img.fake') as HTMLImageElement;
@@ -25,13 +25,13 @@ const listener = (e: Event) => {
 
 export const ChessboardCell: ICellComponent = {
 
-  oncreate(vnode) {
+  oncreate () {
     window.addEventListener('resize', listener);
   },
 
   view ( vnode ) {
 
-    const { className, style } = vnode.attrs;
+    const { className } = vnode.attrs;
 
     return  m('cell-board', [
       m('cell-board-sizer'),

@@ -1,22 +1,21 @@
 
 import m from 'mithril';
 
-import { IPageData, IParams } from '@app/domain';
-import { H, FactoryService, ProviderService }  from '@app/services';
+import { FactoryService, ProviderService }  from '@app/services';
 import { YScrollAtom, SectionTitleAtom, FlexListHeaderAtom, FlexListAtom } from '@app/atoms';
 import { FlexListProviderCell } from '@app/cells';
 
 const CollectionsPage = FactoryService.create('Collections', {
 
-  async onmatch (route: string, params: IParams, data: IPageData): Promise<boolean> {
+  // async onmatch (route: string, params: IParams, data: IPageData): Promise<boolean> {
 
-    console.log('CollectionsPage.onmatch', route, params);
+  //   console.log('CollectionsPage.onmatch', route, params);
 
-    await H.wait(200);
+  //   await H.wait(200);
 
-    return Promise.resolve(true);
+  //   return Promise.resolve(true);
 
-  },
+  // },
 
   view ( vnode) {
 

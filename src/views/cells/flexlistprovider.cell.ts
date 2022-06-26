@@ -13,7 +13,7 @@ const FlexListProviderCell: ICellComponent<IAttrs> = {
 
   view ( vnode ) {
 
-    const { className, style, provider } = vnode.attrs;
+    const { provider } = vnode.attrs;
 
     const onclick = async (e: IEvent) => {
       e.redraw = false;

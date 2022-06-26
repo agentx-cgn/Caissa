@@ -14,18 +14,18 @@ import { AsideCell } from './../aside/aside.cell';
 import { FooterCell } from './../footer/footer.cell';
 import { SplashCell } from './../splash/splash.cell';
 
-let break2: number, break3: number;
+let break2: number;
 
 const LayoutCell: ILayoutComponent = {
 
   oninit () {
     break2 = parseInt(H.cssvar('--mediabreak2'), 10);
-    break3 = parseInt(H.cssvar('--mediabreak3'), 10);
+  //   break3 = parseInt(H.cssvar('--mediabreak3'), 10);
   },
 
   view ( vnode ) {
 
-    const { center, options, route, params } = vnode.attrs;
+    const { center } = vnode.attrs;
     const showSplash = DB.Options.first.ui.waitscreen;
 
     return m('cell-layout',

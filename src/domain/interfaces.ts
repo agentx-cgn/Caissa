@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import m, { Attributes } from 'mithril';
+import m  from 'mithril';
 import { Move } from 'chess.js';
 // import { ICheckboxAttrs } from '@app/atoms';
 
@@ -51,7 +51,7 @@ interface ILayoutAttrs extends IAppAttrs {
 export interface ILayoutComponent extends m.Component<ILayoutAttrs> {};
 
 
-export interface IPageAttrs extends ICellAttrs, IAppAttrs {}
+export interface IPageAttrs extends ICellAttrs, ITemplate, IAppAttrs {}
 export interface IPageState {
   onmessage?: (source: string, msg: IMsg) => void;
   onmatch?: (route: string, params: IParams, data: IPageData) => Promise<boolean>;
@@ -66,6 +66,7 @@ export interface IPageTemplateAttrs extends IPageAttrs {}
 export interface IPageNode extends m.Component<IPageTemplateAttrs> {}
 export interface IPageTemplate extends m.Component<IPageTemplateAttrs, IPageState>, ITemplate {}
 export type IPageComponent<A=IPageAttrs, S=IPageState> = (vnode: m.Vnode<A,S>) => m.Component<A,S>;
+export type IAppPageComponent<A=IPageAttrs, S=IPageState> = () => m.Component<A,S>;
 
 // export interface IPageComponent<A=IPageAttrs,S=IPageState> extends m.FactoryComponent<A,S> {
 // export interface IPageComponent extends m.Component<IPageAttrs, IPageState> {};
@@ -149,9 +150,9 @@ export interface IRoutesConfigs {
   [route: string]: TRouteConfig;
 }
 
-export interface IDispatcher {
-  send: (msg: IMsg) => void;
-}
+// export interface IDispatcher {
+//   send: (msg: IMsg) => void;
+// }
 export interface IRouteOptions {
   redraw?: boolean;
   replace?: boolean;

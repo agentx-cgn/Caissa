@@ -3,7 +3,7 @@ import './menu.page.scss';
 
 import { MenuConfig, TMenuEntry } from '@app/config';
 import { App } from '@app/views';
-import { IEvent, IPageAttrs, IParams } from '@app/domain';
+import { IEvent, IParams } from '@app/domain';
 import { FactoryService } from '@app/services';
 import { SectionTitleAtom, SpacerAtom, FlexListAtom, TextLeftAtom, FlexListMenuEntryAtom, NothingAtom} from '@app/atoms';
 

@@ -22,6 +22,8 @@
     "importHelpers": true,
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "paths": {
       "@app/views":     ["src/views/index.ts"],
       "@app/pages":     ["src/views/pages/index.ts"],

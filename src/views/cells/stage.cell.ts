@@ -44,12 +44,10 @@ const StageCell: m.Component<{}, IState> & IState= {
       // keep this
       anim = slides.anim;
 
-      slides.entries.forEach( entry => {
-        // console.log(entry.params);
-        // entry.page.preventUpdates = false;
-      });
-
-      // console.log('Stage', slides.names);
+      // slides.entries.forEach( entry => {
+      //   // console.log(entry.params);
+      //   // entry.page.preventUpdates = false;
+      // });
 
       return m('.pages', [
         m(l.page as any, {route: l.route, params: l.params,  options: l.options, style, className: classLeft}),
@@ -67,7 +65,7 @@ const StageCell: m.Component<{}, IState> & IState= {
 
 function onafterupdate ( ) {
 
-  // console.log('onafterupdate.in', anim);
+  DEBUG && console.log('onafterupdate.in', anim);
 
   const $Left   = $('div.slide.left');
   const $Center = $('div.slide.center');

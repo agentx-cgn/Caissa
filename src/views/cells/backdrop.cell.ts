@@ -4,7 +4,7 @@ import { IEvent, TVoid } from '@app/domain';
 
 const $ = document.querySelector.bind(document);
 
-let callback = null;
+let callback = () => {};
 
 // https://github.com/MithrilJS/mithril.d.ts/blob/master/test/test-component.ts#L119
 
@@ -25,9 +25,9 @@ const BackdropCell: m.Component<IAttrs, IState> & IState = {
     hide () {
       $('cell-backdrop')!.classList.remove('visible');
     },
-    view ( vnode ) {
+    view ( ) {
 
-      const { callback } = vnode.attrs;
+      // const { callback } = vnode.attrs;
 
       return m('cell-backdrop', { onclick: (e: IEvent) => {
         e.redraw = false;

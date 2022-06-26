@@ -3,7 +3,7 @@ import screenfull  from 'screenfull';
 import './header.scss';
 
 import { App } from '@app/views';
-import { IAppAttrs, ICellAttrs, ICellComponent, IEvent } from '@app/domain';
+import { ICellComponent, IEvent } from '@app/domain';
 import { NavigationCell }  from './navigation.cell';
 
 // interface IAttrs extends ICellAttrs, IAppAttrs {}

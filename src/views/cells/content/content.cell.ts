@@ -8,9 +8,7 @@ import { ICellComponent } from '@app/domain';
 import { SectionTitleAtom } from '@app/atoms';
 
 export const ContentCell: ICellComponent = {
-  view ( vnode ) {
-
-    const { className, style } = vnode.attrs;
+  view ( ) {
 
     return m('cell-content', [
       m(SectionTitleAtom, { className: '', style: '', onclick: ()=> {} }, 'Content'),

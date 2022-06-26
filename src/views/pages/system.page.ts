@@ -2,7 +2,7 @@
 import './system.page.scss';
 
 import m from 'mithril';
-import { IEvent, IPageAttrs } from '@app/domain';
+import { IEvent } from '@app/domain';
 
 import { App } from '@app/views';
 import { AppConfig } from '@app/config';
