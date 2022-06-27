@@ -7,16 +7,32 @@ import { ICellComponent } from '@app/domain';
 
 const $ = document.querySelector.bind(document);
 
-// const DEBUG = true;
+const DEBUG = true;
 
-let chessBoard;
+let chessBoard: any;
 
+const listener = () => {
+
+  const $board  = $('cell-board') as HTMLElement;
+  const $eval   = $('cell-board-evaluation') as HTMLElement;
+  const $chessboard = $('div.chessboard')  as HTMLElement;
+
+  if ($board && $eval && $chessboard) {
+    const rect    = $board.getBoundingClientRect();
+    $chessboard.style.width  = `${rect.width -24}px`;
+    $chessboard.style.height = `${rect.width -24}px`;
+    $eval.style.minHeight = `${rect.width -24}px`;
+  }
+
+};
 
 const ChessboardCell: ICellComponent = {
 
   // onresize : Tools.Board.resize,
 
   oncreate (  ) {
+
+    window.addEventListener('resize', listener);
 
     // const { board } = vnode.attrs;
 
@@ -26,9 +42,9 @@ const ChessboardCell: ICellComponent = {
       responsive: true, // resizes the board based on element size
       animationDuration: 300, // pieces animation duration in milliseconds. Disable all animation with `0`.
       style: {
-        cssClass: "green", // set the css theme of the board, try "green", "blue" or "chess-club"
+        cssClass: "black-and-white", // set the css theme of the board, try "green", "blue" or "chess-club"
         showCoordinates: true, // show ranks and files
-        borderType: BORDER_TYPE.none, // "thin" thin border, "frame" wide border with coordinates in it, "none" no border
+        borderType: BORDER_TYPE.frame, // "thin" thin border, "frame" wide border with coordinates in it, "none" no border
         aspectRatio: 1, // height/width of the board
         moveFromMarker: MARKER_TYPE.frame, // the marker used to mark the start square
         moveToMarker: MARKER_TYPE.frame, // the marker used to mark the square where the figure is moving to
@@ -43,11 +59,11 @@ const ChessboardCell: ICellComponent = {
     chessBoard.enableMoveInput((event: any) => {
       switch (event.type) {
           case INPUT_EVENT_TYPE.moveStart:
-              console.log(`moveStart: ${event.square}`)
+              console.log(`moveStart: ${event.square}`);
               // return `true`, if input is accepted/valid, `false` aborts the interaction, the piece will not move
               return true;
           case INPUT_EVENT_TYPE.moveDone:
-              console.log(`moveDone: ${event.squareFrom}-${event.squareTo}`)
+              console.log(`moveDone: ${event.squareFrom}-${event.squareTo}`);
               // return true, if input is accepted/valid, `false` takes the move back
               return true;
           case INPUT_EVENT_TYPE.moveCanceled:
@@ -59,6 +75,7 @@ const ChessboardCell: ICellComponent = {
       }, COLOR.white);
 
       console.log(chessBoard);
+      listener();
 
     //   chessBoard.initialization.then( () => {
     //     //   chessBoard.disableContextInput();
@@ -104,10 +121,10 @@ const ChessboardCell: ICellComponent = {
       // $chessboard.removeEventListener('mousedown', controller.listener.onmousedown);
       // $chessboard.removeEventListener('touchdown', controller.listener.ontouchdown);
 
-      // return chessBoard.destroy().then( () => {
-      //     chessBoard = undefined;
-      //     DEBUG && console.log('chessboard.destroyed');
-      // });
+      return chessBoard.destroy().then( () => {
+          chessBoard = undefined;
+          DEBUG && console.log('chessboard.destroyed');
+      });
 
   },
 };
