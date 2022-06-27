@@ -15,7 +15,13 @@ try {
     const Routes: m.RouteDefs = H.transform(RoutesConfig, App.resolver);
 
     // setup routes + strategy and wire up mithril app to DOM
-    m.route.prefix = '#!';
+    m.route.prefix = (
+        // location.host === 'localhost:3000'              ? ''   :
+        location.host === 'caissa.js.orglocalhost:3000' ? '#!' :
+        '#!'
+    );
+
+    '#!';
     m.route($root!, DefaultRoute, Routes);
 
     // make App available in console

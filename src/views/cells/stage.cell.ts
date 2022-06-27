@@ -3,7 +3,7 @@ import m from 'mithril';
 import { App } from '@app/views';
 import { $, HistoryService as History, StageService } from '@app/services';
 
-const DEBUG = true;
+const DEBUG = false;
 
 const classLeft   = 'slide left trans-left';
 const classCenter = 'slide center trans-center';

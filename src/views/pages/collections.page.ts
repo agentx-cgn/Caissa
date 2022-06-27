@@ -2,7 +2,7 @@
 import m from 'mithril';
 
 import { FactoryService, ProviderService }  from '@app/services';
-import { YScrollAtom, SectionTitleAtom, FlexListHeaderAtom, FlexListAtom } from '@app/atoms';
+import { YScrollAtom, SectionTitleAtom, FlexListHeaderAtom, FlexListAtom, FlexListLinkAtom } from '@app/atoms';
 import { FlexListProviderCell } from '@app/cells';
 
 const CollectionsPage = FactoryService.create('Collections', {
@@ -24,6 +24,7 @@ const CollectionsPage = FactoryService.create('Collections', {
     return m('div.page.collections', { className, style }, [
       m(SectionTitleAtom, { title, description } ),
       m(FlexListHeaderAtom, `lore ipsum dolor sit amet, consectetur adipiscing elit.` ),
+      m(FlexListLinkAtom, { route: '', params: {} }, 'This is a Link' ),
       m(YScrollAtom,
         m(FlexListAtom, [
           ...ProviderService.collections.map( ( collection ) => {
@@ -38,5 +39,6 @@ const CollectionsPage = FactoryService.create('Collections', {
   },
 
 });
+
 
 export { CollectionsPage };

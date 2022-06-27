@@ -66,26 +66,26 @@ Games are always pgn files and the provider also parses them into moves
 const providers = [] as ICollectionProvider[];
 
 
-const ImportProvider = function (collection: ICollection): ICollectionProvider {
+const ImportProvider = function (cfgCollection: ICollection): ICollectionProvider {
 
     const provider = {
 
-        ...collection ,
+        ...cfgCollection ,
 
         error:    '',
         progress: 0,
-        games:    [] as IGameTree[],
+        collection:    [] as IGameTree[],
         header () {
             return `${provider.caption} `;
         },
         fetch () {
             provider.progress = 10;
             return new Promise<void> ((resolve /*, reject */ ) => {
-                const parseTree   = PgnService.parseGames(collection.source);
+                const parseTree   = PgnService.parseGames(cfgCollection.source);
                 provider.progress = 60;
-                provider.games    = PgnService.processGames(parseTree);
+                provider.collection    = PgnService.processGames(parseTree);
                 provider.progress = 0;
-                console.log(provider.caption, provider.games.length);
+                console.log(provider.caption, provider.collection.length);
                 resolve();
             });
         },
@@ -94,17 +94,17 @@ const ImportProvider = function (collection: ICollection): ICollectionProvider {
     return provider;
 };
 
-const UrlProvider = function (collection: ICollection): ICollectionProvider {
+const UrlProvider = function (cfgCollection: ICollection): ICollectionProvider {
 
     const provider = {
 
-        ...collection ,
+        ...cfgCollection ,
 
         error:    '',
         progress: 0,
-        games:    [] as IGameTree[],
+        collection:    [] as IGameTree[],
         header () {
-            return `${provider.games.length} downloaded Games`;
+            return `${provider.collection.length} downloaded Games`;
         },
         fetch () {
             provider.progress = 10;
@@ -122,8 +122,8 @@ const UrlProvider = function (collection: ICollection): ICollectionProvider {
                 })
                 .then( parseTree => {
                     provider.progress = 70;
-                    provider.games = PgnService.processGames(parseTree);
-                    console.log(provider.caption, provider.games.length);
+                    provider.collection = PgnService.processGames(parseTree);
+                    console.log(provider.caption, provider.collection.length);
                     provider.progress = 0;
                 })
                 .catch( e => {
@@ -142,12 +142,12 @@ const ProviderService = {
 
   collections: CollectionsConfig,
 
-  createProvider (collection: ICollection): ICollectionProvider {
+  createProvider (cfgCollection: ICollection): ICollectionProvider {
 
     const provider = (
-      collection.provider === 'UrlProvider'    ? UrlProvider(collection)    :
+      cfgCollection.provider === 'UrlProvider'    ? UrlProvider(cfgCollection)    :
       // collection.provider === 'ImportProvider' ? ImportProvider(collection) :
-      ImportProvider(collection)
+      ImportProvider(cfgCollection)
     );
 
     providers.push(provider);
@@ -163,9 +163,9 @@ const ProviderService = {
       return provider;
 
     } else {
-      const collection = CollectionsConfig.find( c => c.uuid === uuid );
-      if (collection) {
-        provider = this.createProvider(collection);
+      const cfgCollection = CollectionsConfig.find( c => c.uuid === uuid );
+      if (cfgCollection) {
+        provider = this.createProvider(cfgCollection);
         await provider.fetch();
         return provider;
       }

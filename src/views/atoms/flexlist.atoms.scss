@@ -45,7 +45,6 @@ atom-flexlist {
     atom-flexlist-text {
         padding: 0.7rem 1rem ;
         border-bottom: 1px solid #ccc;
-
     }
 
     atom-flexlist-image {
@@ -80,6 +79,14 @@ atom-flexlist {
 }
 
 atom-flexlist-header {
+    padding: 0.7rem 1rem ;
+    border-bottom: 1px solid #ccc;
+}
+
+atom-flexlist-link {
+    cursor: pointer;
+    display: block;
+    position: relative;
     padding: 0.7rem 1rem ;
     border-bottom: 1px solid #ccc;
 }

@@ -12,11 +12,11 @@ const DEBUG = true;
 // const read  = H.interprete;
 // let filter  = '';
 
-const GamesPage = FactoryService.create('Games', {
+const CollectionPage = FactoryService.create('Games', {
 
   async onmatch (route: string, params: IParams, data: IPageData): Promise<unknown> {
 
-    console.log('GamesPage.onmatch', route, params);
+    console.log('CollectionPage.onmatch', route, params);
 
     Object.assign(data, { test3: 'test3' });
 
@@ -53,7 +53,7 @@ const GamesPage = FactoryService.create('Games', {
 
         if (!provider) {
 
-          return m('div.page.games', { className, style }, [
+          return m('div.page.collection', { className, style }, [
             m(SectionTitleAtom, { title, description } ),
             m(FlexListHeaderAtom, `No games found for '${uuid}'` ),
             m(FlexListLinkAtom, { route: '', params: {} }, 'This is a Link' ),
@@ -86,7 +86,7 @@ const GamesPage = FactoryService.create('Games', {
               //         :  true;
               // });
 
-            return m('div.page.games', { className, style }, [
+            return m('div.page.collection', { className, style }, [
 
               m(SectionTitleAtom, { title, description } ),
               m(FlexListHeaderAtom, `lore ipsum dolor sit amet, consectetur adipiscing elit.` ),
@@ -120,4 +120,4 @@ const GamesPage = FactoryService.create('Games', {
 
 });
 
-export { GamesPage };
+export { CollectionPage };

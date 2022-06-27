@@ -17,7 +17,7 @@ const FlexListProviderCell: ICellComponent<IAttrs> = {
 
     const onclick = async (e: IEvent) => {
       e.redraw = false;
-      if (!provider.games.length){
+      if (!provider.collection.length){
           await provider.fetch();
           if (!provider.error){
               App.route('/games/:uuid/', {uuid: provider.uuid});
@@ -35,8 +35,8 @@ const FlexListProviderCell: ICellComponent<IAttrs> = {
       provider.subline
         ? m('div.source-subline.f5', provider.subline)
         : m('div.source-subline.f5.ellipsis', provider.subline),
-      provider.games!.length
-        ? m('div.games-loaded', provider.games!.length + ' games loaded')
+      provider.collection!.length
+        ? m('div.games-loaded', provider.collection!.length + ' games loaded')
         : '',
       provider.error
         ? m('div.source-error.f5', provider.error)

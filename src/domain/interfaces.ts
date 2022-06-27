@@ -59,7 +59,7 @@ interface IDispatcher {
 interface ITemplate {
   onregister?: (dispatcher: IDispatcher) => void;
   onmessage?: (source: string, msg: IMsg) => void;
-  onmatch?: (route: string, params: IParams, data: IPageData) => Promise<boolean>;
+  onmatch?: (route: string, params: IParams, data: IPageData) => Promise<unknown>;
 }
 
 export interface IPageAttrs extends ICellAttrs, IAppAttrs {}
@@ -113,7 +113,7 @@ export type ICollection = {
 }
 
 export interface ICollectionProvider extends ICollection {
-  games: IGameTree[];
+  collection: IGameTree[];
   error: string;
   progress: number;
   header: () => string;

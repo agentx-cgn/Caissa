@@ -19,6 +19,7 @@ const onclick  = (route: string, params: IParams) => {
 
 const createMenuEntry = ( [route, label, params, extras]: TMenuEntry) => {
   return m(FlexListMenuEntryAtom, { onclick: onclick(route, params) }, [
+  // return m(FlexListMenuEntryAtom, { route, params }, [
     m(TextLeftAtom, [
       extras.img
         ? m('img.menu', { src: extras.img, width: 22, height: 22 })

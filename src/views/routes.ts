@@ -10,6 +10,7 @@ import {
   // CollectionsPage,
   HelpPage,
   GamesPage,
+  CollectionPage,
 }     from '@app/pages';
 
 const Nothing: ICellComponent = {
@@ -23,13 +24,13 @@ const RoutesConfig: IRoutesConfigs = {
     // routes must start with '/'
     // Route                Layout  Page              Content          Options (Title)
 
-    '/':                  [ LayoutCell, MenuPage,         ContentCell,   { title: 'Start 1',      description: ''}      ],
-    '/start/':            [ LayoutCell, MenuPage,         ContentCell,   { title: 'Start',        description: ''}        ],
-    '/games/':            [ LayoutCell, MenuPage,         ContentCell,   { title: 'Games',        description: ''}        ],
-    '/collections/':      [ LayoutCell, MenuPage,         ContentCell,   { title: 'Collections',  description: ''}  ],
-    '/collection/:uuid/': [ LayoutCell, GamesPage,        ContentCell,   { title: 'Collection',   description: ''}  ],
-    '/games/:uuid/':      [ LayoutCell, GamesPage,        ContentCell,   { title: 'Games %s',     description: ''}    ],
-    '/preferences/':      [ LayoutCell, PreferencesPage,  ContentCell,   { title: 'Preferences',  description: ''}  ],
+    '/':                  [ LayoutCell, MenuPage,         ContentCell,   { title: 'Start 1',      description: 'aaa'}      ],
+    '/start/':            [ LayoutCell, MenuPage,         ContentCell,   { title: 'Start',        description: 'aab'}        ],
+    '/games/':            [ LayoutCell, MenuPage,         ContentCell,   { title: 'Games',        description: 'aac'}        ],
+    '/collections/':      [ LayoutCell, MenuPage,         ContentCell,   { title: 'Collections',  description: 'aad'}  ],
+    '/collection/:uuid/': [ LayoutCell, CollectionPage,   ContentCell,   { title: 'Collection',   description: 'aae'}  ],
+    '/games/:uuid/':      [ LayoutCell, GamesPage,        ContentCell,   { title: 'Games %s',     description: 'aaf'}    ],
+    '/preferences/':      [ LayoutCell, PreferencesPage,  ContentCell,   { title: 'Preferences',  description: 'aag'}  ],
     '/help/':             [ LayoutCell, HelpPage,         Nothing,       { title: 'Help',         description: ''}         ],
     '/system/':           [ LayoutCell, SystemPage,       Nothing,       { title: 'System',       description: ''}       ],
     '/system/:module/':   [ LayoutCell, SystemPage,       Nothing,       { title: 'System %s',    description: ''}    ],

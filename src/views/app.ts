@@ -1,6 +1,7 @@
 import m from 'mithril';
 
-import { IEvent, IParams, IRouteOptions, TPageOptions, TRouteConfig, IAppComponent, IPageComponent, IAppPageComponent  } from '@app/domain';
+// import { IAppPageComponent} from '@app/domain';
+import { IEvent, IParams, IRouteOptions, TPageOptions, TRouteConfig, IAppComponent } from '@app/domain';
 import { AppConfig, OptionsConfig as Options} from '@app/config';
 import { RoutesConfig, DefaultRoute } from './routes';
 
@@ -33,7 +34,7 @@ const App = {
     if (HistoryService.canBack) {
       HistoryService.onback(e);
     } else {
-      App.route('/start/');
+      App.route(DefaultRoute);
     }
   },
 
@@ -104,7 +105,7 @@ const App = {
     const cfgRoute = RoutesConfig[route];
 
     if (cfgRoute) {
-      DEBUG && console.log('%cApp.route.in %s %s %s', 'color:darkred; font-weight: 800', route, H.shrink(params), H.shrink(routeOptions) );
+      DEBUG && console.log('%cApp.route.in %s', 'color:darkred; font-weight: 800', route, H.shrink(params), H.shrink(routeOptions) );
       HistoryService.prepare(route, params, {} as TPageOptions, routeOptions);
       m.route.set(route, params, routeOptions);
 
@@ -123,44 +124,45 @@ const App = {
     return {
 
       // The onmatch hook is called when the router needs to find a component to render.
-      onmatch ( params: IParams, _requestedPath: string, route: string ): m.Component | Promise<IPageComponent> | void {
+      onmatch ( params: IParams, _requestedPath: string, route: string ): Promise<unknown> | void {
 
         try {
 
-          // if (DEBUG) {
-          //   redraws && console.log(' ');
-          //   const target  = m.buildPathname(route, params);
-          //   const current = HistoryService.isCurrent(target) ? 'current' : 'new';
-          //   console.log('%cApp.onmatch.in %s %s ', 'color:darkblue; font-weight: 800', target, current);
-          // }
+          if (DEBUG) {
+            console.log(' ');
+            const target  = m.buildPathname(route, params);
+            const current = HistoryService.isCurrent(target) ? 'current' : 'new';
+            console.log('%cApp.onmatch.in ', 'color:darkblue; font-weight: 800', target, current);
+          }
 
           HistoryService.prepare(route, params, options);
 
-          const comp = (page as IAppPageComponent)();
-          if (comp.onmatch) {
-            Object.assign(comp.data, { test2: 'test2' });
-            return comp.onmatch(route, params, comp.data)
-              .then( () => Promise.resolve(App.comp as never))
-            ;
-          }
+          // const comp = (page as IAppPageComponent)();
+          // if (comp.onmatch) {
+          //   Object.assign(comp.data, { test2: 'test2' });
+          //   return comp.onmatch(route, params, comp.data);
+          //     // .then( () => Promise.resolve(App.comp as never))
+          //   ;
+          // }
 
-        } catch (e) {console.log(JSON.stringify(e), e);}
+        } catch (e) {console.warn('App.resolver.error', route, e);}
 
       },
 
       // The render method is called on every redraw for a matching route.
       render ( vnode ) {
 
-        // if (DEBUG){
-        //   const target  = m.buildPathname(route, vnode.attrs);
-        //   const current = HistoryService.isCurrent(target) ? 'current' : 'new';
-        //   const style   = 'color:darkorange; font-weight: 800';
-        //   console.log('%cApp.render.in %s %s', style, target, current);
-        // }
+        if (DEBUG){
+          const target  = m.buildPathname(route, vnode.attrs);
+          const current = HistoryService.isCurrent(target) ? 'current' : 'new';
+          const style   = 'color:darkorange; font-weight: 800';
+          console.log('%cApp.render.in', style, target, current);
+        }
 
         HistoryService.finalize(route, vnode.attrs, options, page);
 
         return m(App.comp, { route, params: vnode.attrs, options });
+
       },
     };
 
@@ -173,11 +175,11 @@ const App = {
       const { route, params, options } = vnode.attrs;
       const [ layout, _, center ] = RoutesConfig[route];
 
-      // if ( DEBUG ) {
-      //   const target = m.buildPathname(route, params);
-      //   const style  = 'color:darkgreen; font-weight: 800';
-      //   console.log('%cApp.view.in %s %s', style, target, HistoryService.animation);
-      // }
+      if ( DEBUG ) {
+        const target = m.buildPathname(route, params);
+        const style  = 'color:darkgreen; font-weight: 800';
+        console.log('%cApp.view.in', style, target, HistoryService.animation);
+      }
 
       //TODO: this is actually dynamic
       document.title = options.title;

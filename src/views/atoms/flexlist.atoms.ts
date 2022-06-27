@@ -1,19 +1,25 @@
 import m from 'mithril';
-import { Ripple as RipplePoly } from 'polythene-mithril';
+// import { Ripple as RipplePoly } from 'polythene-mithril';
 
 import { IAtomAttrs, IAtomComponent, IEvent} from '@app/domain';
+import { App } from '@app/views';
 
-const RippleAtom: IAtomComponent = {
-  view ( ) {
-    return m(RipplePoly, {
-      startOpacity: 0.7,
-      duration: 0.5,
-      style: {
-        color: "#fff8"
-      }
-    });
-  },
-};
+// interface IRippleAttrs extends IAtomAttrs {
+//   onend?: (e: IEvent) => void;
+// }
+// const RippleAtom: IAtomComponent<IRippleAttrs> = {
+//   view ( vnode ) {
+//     const { onend } = vnode.attrs;
+//     return m(RipplePoly, {
+//       startOpacity: 0.7,
+//       duration: 1.5,
+//       style: {
+//         color: "#fff8"
+//       },
+//       end: onend
+//     });
+//   },
+// };
 
 export const NothingAtom: IAtomComponent = {
   view ( ) {
@@ -107,8 +113,40 @@ export const FlexListEntryAtom: IAtomComponent = {
 export const FlexListMenuEntryAtom: IAtomComponent = {
   view ( vnode ) {
     return m('atom-flexlist-menu-entry.db.relative', vnode.attrs,
-    m(RippleAtom),
+    // m(RippleAtom),
     vnode.children);
+  },
+};
+// export const FlexListMenuEntryAtom: IAtomComponent<ILinkAttrs> = {
+//   view ( vnode ) {
+//     const { route, params } = vnode.attrs;
+//     const onend = (e: IEvent) => {
+//       e.redraw = false;
+//       App.route(route, params);
+//     };
+//     return m('atom-flexlist-menu-entry.db.relative', {onclick: onend}, vnode.attrs,
+//     // m(RippleAtom, { onend } ),
+//     vnode.children);
+//   },
+// };
+
+
+interface ILinkAttrs {
+  route: string;
+  params: m.Params;
+}
+
+export const FlexListLinkAtom: IAtomComponent<ILinkAttrs> = {
+  view ( vnode ) {
+    const { route, params } = vnode.attrs;
+    const onend = (e: IEvent) => {
+      e.redraw = false;
+      App.route(route, params);
+    };
+    return m('atom-flexlist-link.db.relative', { onclick: onend },
+      // m(RippleAtom, { onend } ),
+      vnode.children
+    );
   },
 };
 

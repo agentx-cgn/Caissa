@@ -13,6 +13,8 @@ const devConfig = {
                 requestCert: false,
             },
         },
+        // // https://jaketrent.com/post/pushstate-webpack-dev-server
+        // historyApiFallback: true,
         port: 3000,
         host: '0.0.0.0',
         headers: {
