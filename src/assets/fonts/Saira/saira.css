@@ -33,3 +33,14 @@
     font-weight: normal;
     font-style: normal;
 }
+@font-face {
+    font-family: 'SairaCondensed-Thin';
+    src: url('SairaCondensed-Thin.eot');
+    src: url('SairaCondensed-Thin.eot?#iefix') format('embedded-opentype'),
+         url('SairaCondensed-Thin.svg#SairaCondensed-Thin') format('svg'),
+         url('SairaCondensed-Thin.ttf') format('truetype'),
+         url('SairaCondensed-Thin.woff') format('woff'),
+         url('SairaCondensed-Thin.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}

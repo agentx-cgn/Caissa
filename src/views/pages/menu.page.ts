@@ -5,7 +5,7 @@ import { MenuConfig, TMenuEntry } from '@app/config';
 import { App } from '@app/views';
 import { IEvent, IParams } from '@app/domain';
 import { FactoryService } from '@app/services';
-import { SectionTitleAtom, SpacerAtom, FlexListAtom, TextLeftAtom, FlexListMenuEntryAtom, NothingAtom} from '@app/atoms';
+import { SectionTitleAtom, YScrollAtom, FlexListAtom, TextLeftAtom, FlexListMenuEntryAtom, NothingAtom, FlexListHeaderAtom} from '@app/atoms';
 
 const onclick  = (route: string, params: IParams) => {
   return route !== 'BACK'
@@ -42,15 +42,17 @@ const MenuPage = FactoryService.create('Menu', {
 
     return m('div.page.menu', { className, style },
       m(SectionTitleAtom, { title, description }),
-      m(SpacerAtom),
-      m(FlexListAtom, [
-        ...menuList.map( ( menuEntry: TMenuEntry ) => {
-          return createMenuEntry(menuEntry);
-        }),
-        route !== '/start/'
-          ? createMenuEntry(['BACK', 'BACK', {}, {}] as TMenuEntry)
-          : m(NothingAtom)
-      ]),
+      m(FlexListHeaderAtom, ' some header' ),
+      m(YScrollAtom,
+        m(FlexListAtom, [
+          ...menuList.map( ( menuEntry: TMenuEntry ) => {
+            return createMenuEntry(menuEntry);
+          }),
+          route !== '/start/'
+            ? createMenuEntry(['BACK', 'BACK', {}, {}] as TMenuEntry)
+            : m(NothingAtom)
+        ]),
+      )
     );
 
   },

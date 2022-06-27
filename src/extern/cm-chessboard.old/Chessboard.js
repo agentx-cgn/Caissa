@@ -5,10 +5,9 @@
  * License: MIT, see file 'LICENSE'
  */
 
-import {ChessboardState} from "./model/ChessboardState.js"
-import {Position} from "./model/Position.js"
-import {ChessboardViewAccessible} from "./view/ChessboardViewAccessible.js"
-import {PositionAnimationsQueue} from "./view/PositionAnimationsQueue.js"
+import {SQUARE_COORDINATES, ChessboardView} from "./ChessboardView.js"
+import {ChessboardState} from "./ChessboardState.js"
+import {ChessboardViewAccessible} from "./ChessboardViewAccessible.js"
 
 export const COLOR = {
     white: "w",
@@ -38,6 +37,8 @@ export const PIECE = {
     wp: "wp", wb: "wb", wn: "wn", wr: "wr", wq: "wq", wk: "wk",
     bp: "bp", bb: "bb", bn: "bn", br: "br", bq: "bq", bk: "bk",
 }
+export const FEN_START_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+export const FEN_EMPTY_POSITION = "8/8/8/8/8/8/8/8"
 
 export class Chessboard {
 
@@ -46,31 +47,25 @@ export class Chessboard {
             throw new Error("container element is " + context)
         }
         this.context = context
-        this.id = (Math.random() + 1).toString(36).substring(2, 8)
+        this.id = (Math.random() + 1).toString(36).substr(2, 6)
         let defaultProps = {
             position: "empty", // set as fen, "start" or "empty"
             orientation: COLOR.white, // white on bottom
-            responsive: true, // resizes the board based on element size
-            animationDuration: 300, // pieces animation duration in milliseconds. Disable all animation with `0`.
+            accessible: false, // render additional information to improve the usage for people using screen readers (beta)
             style: {
-                cssClass: "default", // set the css theme of the board, try "green", "blue" or "chess-club"
+                cssClass: "default",
                 showCoordinates: true, // show ranks and files
-                borderType: BORDER_TYPE.none, // "thin" thin border, "frame" wide border with coordinates in it, "none" no border
-                aspectRatio: 1, // height/width of the board
+                borderType: BORDER_TYPE.none, // thin: thin border, frame: wide border with coordinates in it, none: no border
+                aspectRatio: 1, // height/width. Set to `undefined`, if you want to define it only in the css.
                 moveFromMarker: MARKER_TYPE.frame, // the marker used to mark the start square
                 moveToMarker: MARKER_TYPE.frame, // the marker used to mark the square where the figure is moving to
             },
+            responsive: true, // resizes the board based on element size
+            animationDuration: 300, // pieces animation duration in milliseconds
             sprite: {
-                url: "./assets/images/chessboard-sprite.svg", // pieces and markers are stored in a sprite file
-                size: 40, // the sprite tiles size, defaults to 40x40px
-                cache: true // cache the sprite
-            },
-            accessibility: { // accessibility functions are in "alpha" version for now, they might not work as expected
-                brailleNotationInAlt: true, // show the braille notation of the game in the alt attribute of the svg
-                movePieceForm: false, // display a form to move a piece (from, to, move)
-                boardAsTable: false, // display the board additionally as HTML table
-                piecesAsList: false, // display the pieces additionally as List
-                visuallyHidden: true // hide all those extra outputs visually but keep them accessible for screen readers and braille displays
+                url: "./assets/images/chessboard-sprite.svg", // pieces and markers are stored as svg sprite
+                size: 40, // the sprite size, defaults to 40x40px
+                cache: true // cache the sprite inline, in the HTML
             }
         }
         this.props = {}
@@ -78,86 +73,108 @@ export class Chessboard {
         Object.assign(this.props, props)
         this.props.sprite = defaultProps.sprite
         this.props.style = defaultProps.style
-        this.props.accessibility = defaultProps.accessibility
         if (props.sprite) {
             Object.assign(this.props.sprite, props.sprite)
         }
         if (props.style) {
             Object.assign(this.props.style, props.style)
         }
-        if (props.accessibility) {
-            Object.assign(this.props.accessibility, props.accessibility)
+        if (this.props.style.aspectRatio) {
+            this.context.style.height = (this.context.offsetWidth * this.props.style.aspectRatio) + "px"
         }
-
         this.state = new ChessboardState()
-        this.view = new ChessboardViewAccessible(this)
-        this.positionAnimationsQueue = new PositionAnimationsQueue(this)
+        if (this.props.position === "start") {
+            this.state.setPosition(FEN_START_POSITION)
+        } else if (this.props.position === "empty" || this.props.position === undefined) {
+            this.state.setPosition(FEN_EMPTY_POSITION)
+        } else {
+            this.state.setPosition(this.props.position)
+        }
         this.state.orientation = this.props.orientation
-        this.view.redraw()
-        this.state.position = new Position(this.props.position)
-        this.view.redrawPieces()
+        const viewType = this.props.accessible ? ChessboardViewAccessible : ChessboardView
+        this.view = new viewType(this)
     }
 
     // API //
 
-    async setPiece(square, piece, animated = false) {
-        const positionFrom = this.state.position.clone()
-        this.state.position.setPiece(square, piece)
-        return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.position.clone(), animated)
-    }
-
-    async movePiece(squareFrom, squareTo, animated = false) {
-        const positionFrom = this.state.position.clone()
-        this.state.position.movePiece(squareFrom, squareTo)
-        return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.position.clone(), animated)
-    }
-
-    async setPosition(fen, animated = false) {
-        const positionFrom = this.state.position.clone()
-        this.state.position.setFen(fen)
-        return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.position.clone(), animated)
-    }
-
-    async setOrientation(color, animated = false) {
-        const position = this.state.position.clone()
-        if(this.boardTurning) {
-            console.log("setOrientation is only once in queue allowed")
-            return
-        }
-        this.boardTurning = true
-        return this.positionAnimationsQueue.enqueueTurnBoard(position, color, animated).then(() => {
-            this.boardTurning = false
-        })
+    setPiece(square, piece) {
+        this.state.setPiece(this.state.squareToIndex(square), piece)
+        this.view.drawPieces(this.state.squares)
     }
 
     getPiece(square) {
-        return this.state.position.getPiece(square)
+        return this.state.squares[this.state.squareToIndex(square)]
+    }
+
+    movePiece(squareFrom, squareTo, animated = true) {
+        return new Promise((resolve, reject) => {
+            const prevSquares = this.state.squares.slice(0) // clone
+            const pieceFrom = this.getPiece(squareFrom)
+            if(!pieceFrom) {
+                reject("no piece on square " + squareFrom)
+            } else {
+                this.state.squares[this.state.squareToIndex(squareFrom)] = null
+                this.state.squares[this.state.squareToIndex(squareTo)] = pieceFrom
+                if (animated) {
+                    this.view.animatePieces(prevSquares, this.state.squares, () => {
+                        resolve()
+                    })
+                } else {
+                    this.view.drawPieces(this.state.squares)
+                    resolve()
+                }
+            }
+        })
+    }
+
+    setPosition(fen, animated = true) {
+        return new Promise((resolve) => {
+            if (fen === "start") {
+                fen = FEN_START_POSITION
+            } else if (fen === "empty") {
+                fen = FEN_EMPTY_POSITION
+            }
+            const currentFen = this.state.getPosition()
+            const fenParts = fen.split(" ")
+            const fenNormalized = fenParts[0]
+
+            if (fenNormalized !== currentFen) {
+                const prevSquares = this.state.squares.slice(0) // clone
+                this.state.setPosition(fen)
+                if (animated) {
+                    this.view.animatePieces(prevSquares, this.state.squares.slice(0), () => {
+                        resolve()
+                    })
+                } else {
+                    this.view.drawPieces(this.state.squares)
+                    resolve()
+                }
+            } else {
+                resolve()
+            }
+        })
     }
 
     getPosition() {
-        return this.state.position.getFen()
-    }
-
-    getOrientation() {
-        return this.state.orientation
+        return this.state.getPosition()
     }
 
     addMarker(square, type) {
         if (!type) {
             console.error("Error addMarker(), type is " + type)
         }
-        this.state.addMarker(square, type)
+        this.state.addMarker(this.state.squareToIndex(square), type)
         this.view.drawMarkers()
     }
 
     getMarkers(square = undefined, type = undefined) {
         const markersFound = []
         this.state.markers.forEach((marker) => {
-            const markerSquare = marker.square
+            const markerSquare = SQUARE_COORDINATES[marker.index]
             if (!square && (!type || type === marker.type) ||
                 !type && square === markerSquare ||
                 type === marker.type && square === markerSquare) {
-                markersFound.push({square: marker.square, type: marker.type})
+                markersFound.push({square: SQUARE_COORDINATES[marker.index], type: marker.type})
             }
         })
         return markersFound
@@ -169,8 +186,16 @@ export class Chessboard {
         this.view.drawMarkers()
     }
 
+    setOrientation(color) {
+        this.state.orientation = color
+        return this.view.redraw()
+    }
+
+    getOrientation() {
+        return this.state.orientation
+    }
+
     destroy() {
-        this.positionAnimationsQueue.destroy()
         this.view.destroy()
         this.view = undefined
         this.state = undefined
@@ -189,13 +214,30 @@ export class Chessboard {
         this.view.disableMoveInput()
     }
 
+    // TODO remove deprecated function
+    // noinspection JSUnusedGlobalSymbols
+    enableContextInput(eventHandler) {
+        console.warn("enableContextInput() is deprecated, use enableSquareSelect()")
+        this.enableSquareSelect(function (event) {
+            if (event.type === SQUARE_SELECT_TYPE.secondary) {
+                eventHandler(event)
+            }
+        })
+    }
+
+    // TODO remove deprecated function
+    // noinspection JSUnusedGlobalSymbols
+    disableContextInput() {
+        this.disableSquareSelect()
+    }
+
     enableSquareSelect(eventHandler) {
         if (this.squareSelectListener) {
             console.warn("squareSelectListener already existing")
             return
         }
         this.squareSelectListener = function (e) {
-            const square = e.target.getAttribute("data-square")
+            const index = e.target.getAttribute("data-index")
             if (e.type === "contextmenu") {
                 // disable context menu
                 e.preventDefault()
@@ -204,7 +246,7 @@ export class Chessboard {
             eventHandler({
                 chessboard: this,
                 type: e.button === 2 ? SQUARE_SELECT_TYPE.secondary : SQUARE_SELECT_TYPE.primary,
-                square: square
+                square: SQUARE_COORDINATES[index]
             })
         }
         this.context.addEventListener("contextmenu", this.squareSelectListener)

@@ -36,6 +36,7 @@ const PgnService = {
   },
 
   // recursively collects all values from object as string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   collectValues (obj: any, values: string[] = []): string[] {
 
     Object.values(obj).forEach( value => {

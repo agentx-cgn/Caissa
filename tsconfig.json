@@ -37,6 +37,6 @@
       "@app/extern":    ["src/extern/index.ts"],
     }
   },
-  "include": ["src", "src/images.d.ts", "globals.d.ts"],
+  "include": ["src", "src/images.d.ts", "src/extern/cm-chessboard/index.d.ts", "globals.d.ts"],
   "exclude": ["node_modules", "**/*.spec.ts", "**/*.tsx"],
 }

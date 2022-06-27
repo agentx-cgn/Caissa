@@ -1,6 +1,6 @@
 import m from 'mithril';
 
-// import { IAppPageComponent} from '@app/domain';
+import { IAppPageComponent} from '@app/domain';
 import { IEvent, IParams, IRouteOptions, TPageOptions, TRouteConfig, IAppComponent } from '@app/domain';
 import { AppConfig, OptionsConfig as Options} from '@app/config';
 import { RoutesConfig, DefaultRoute } from './routes';
@@ -128,22 +128,22 @@ const App = {
 
         try {
 
-          if (DEBUG) {
-            console.log(' ');
-            const target  = m.buildPathname(route, params);
-            const current = HistoryService.isCurrent(target) ? 'current' : 'new';
-            console.log('%cApp.onmatch.in ', 'color:darkblue; font-weight: 800', target, current);
-          }
+          // if (DEBUG) {
+          //   console.log(' ');
+          //   const target  = m.buildPathname(route, params);
+          //   const current = HistoryService.isCurrent(target) ? 'current' : 'new';
+          //   console.log('%cApp.onmatch.in ', 'color:darkblue; font-weight: 800', target, current);
+          // }
 
           HistoryService.prepare(route, params, options);
 
-          // const comp = (page as IAppPageComponent)();
-          // if (comp.onmatch) {
-          //   Object.assign(comp.data, { test2: 'test2' });
-          //   return comp.onmatch(route, params, comp.data);
-          //     // .then( () => Promise.resolve(App.comp as never))
-          //   ;
-          // }
+          const comp = (page as IAppPageComponent)();
+          if (comp.onmatch) {
+            Object.assign(comp.data, { test2: 'test2' });
+            return comp.onmatch(route, params, comp.data);
+              // .then( () => Promise.resolve(App.comp as never))
+            ;
+          }
 
         } catch (e) {console.warn('App.resolver.error', route, e);}
 
@@ -152,12 +152,12 @@ const App = {
       // The render method is called on every redraw for a matching route.
       render ( vnode ) {
 
-        if (DEBUG){
-          const target  = m.buildPathname(route, vnode.attrs);
-          const current = HistoryService.isCurrent(target) ? 'current' : 'new';
-          const style   = 'color:darkorange; font-weight: 800';
-          console.log('%cApp.render.in', style, target, current);
-        }
+        // if (DEBUG){
+        //   const target  = m.buildPathname(route, vnode.attrs);
+        //   const current = HistoryService.isCurrent(target) ? 'current' : 'new';
+        //   const style   = 'color:darkorange; font-weight: 800';
+        //   console.log('%cApp.render.in', style, target, current);
+        // }
 
         HistoryService.finalize(route, vnode.attrs, options, page);
 
@@ -175,11 +175,11 @@ const App = {
       const { route, params, options } = vnode.attrs;
       const [ layout, _, center ] = RoutesConfig[route];
 
-      if ( DEBUG ) {
-        const target = m.buildPathname(route, params);
-        const style  = 'color:darkgreen; font-weight: 800';
-        console.log('%cApp.view.in', style, target, HistoryService.animation);
-      }
+      // if ( DEBUG ) {
+      //   const target = m.buildPathname(route, params);
+      //   const style  = 'color:darkgreen; font-weight: 800';
+      //   console.log('%cApp.view.in', style, target, HistoryService.animation);
+      // }
 
       //TODO: this is actually dynamic
       document.title = options.title;

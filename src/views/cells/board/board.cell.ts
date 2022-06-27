@@ -2,7 +2,9 @@ import m from 'mithril';
 
 import './board.cell.scss';
 
-import testImage from '/assets/pictures/chess.test.png';
+import { ChessboardCell } from './chessboard.cell';
+
+// import testImage from '/assets/pictures/chess.test.png';
 
 import { ICellComponent } from '@app/domain';
 
@@ -23,7 +25,7 @@ const listener = () => {
 };
 
 
-export const ChessboardCell: ICellComponent = {
+export const BoardCell: ICellComponent = {
 
   oncreate () {
     window.addEventListener('resize', listener);
@@ -37,7 +39,8 @@ export const ChessboardCell: ICellComponent = {
       m('cell-board-sizer'),
       m('cell-board-evaluation', { className }, 'E'),
       m('cell-board-container', { className },
-        m('img.fake', {style: 'width: 128px; height: 128px', src: testImage})
+        m(ChessboardCell),
+        // m('img.fake', {style: 'width: 128px; height: 128px', src: testImage})
         // m('img.fake', { style: 'width: 100%; height: 100%', src: testImage} )
       ),
     ]);
