@@ -18,6 +18,8 @@ const gametools = {
         return chess.pgn().trim();
     },
 
+
+
     // used for terminated games
     hash (game: TGame) {
         const unique = JSON.stringify({

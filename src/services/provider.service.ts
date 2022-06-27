@@ -5,7 +5,7 @@
 // import imgFloppy     from '../../assets/images/floppy.256.png';
 
 import { PgnService } from './pgn.service';
-import { TGame, ICollection, ICollectionProvider } from '@app/domain';
+import { ICollection, ICollectionProvider, IGameTree } from '@app/domain';
 import { CollectionsConfig } from '@app/config';
 
 
@@ -74,16 +74,16 @@ const ImportProvider = function (collection: ICollection): ICollectionProvider {
 
         error:    '',
         progress: 0,
-        games:    [] as TGame[],
+        games:    [] as IGameTree[],
         header () {
             return `${provider.caption} `;
         },
         fetch () {
             provider.progress = 10;
             return new Promise<void> ((resolve /*, reject */ ) => {
-                provider.games    = PgnService.readGames(collection.source);
+                const parseTree   = PgnService.parseGames(collection.source);
                 provider.progress = 60;
-                provider.games    = PgnService.sanitizeGames(provider.games);
+                provider.games    = PgnService.processGames(parseTree);
                 provider.progress = 0;
                 console.log(provider.caption, provider.games.length);
                 resolve();
@@ -102,7 +102,7 @@ const UrlProvider = function (collection: ICollection): ICollectionProvider {
 
         error:    '',
         progress: 0,
-        games:    [] as TGame[],
+        games:    [] as IGameTree[],
         header () {
             return `${provider.games.length} downloaded Games`;
         },
@@ -118,11 +118,11 @@ const UrlProvider = function (collection: ICollection): ICollectionProvider {
                 })
                 .then( text => {
                     provider.progress = 50;
-                    return PgnService.readGames(text);
+                    return PgnService.parseGames(text);
                 })
-                .then( games => {
+                .then( parseTree => {
                     provider.progress = 70;
-                    provider.games = PgnService.sanitizeGames(games);
+                    provider.games = PgnService.processGames(parseTree);
                     console.log(provider.caption, provider.games.length);
                     provider.progress = 0;
                 })

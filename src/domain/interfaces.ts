@@ -2,6 +2,7 @@
 
 import m  from 'mithril';
 import { Move } from 'chess.js';
+import { ParseTree } from '@mliebelt/pgn-parser';
 
 export type TVoid = () => void;
 
@@ -96,6 +97,11 @@ export interface IEvent extends Event {
 
 //  ##############   C H E S S    ##############
 
+export interface IGameTree extends ParseTree {
+  uuid: string;
+  searchtext: string
+}
+
 export type ICollection = {
   uuid: string;
   caption: string;
@@ -107,7 +113,7 @@ export type ICollection = {
 }
 
 export interface ICollectionProvider extends ICollection {
-  games: TGame[];
+  games: IGameTree[];
   error: string;
   progress: number;
   header: () => string;

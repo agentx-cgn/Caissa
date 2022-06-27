@@ -33,6 +33,7 @@
     "chk:circ": "madge --warning --circular  --ts-config ./tsconfig.json  --extensions ts ./src"
   },
   "dependencies": {
+    "@mliebelt/pgn-parser": "^1.4.4",
     "chess.js": "^0.13.2",
     "deepmerge": "^4.2.2",
     "local-storage": "^2.0.0",

@@ -1,14 +1,104 @@
 
+import { parse, ParseTree, PgnMove } from '@mliebelt/pgn-parser';
+
+
+
 import { AppConfig } from '@app/config';
-import { TGame, TPgnHeader } from '@app/domain';
+import { TGame, TPgnHeader, IGameTree } from '@app/domain';
 import { ToolsService as Tools }  from './tools.service';
 import { H }  from './helper.service';
 
-const DEBUG = false;
+const DEBUG = true;
 
 const PgnService = {
 
-    readGames (pgns: string, delimiter='\n', deleteComments=false): TGame[] {
+  hash: (game: ParseTree): string => {
+
+    const unique = JSON.stringify({
+      1: game.tags,
+      7: game.moves.slice(0, 20),
+    });
+
+    return H.hash(unique);
+
+  },
+
+  parseGames (pgn: string): ParseTree[] {
+
+    const t0 = Date.now();
+
+    const games = parse(pgn, {startRule: "games"}) as ParseTree[];
+
+    DEBUG && console.log('Info   :', 'Parsed', games.length, 'pgns in', Date.now() - t0, 'msecs');
+
+    return games;
+
+  },
+
+  // recursively collects all values from object as string
+  collectValues (obj: any, values: string[] = []): string[] {
+
+    Object.values(obj).forEach( value => {
+      if (typeof value === 'object') {
+        PgnService.collectValues(value, values);
+      } else {
+        values.push(String(value));
+      }
+    });
+
+    return values;
+
+  },
+
+  sanitizeValues (values: string[]): string[] {
+    let text = values.join(' ');
+    text = text.replace(/undefined/g, '');
+    text = text.replace('.', ' ');
+    text = text.replace('????', '');
+    text = text.replace('???', '');
+    text = text.replace(/\s\d{3}\s/, '');
+    text = text.replace(/\s\d{2}\s/, '');
+    let res = text.split(' ');
+    return res.filter(Boolean).filter( s => s.length > 2);
+  },
+
+  reducePgn (game: ParseTree): string {
+
+    const pgn = game.moves.reduce((acc: string, move: PgnMove) => {
+      return acc + move.notation.notation + ' ';
+    }, '');
+
+    return pgn.trim();
+
+  },
+
+  processGames (games: ParseTree[]): IGameTree[] {
+
+    return games.map( (game: ParseTree): IGameTree => {
+
+      const pgn = PgnService.reducePgn(game);
+      let values = PgnService.collectValues(game.tags);
+      values = PgnService.sanitizeValues(values);
+
+      const unique = JSON.stringify({
+        1: game.tags,
+        2: pgn,
+      });
+
+      const gameTree = Object.assign({}, game, {
+        pgn,
+        uuid:       H.hash(unique),
+        searchtext: values.join(' '), //H.map(game.tags, (_, val) => val).join(' ').toLowerCase(),
+      }) as IGameTree;
+
+      return gameTree;
+
+    });
+
+  },
+
+
+    readGames1 (pgns: string, delimiter='\n', deleteComments=false): TGame[] {
 
         const t0 = Date.now();
 
@@ -64,7 +154,8 @@ const PgnService = {
 
     },
 
-    sanitizeGames (games: TGame[]): TGame[] {
+
+    sanitizeGames1 (games: TGame[]): TGame[] {
 
       return games.map( game => {
 

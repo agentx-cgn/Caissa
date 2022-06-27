@@ -1,7 +1,7 @@
 
 import m from 'mithril';
 
-import { IPageData, IParams, TGame } from '@app/domain';
+import { IGameTree, IPageData, IParams } from '@app/domain';
 import { FactoryService, ProviderService }  from '@app/services';
 import { YScrollAtom, SectionTitleAtom, FlexListHeaderAtom, FlexListAtom } from '@app/atoms';
 
@@ -91,8 +91,8 @@ const GamesPage = FactoryService.create('Games', {
               m(FlexListHeaderAtom, `lore ipsum dolor sit amet, consectetur adipiscing elit.` ),
               m(YScrollAtom,
                 m(FlexListAtom, [
-                  ...provider.games.map( ( game: TGame ) => {
-                    return m('div', game.header.White);
+                  ...provider.games.map( ( game: IGameTree ) => {
+                    return m('div', game.tags?.White);
                   } ),
                 ])
               )
