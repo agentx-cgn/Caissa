@@ -35,6 +35,9 @@ export interface ICellAttrs {
 }
 export interface ICellComponent<A=ICellAttrs> extends m.Component<A> {};
 
+export interface ICellContentAttrs extends IAppAttrs { };
+export interface ICellContentComponent<A=ICellContentAttrs> extends m.Component<A> {};
+
 export interface IAppAttrs {
   route: string;
   params: m.Params;
@@ -43,7 +46,7 @@ export interface IAppAttrs {
 export interface IAppComponent extends m.Component<IAppAttrs> {};
 
 interface ILayoutAttrs extends IAppAttrs {
-  center: ICellComponent;
+  center: ICellContentComponent;
 }
 export interface ILayoutComponent extends m.Component<ILayoutAttrs> {};
 
@@ -73,7 +76,7 @@ export type IAppPageComponent = () => IPageNode;
 
 //  ##############   R O U T E S  ##############
 
-export type TRouteConfig = [ILayoutComponent, IPageComponent<IPageAttrs>, ICellComponent, TPageOptions];
+export type TRouteConfig = [ILayoutComponent, IPageComponent<IPageAttrs>, ICellContentComponent, TPageOptions];
 export interface IRoutesConfigs {
   [route: string]: TRouteConfig;
 }

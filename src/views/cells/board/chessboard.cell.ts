@@ -1,7 +1,7 @@
 
 import m from 'mithril';
 import { Chessboard, BORDER_TYPE, COLOR, MARKER_TYPE, INPUT_EVENT_TYPE } from "../../../extern/cm-chessboard/index";
-import './chessboard.cell.scss';
+// import './chessboard.cell.scss';
 
 import { ICellComponent } from '@app/domain';
 
@@ -26,12 +26,24 @@ const listener = () => {
 
 };
 
-const ChessboardCell: ICellComponent = {
+interface IChessBoardAttrs {
+  game: any;
+  board: any;
+  controller: any;
+}
+interface IChessBoardState {
+  onafterupdate: ( attrs: IChessBoardAttrs ) => void;
+}
+
+const ChessboardCell: ICellComponent<IChessBoardAttrs> & IChessBoardState = {
 
   // onresize : Tools.Board.resize,
 
   oncreate (  ) {
 
+    DEBUG && console.log('ChessBoard.oncreate.in');
+
+    window.removeEventListener('resize', listener);
     window.addEventListener('resize', listener);
 
     // const { board } = vnode.attrs;
@@ -42,7 +54,7 @@ const ChessboardCell: ICellComponent = {
       responsive: true,                    // resizes the board based on element size
       animationDuration: 300,              // pieces animation duration in milliseconds. Disable all animation with `0`.
       style: {
-        cssClass: "caissa",                // set the css theme of the board, try "green", "blue" or "chess-club"
+        cssClass: "green",                // set the css theme of the board, try "green", "blue" or "chess-club"
         showCoordinates: true,             // show ranks and files
         borderType: BORDER_TYPE.thin,     // "thin" thin border, "frame" wide border with coordinates in it, "none" no border
         aspectRatio: 1,                    // height/width of the board
@@ -71,11 +83,14 @@ const ChessboardCell: ICellComponent = {
               return false; //??
           default:
             return false;
-      }
+        }
       }, COLOR.white);
 
-      console.log(chessBoard);
+      // console.log(chessBoard);
       listener();
+      // chessBoard.disableContextInput();
+      // chessBoard.setOrientation('w'); //board.orientation);
+
 
     //   chessBoard.initialization.then( () => {
     //     //   chessBoard.disableContextInput();
@@ -85,37 +100,50 @@ const ChessboardCell: ICellComponent = {
     //   });
 
   },
-  view (  ) {
-      return m('div.chessboard');
-  },
-  onupdate (  ) {
+  view ( vnode ) {
+    DEBUG && console.log('ChessBoard.onbeforeremove.in');
 
-      // const { board, controller } = vnode.attrs;
+    const { game, board, controller } = vnode.attrs;
+      return m('div.chessboard',
+        m.fragment( {
+          oncreate: () => setTimeout(() => ChessboardCell.onafterupdate({ game, board, controller }), 100),
+          onupdate: () => setTimeout(() => ChessboardCell.onafterupdate({ game, board, controller }), 100)
+      }, [m('div.dn')]),
+    );
+  },
+  onupdate ( vnode ) {
+
+    DEBUG && console.log('ChessBoard.onafterupdates.in', vnode.attrs);
+
+      const { board, controller } = vnode.attrs;
 
       // controller.stopListening(chessBoard);
       // chessBoard.view.handleResize();
-      // chessBoard.setOrientation(board.orientation);
+      chessBoard.setOrientation('w'); //board.orientation);
 
-      // DEBUG && console.log('ChessBoard.onupdate.out', !!chessBoard,  !!board, vnode);
+      DEBUG && console.log('ChessBoard.onupdate.out', !!chessBoard,  !!board, vnode);
 
   },
-//   onafterupdates () {
+  onafterupdate ( attrs ) {
 
-//       // DEBUG && console.log('ChessBoard.onafterupdates.in', vnode);
-//       // const { board, controller } = vnode.attrs;
+      DEBUG && console.log('ChessBoard.onafterupdates.in', attrs);
+      // const { game, board, controller } = attrs;
 
-//       // chessBoard
-//       //     .setPosition(board.fen, true)
-//       //     .then( () => {
-//       //         controller.onafterupdates(chessBoard);
-//       //     })
-//       // ;
+      chessBoard
+          // .setPosition(board.fen, true)
+          .setPosition('start', true)
+          .then( () => {
+              // controller.onafterupdates(chessBoard);
+          })
+      ;
 
-//   },
+  },
 
   onbeforeremove (  ) {
 
-      // const { controller } = vnode.attrs;
+    DEBUG && console.log('ChessBoard.onbeforeremove.in');
+
+    // const { controller } = vnode.attrs;
       // const $chessboard = $$('div.chessboard'); // vnode.dom
 
       // $chessboard.removeEventListener('mousedown', controller.listener.onmousedown);

@@ -1,7 +1,7 @@
 import m from 'mithril';
 
-import { ICellComponent, IRoutesConfigs } from '@app/domain';
-import { LayoutCell, ContentCell } from '@app/cells';
+import { ICellContentComponent, IRoutesConfigs } from '@app/domain';
+import { LayoutCell, ContentCell, BoardCell } from '@app/cells';
 import {
   MenuPage,
   SystemPage,
@@ -13,7 +13,7 @@ import {
   CollectionPage,
 }     from '@app/pages';
 
-const Nothing: ICellComponent = {
+const Nothing: ICellContentComponent = {
   view ( ) {
     return m('div.nothing.dn');
   },
@@ -26,9 +26,9 @@ const RoutesConfig: IRoutesConfigs = {
 
     '/':                  [ LayoutCell, MenuPage,         ContentCell,   { title: 'Start 1',      description: 'aaa'}      ],
     '/start/':            [ LayoutCell, MenuPage,         ContentCell,   { title: 'Start',        description: 'aab'}        ],
-    '/games/':            [ LayoutCell, MenuPage,         ContentCell,   { title: 'Games',        description: 'aac'}        ],
-    '/collections/':      [ LayoutCell, MenuPage,         ContentCell,   { title: 'Collections',  description: 'aad'}  ],
-    '/collection/:uuid/': [ LayoutCell, CollectionPage,   ContentCell,   { title: 'Collection',   description: 'aae'}  ],
+    '/games/':            [ LayoutCell, MenuPage,         BoardCell,     { title: 'Games',        description: 'aac'}        ],
+    '/collections/':      [ LayoutCell, MenuPage,         BoardCell,     { title: 'Collections',  description: 'aad'}  ],
+    '/collection/:uuid/': [ LayoutCell, CollectionPage,   BoardCell,     { title: 'Collection',   description: 'aae'}  ],
     '/games/:uuid/':      [ LayoutCell, GamesPage,        ContentCell,   { title: 'Games %s',     description: 'aaf'}    ],
     '/preferences/':      [ LayoutCell, PreferencesPage,  ContentCell,   { title: 'Preferences',  description: 'aag'}  ],
     '/help/':             [ LayoutCell, HelpPage,         Nothing,       { title: 'Help',         description: ''}         ],

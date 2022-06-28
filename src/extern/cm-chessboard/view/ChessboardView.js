@@ -77,7 +77,8 @@ export class ChessboardView {
         this.pointerDownListener = this.pointerDownHandler.bind(this)
         this.pointerDownListener = this.pointerDownHandler.bind(this)
         this.context.addEventListener("mousedown", this.pointerDownListener)
-        this.context.addEventListener("touchstart", this.pointerDownListener)
+        // this.context.addEventListener("touchstart", this.pointerDownListener)
+        this.context.addEventListener("touchstart", this.pointerDownListener, {passive: true})
 
         this.createSvgAndGroups()
         this.updateMetrics()

@@ -25,7 +25,7 @@ const LayoutCell: ILayoutComponent = {
 
   view ( vnode ) {
 
-    const { center } = vnode.attrs;
+    const { route, params, options, center } = vnode.attrs;
     const showSplash = DB.Options.first.ui.waitscreen;
 
     return m('cell-layout',
@@ -36,7 +36,7 @@ const LayoutCell: ILayoutComponent = {
           m(HeaderCell),
           m('main', [
             m('section.stage',   {}, m(StageCell)),
-            m('section.content', {}, innerWidth >= break2 ? m( center )  : m(NothingAtom)),
+            m('section.content', {}, innerWidth >= break2 ? m( center, { route, params, options } )  : m(NothingAtom)),
             m('section.aside',   {}, m(AsideCell)), //innerWidth >= break3 ? m(AsideCell) : m(NothingAtom))
           ]),
           m(FooterCell),
