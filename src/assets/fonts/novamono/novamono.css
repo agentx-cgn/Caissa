@@ -1,0 +1,13 @@
+@font-face {
+    font-family: 'NovaMono';
+    src: url('NovaMono.eot');
+    src: url('NovaMono.eot?#iefix') format('embedded-opentype'),
+        url('NovaMono.woff2') format('woff2'),
+        url('NovaMono.woff') format('woff'),
+        url('NovaMono.ttf') format('truetype'),
+        url('NovaMono.svg#NovaMono') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+

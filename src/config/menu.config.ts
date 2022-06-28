@@ -1,5 +1,8 @@
 
-import iconChess from '/assets/images/chess.128.trans.png';
+// import iconChess from '/assets/images/chess.128.trans.png';
+
+// fa: crown horse-head
+// chess king  chess-king-piece, queen, bishop, pawn, rook
 
 import { IParams } from '@app/domain';
 import { CollectionsConfig } from './collections.config';
@@ -21,15 +24,16 @@ const MenuConfig: TMenuConfig = {
 
         // route             caption        params
         ['/collections/',          'COLLECTIONS ',       {},             {
-            ifa: 'fa-cogs',
+            ifa: 'fa-chess',
             subline: 'Collections with remarkable chess games',
         } ],  // loads imported games so far
         ['/openings/',       'OPENINGS',    {},                     {
-            ifa: 'fa-cogs',
+            // ifa: 'fa-code-branch',
+            ifa: 'fa-book',
             subline: 'Explore Chess Openings',
         } ],
         ['/preferences/',    'PREFERENCES', {},                     {
-            ifa: 'fa-cogs',
+            ifa: 'fa-sliders',
             subline: 'Custumize Caissa to your needs',
         } ],
         ['/system/:module/', 'SYSTEM',      { module: 'system' },   {
@@ -37,13 +41,13 @@ const MenuConfig: TMenuConfig = {
             subline: 'This is hidden in production',
         } ],
         ['/help/',    'HELP', {},                     {
-            ifa: 'fa-cogs',
+            ifa: 'fa-info',
             subline: 'You need it',
         } ],
 
         ['/404/',    '404', {},                     {
-            // ifa: 'fa-cogs',
-            img: iconChess,
+            ifa: 'fa-bug',
+            // img: iconChess,
             subline: 'Break it',
         } ],
     ],

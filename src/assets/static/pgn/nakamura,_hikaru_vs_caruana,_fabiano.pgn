@@ -1,0 +1,102 @@
+[Event "FIDE Candidates Chess Tournament 2022"]
+[Site "Chess.com"]
+[Date "2022.06.26"]
+[Round "8"]
+[White "Nakamura, Hikaru"]
+[Black "Caruana, Fabiano"]
+[Result "1-0"]
+[ECO "C82"]
+[WhiteElo "2760"]
+[BlackElo "2783"]
+[Annotator "samsh"]
+[PlyCount "147"]
+[EventDate "2022.??.??"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Nxe4 6. d4 b5 7. Bb3 d5 8. dxe5
+Be6 9. c3 Bc5 {Nothing up to here can be considered a huge surprise. Hikaru has
+only been playing e4 with White, and Caruana repeated the same Bc5 Open Spanish
+that he recently chose against MVL.} 10. Nbd2 O-O 11. Bc2 Nxf2 12. Rxf2 Bxf2+
+13. Kxf2 f6 14. Nf1 fxe5 15. Kg1 {All of this is well known theory, but I think
+Caruana fell into the same practical trap that Firouzja did against Nepo. I'm
+quite confident Black's position is objectively fine here, but in practice, it
+feels so much easier to play the White side.} 15... Qd6 (15... Qd7 {This was
+Caruana's choice against Maxime in the aforementioned game. He certainly
+equalized, but still went on to lose.}) 16. Be3 Bf5 17. Bb3 Rad8 18. Qe1 Na5 19.
+Qf2 Nb7 {Both sides were still playing very fast.} 20. Re1 c5 21. Ng3 (21. Bg5
+$5 {This was an interesting option, but my suspicion is that Black's position is
+better than the computer suggests. After} 21... c4 $1 (21... Rde8 $2 22. Rxe5 $1
+Rxe5 23. Bf4 $18) 22. Bxd8 cxb3 23. Bh4 bxa2 24. Ra1 Bb1 {I have a lot of
+trouble evaluating the position, and once I let the computer run here, it became
+less and less optimistic for White's chances. I think Hikaru was right to avoid
+it.}) 21... Bd3 22. Qd2 c4 $2 {In my opinion, this is the move that lost Caruana
+the game. The position is incredibly hard to understand, but I think the main
+point is that Black will not be able to maintain his pawn on e5. It will
+inevitably have to move to e4. When this happens, Black will really regret
+having pushed c5-c4 because he loses any hope of fighting for the dark squares,
+plus the light squared bishop can end up stuck on d3 and unable to fight on
+other relevant parts of the board. White is only a bit better still, but Black's
+position feels nearly impossible to play.} (22... e4 $1 {This should be
+preferred. The position is messy and balanced. I would prefer the White side,
+but the machine insists upon total equality.}) 23. Bd1 $1 {White does not
+exchange the bishops. He has already seen that d3 will become a piece of dead
+wood.} 23... Rd7 24. Bf2 Rdf7 25. Nh1 $1 {An excellent decision from Hikaru. The
+move is not at all subtle, White wants to take on e5, or to play Bg3 next. Black
+clearly will have to move the e-pawn.} 25... e4 26. Nd4 {This is exactly the
+kind of position that I think is a practical nightmare for Black. Long term, he
+will face huge issues as his pawns are blockaded in the center, and White will
+eventually take them by having a larger total number of pieces on the board.
+Black's compensation is that one of his pieces is bigger than White's, but the
+main power of a larger piece over a smaller piece, such as a rook over a bishop,
+is being able to attack multiple targets at once. And what do we have here $2
+Black's rooks are both clearly on their best squares already. In fact, all of
+his pieces look nice and active. But what is there to target $2 White has no
+weaknesses. Slowly but surely, he will activate his pieces and organize them to
+attack the pawns. Caruana surely could have defended better from here, but in
+human terms, I think the game is already more or less lost, even though the
+machine gives White only a 0.5 advantage or so. I think his big mistake was c4.}
+26... Qg6 27. h4 Nc5 (27... h5 $1 {According to the machine, this was the only
+move. But who makes such a move, putting yet another pawn on a light square and
+weakening g5 $2 It feels like Black's task is impossible, and even here, he is
+still suffering after} 28. Qg5 Qxg5 29. hxg5 $14) 28. h5 $1 Qd6 29. Bg4 $1
+{White's pieces are springing to life, and he is now winning. The bishop on d3
+might look nice and anchored, but it is not doing much, and it is unable to help
+Black fight for squares like f5 or e6.} 29... h6 30. Qe3 Qf4 31. Qxf4 (31. Bf5
+{This may have been even faster.}) 31... Rxf4 32. Ne6 {In my opinion, Caruana
+only made two serious mistakes all game. One was to play c4. But, the second one
+was to not resign here. At this point, I really cannot imagine Hikaru ever not
+converting this with White. Under other circumstances, I would not criticize
+continuing the game; Black is not totally out of practical hope. But in this
+particular case, Caruana has a huge game with White against Nepo tomorrow, now a
+full point ahead of him. It's about as clear of a must-win scenario as one could
+imagine, and it is clearly the most important game of the tournament. Caruana
+will have White, and he should definitely get his chances. But having a couple
+extra hours to rest and prepare for the Petroff would have been a huge asset,
+and in my opinion, a much larger one than hoping for the 1\% chance of Hikaru
+not winning this position.} 32... Nxe6 33. Bxe6+ Kh7 34. Bxd5 R8f5 35. Bc6 Rxh5
+36. Bd4 Rhf5 37. Nf2 Rf7 38. b4 h5 39. a4 (39. Be8 {This seems rather
+convincing. Black loses the h-pawn.} 39... R7f5 {Trying to save it will lead to
+a trapped rook.} 40. Be3 $1 Rh4 41. g3) 39... bxa4 40. Bxa4 h4 41. Be3 R4f5 42.
+Ra1 {Hikaru made his life a little tougher here and had to find some only moves,
+but they were pretty straightforward. He did not take long to find all of them.}
+42... h3 43. Ra2 $1 {Luckily for White, there wasn't much choice. This was the
+only way to prevent h2+.} (43. gxh3 $2 {This would fall for Black's trap.} 43...
+Rf3 $1 44. Re1 Rg3+ $1 {Black is turning the tables.}) 43... hxg2 44. Bd1 $1
+{Another good move, stopping Rf3.} 44... R7f6 {Now, last up is not letting Black
+defend the pawn with Rg6.} 45. Bg4 $1 Rd5 46. Kxg2 $1 Rg6 47. Kg3 {White has
+reached an ideal coordination again with no counterplay, and now the game wins
+itself.} 47... Bf1 {Finally that bishop gets to move... but it still isn't doing
+anything on f1 and has to come back to d3 the next move anyway.} 48. Bd4 Bd3 49.
+Kf4 Kg8 50. Bf5 Rh6 51. Ng4 Rhd6 52. Ne3 Rb5 53. Bc5 Rf6 54. Ke5 Kf7 55. Nd5
+{I'm not sure it was necessary to let Black get the pawn to e2, but Hikaru kept
+it all under control.} (55. Rf2 $18 {Time to resign.}) 55... Rxf5+ 56. Kxf5 e3+
+57. Ke5 e2 58. Bf2 Rb8 59. Be1 Re8+ 60. Kf4 g5+ {Now again, White needed a
+couple only moves... but they are not hard.} 61. Kg3 $1 Re6 62. Kf2 Rh6 63. Ke3
+Re6+ 64. Kf2 Rh6 65. Ne3 {Of course, White does not repeat a second time.} 65...
+Rf6+ 66. Kg3 Rf1 67. Ng2 {White has re-coordinated, and Black's e-pawn is firmly
+stopped. The rook can now go and start taking the other ones.} 67... Rf6 68. Bf2
+Kg6 69. Ra5 $1 Re6 70. Ne1 $1 Bf5 71. Nf3 Rd6 72. Nd4 Bd3 73. Re5 Kf6 74. Nf3
+{Facing the loss of the g5-pawn, Caruana finally resigned. The game lasted over
+six hours and finished past 9pm local time. I have to imagine this will not do
+him any favors tomorrow. Hikaru's technique was not perfect, and honestly not
+even that great, but the win was still never in doubt. I really think resigning
+earlier was the best call given the tournament situation.} 1-0
