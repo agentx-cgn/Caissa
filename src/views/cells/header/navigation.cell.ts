@@ -15,7 +15,7 @@ const NavigationCell: ICellComponent =  {
     return m('nav', [
       m('label', {'aria-label':'Menu', onclick},
         m('i.hamburger.fa.fa-bars '),
-        m('h1.home.f4.fiom.white.pl3.di', 'Caissa'),
+        m('h1.home.f3.sair.white.pl3.di', 'Caissa'),
       ),
     ]);
   },

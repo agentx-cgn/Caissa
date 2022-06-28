@@ -133,4 +133,11 @@ body * {
 @include cm-chessboard-theme(
                 "black-and-white", // name
                 #ffffff, #9c9c9c // squares
-)
+);
+@include cm-chessboard-theme(
+                "caissa", // name
+                #ffffff, #9c9c9c    // squares
+                #1a1dd2, #f0d9b5,   // coordinates in squares (white, black)
+                #404040,              // coordinates in frame-mode
+                #404040, #f0d9b5    // border and frame background
+);

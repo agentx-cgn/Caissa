@@ -37,22 +37,22 @@ const ChessboardCell: ICellComponent = {
     // const { board } = vnode.attrs;
 
     chessBoard = new Chessboard( $('div.chessboard'), {
-      position: "start", // set as fen, "start" or "empty"
-      orientation: COLOR.white, // white on bottom
-      responsive: true, // resizes the board based on element size
-      animationDuration: 300, // pieces animation duration in milliseconds. Disable all animation with `0`.
+      position: "start",                   // set as fen, "start" or "empty"
+      orientation: COLOR.white,            // white on bottom
+      responsive: true,                    // resizes the board based on element size
+      animationDuration: 300,              // pieces animation duration in milliseconds. Disable all animation with `0`.
       style: {
-        cssClass: "black-and-white", // set the css theme of the board, try "green", "blue" or "chess-club"
-        showCoordinates: true, // show ranks and files
-        borderType: BORDER_TYPE.frame, // "thin" thin border, "frame" wide border with coordinates in it, "none" no border
-        aspectRatio: 1, // height/width of the board
+        cssClass: "caissa",                // set the css theme of the board, try "green", "blue" or "chess-club"
+        showCoordinates: true,             // show ranks and files
+        borderType: BORDER_TYPE.thin,     // "thin" thin border, "frame" wide border with coordinates in it, "none" no border
+        aspectRatio: 1,                    // height/width of the board
         moveFromMarker: MARKER_TYPE.frame, // the marker used to mark the start square
-        moveToMarker: MARKER_TYPE.frame, // the marker used to mark the square where the figure is moving to
+        moveToMarker: MARKER_TYPE.frame,   // the marker used to mark the square where the figure is moving to
       },
       sprite: {
         url: "static/chessboard/chessboard-sprite.svg", // pieces and markers are stored in a sprite file
-        size: 40, // the sprite tiles size, defaults to 40x40px
-        cache: true // cache the sprite
+        size: 40,                          // the sprite tiles size, defaults to 40x40px
+        cache: true                        // cache the sprite
       },
     });
 

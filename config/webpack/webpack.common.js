@@ -11,7 +11,13 @@ import { paths } from './paths.js';
 import { rules } from './rules.js';
 
 const common = {
-    stats: 'errors-only',
+    stats:  {
+        loggingDebug: ["sass-loader"],  // does this work??
+        // logging: "error",
+        assets: false,
+        modules: false,
+        entrypoints: false,
+    },
     context: paths.contextPath,
 
     output: {

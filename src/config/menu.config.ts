@@ -54,7 +54,7 @@ const MenuConfig: TMenuConfig = {
 
     '/collections/': CollectionsConfig.map( coll => {
         return [ '/collection/:uuid/', coll.caption, { uuid: coll.uuid }, {
-            img: coll.icon,
+            ifa: coll.icon,
             subline: coll.subline,
         } ];
     }),
