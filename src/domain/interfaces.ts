@@ -2,7 +2,7 @@
 
 import m  from 'mithril';
 import { Move } from 'chess.js';
-import { ParseTree } from '@mliebelt/pgn-parser';
+import { ParseTree, PgnMove } from '@mliebelt/pgn-parser';
 
 export type TVoid = () => void;
 
@@ -95,14 +95,28 @@ export interface IRouteOptions {
 export interface IEvent extends Event {
   redraw?: boolean;
   code?:   string;
+  value?: string | number | boolean;
 }
 
 
 //  ##############   C H E S S    ##############
 
-export interface IGameTree extends ParseTree {
+export interface IGameTree {
+  header: {
+    white: string;
+    black: string;
+    date: string;
+    result: string;
+    event: string;
+    site: string;
+    round: string;
+  }
   uuid: string;
-  searchtext: string
+  pgn: string;
+  searchtext: string;
+  over: boolean;
+  plycount: number;
+  moves: PgnMove[];
 }
 
 export type ICollection = {

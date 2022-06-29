@@ -95,7 +95,7 @@ const GamesPage = FactoryService.create('Games', {
               m(YScrollAtom,
                 m(FlexListAtom, [
                   ...provider.collection.map( ( game: IGameTree ) => {
-                    return m('div', game.tags?.White);
+                    return m('div', game.header.white);
                   } ),
                 ])
               )

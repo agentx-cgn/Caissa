@@ -99,8 +99,8 @@ const CollectionPage = FactoryService.create('Games', {
               m(FlexListHeaderAtom, `lore ipsum dolor sit amet, consectetur adipiscing elit.` ),
               m(FlexListLinkAtom, { route: '/collection/:uuid/', params: { uuid: 'pgnimport01'} }, 'Link: pgnimport01' ),
               m(FlexListLinkAtom, { route: '/collection/:uuid/', params: { uuid: 'pgnimport02'} }, 'Link: pgnimport02' ),
-              m(FlexListInputTextAtom, { onChange: (e: any) => {
-                searchtext = (e.value);
+              m(FlexListInputTextAtom, { onChange: (e: IEvent) => {
+                searchtext = (String(e.value) || '' ).toLowerCase();
                 m.redraw();
                 console.log(e.value);
               } }),

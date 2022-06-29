@@ -95,12 +95,6 @@ div.gm-bar {
 
 // helper
 
-input:focus {
-  outline:none;
-  border-color:#9ecaed;
-  box-shadow:0 0 10px #9ecaed;
-}
-
 .ellipsis {
   overflow: hidden;
   white-space: nowrap;
@@ -147,6 +141,7 @@ button.flexcontrol {
 .sail      { font-family: 'SairaCondensed-Light'; }
 .sair      { font-family: 'SairaCondensed-Regular'; }
 .saim      { font-family: 'SairaCondensed-Medium'; }
+.sait      { font-family: 'SairaCondensed-Thin'; }
 
 .lh1       { line-height: 1rem; }
 .h05       { height:  0.5rem; }

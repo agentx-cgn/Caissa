@@ -82,9 +82,9 @@ const ImportProvider = function (cfgCollection: ICollection): ICollectionProvide
         fetch () {
             provider.progress = 10;
             return new Promise<void> ((resolve /*, reject */ ) => {
-                const parseTree   = PgnService.parseGames(cfgCollection.source);
+                const parseTree   = PgnService.parseCollection(cfgCollection.source);
                 provider.progress = 60;
-                provider.collection    = PgnService.processGames(parseTree);
+                provider.collection    = PgnService.sanitizeCollection(parseTree);
                 provider.progress = 0;
                 DEBUG && console.log(provider.caption, provider.collection.length);
                 resolve();
@@ -119,11 +119,11 @@ const UrlProvider = function (cfgCollection: ICollection): ICollectionProvider {
                 })
                 .then( text => {
                     provider.progress = 50;
-                    return PgnService.parseGames(text);
+                    return PgnService.parseCollection(text);
                 })
                 .then( parseTree => {
                     provider.progress = 70;
-                    provider.collection = PgnService.processGames(parseTree);
+                    provider.collection = PgnService.sanitizeCollection(parseTree);
                     console.log(provider.caption, provider.collection.length);
                     provider.progress = 0;
                 })

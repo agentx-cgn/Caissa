@@ -23,7 +23,7 @@ const PgnService = {
 
   },
 
-  parseGames (pgn: string): ParseTree[] {
+  parseCollection (pgn: string): ParseTree[] {
 
     const t0 = Date.now();
 
@@ -73,24 +73,43 @@ const PgnService = {
 
   },
 
-  processGames (games: ParseTree[]): IGameTree[] {
+  sanitizeCollection (games: ParseTree[]): IGameTree[] {
 
     return games.map( (game: ParseTree): IGameTree => {
 
-      const pgn = PgnService.reducePgn(game);
-      let values = PgnService.collectValues(game.tags);
-      values = PgnService.sanitizeValues(values);
-
+      const header = {
+        black:  game.tags?.Black  || 'Black',
+        white:  game.tags?.White  || 'White',
+        site:   game.tags?.Site   || '',
+        result: game.tags?.Result || '?-?',
+        event:  game.tags?.Event  || '',
+        round:  game.tags?.Round  || '',
+        date: (
+          game.tags?.EventDate?.value  ? game.tags.EventDate.value :
+          game.tags?.Date       ? game.tags?.Date      :
+          game.tags?.UTCDate    ? game.tags?.UTCDate   :
+          '????.??.??'
+          ),
+        }
+      ;
+      const pgn    = PgnService.reducePgn(game);
+      const values = PgnService.sanitizeValues(PgnService.collectValues(header));
       const unique = JSON.stringify({
-        1: game.tags,
+        1: values,
         2: pgn,
       });
 
-      const gameTree = Object.assign({}, game, {
+
+      const gameTree = {
         pgn,
+        header,
+        over:       true,
         uuid:       H.hash(unique),
-        searchtext: values.join(' '), //H.map(game.tags, (_, val) => val).join(' ').toLowerCase(),
-      }) as IGameTree;
+        searchtext: values.join(' ').toLowerCase(),
+        plycount:   game.tags?.PlyCount || game.moves.length || 0,
+        moves:      game.moves,
+
+      } as IGameTree;
 
       return gameTree;
 
