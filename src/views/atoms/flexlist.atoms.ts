@@ -153,23 +153,14 @@ export const FlexListLinkAtom: IAtomComponent<ILinkAttrs> = {
 
 
 TextFieldCSS.addStyle(`.atom-textfield-17`, {
+  lineheight_input: 16,
+  font_size_input: 16,
+  dense_full_width_input_padding_v: 4,
+  dense_full_width_input_padding_h: 16,
   color_light_input_background: 'white',
   color_light_input_text: '#333',
   color_light_background: '#688799',
   color_light_focus_border: "transparent",
-  input_padding_h: 16,
-  font_size_input: 16,
-  lineheight_input: 16,
-  dense_full_width_font_size_input: 16,
-  dense_full_width_input_padding_v: 0,
-  dense_full_width_input_padding_h: 16,
-  input_border_width: 0,
-  input_focus_border_width: 0,
-  vertical_spacing_bottom: 4,
-  vertical_spacing_top: 4,
-
-  font_size_floating_label: 56
-
 });
 
 interface ITextInputAttrs extends Partial<polyTextField> {
@@ -178,7 +169,7 @@ interface ITextInputAttrs extends Partial<polyTextField> {
 
 export const FlexListInputTextAtom: m.Component<ITextInputAttrs> = {
   view ( vnode ) {
-    return m('atom-flexlist-input-text.fiob.pv2',
+    return m('atom-flexlist-input-text.fiob',
       m(polyTextField, {
         ...vnode.attrs,
         className: 'atom-textfield-17',

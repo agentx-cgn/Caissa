@@ -16,7 +16,7 @@ export const CollectionCell: ICellComponent<IAttrs> = {
 
     const { provider, searchtext } = vnode.attrs;
 
-    return m('cell-collection', [
+    return m('cell-collection.mv2.ph3', [
       ...provider.collection
       .filter( (game: IGameTree) => searchtext ? game.searchtext.includes(searchtext) : true)
       .map( ( game: IGameTree ) => {
