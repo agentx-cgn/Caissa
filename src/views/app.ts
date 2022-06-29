@@ -175,11 +175,11 @@ const App = {
       const { route, params, options } = vnode.attrs;
       const [ layout, _, center ] = RoutesConfig[route];
 
-      // if ( DEBUG ) {
-      //   const target = m.buildPathname(route, params);
-      //   const style  = 'color:darkgreen; font-weight: 800';
-      //   console.log('%cApp.view.in', style, target, HistoryService.animation);
-      // }
+      if ( DEBUG ) {
+        const target = m.buildPathname(route, params);
+        const style  = 'color:darkgreen; font-weight: 800';
+        console.log('%cApp.view.in', style, target, HistoryService.animation);
+      }
 
       //TODO: this is actually dynamic
       document.title = options.title;

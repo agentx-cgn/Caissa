@@ -1,19 +1,19 @@
 import m from 'mithril';
 
-import './content.cell.scss';
+import './basic.content.cell.scss';
 
 import { ICellContentComponent } from '@app/domain';
 import { SectionTitleAtom } from '@app/atoms';
 
-export const ContentCell: ICellContentComponent = {
+export const ContentCellBasic: ICellContentComponent = {
   view ( ) {
 
-    return m('cell-content', [
+    return m('cell-content-basic', [
       m(SectionTitleAtom, { title: 'Content', description: 'description' }, 'Content'),
-      m('div', 'This is ContentCell'),
+      m('div', 'This is ContentCellBasic'),
       // m(ToolbarCell,      { className: '', style: '' } ),
       // m(ToolbarCell,      { className: '', style: '' } ),
-      // m(BoardCell,        { className: '', style: '' } ),
+      // m(ContentCellBoard,        { className: '', style: '' } ),
       // m(ToolbarCell,      { className: '', style: '' } ),
       // m(ToolbarCell,      { className: '', style: '' } ),
     ]);

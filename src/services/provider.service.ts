@@ -8,6 +8,7 @@ import { PgnService } from './pgn.service';
 import { ICollection, ICollectionProvider, IGameTree } from '@app/domain';
 import { CollectionsConfig } from '@app/config';
 
+const DEBUG = false;
 
 /*
 
@@ -85,7 +86,7 @@ const ImportProvider = function (cfgCollection: ICollection): ICollectionProvide
                 provider.progress = 60;
                 provider.collection    = PgnService.processGames(parseTree);
                 provider.progress = 0;
-                console.log(provider.caption, provider.collection.length);
+                DEBUG && console.log(provider.caption, provider.collection.length);
                 resolve();
             });
         },
@@ -172,7 +173,7 @@ const ProviderService = {
 
     }
 
-    console.log('ProviderService', `Provider or Collection ${uuid} not found`);
+    // console.log('ProviderService', `Provider or Collection ${uuid} not found`);
 
     return undefined;
 

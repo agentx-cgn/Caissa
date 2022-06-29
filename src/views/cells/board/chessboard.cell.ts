@@ -10,6 +10,7 @@ const $ = document.querySelector.bind(document);
 const DEBUG = true;
 
 let chessBoard: any;
+let $chessBoard: Element;
 
 const listener = () => {
 
@@ -39,14 +40,16 @@ const ChessboardCell: ICellComponent<IChessBoardAttrs> & IChessBoardState = {
 
   // onresize : Tools.Board.resize,
 
-  oncreate (  ) {
+  oncreate ( vnode ) {
 
     DEBUG && console.log('ChessBoard.oncreate.in');
 
     window.removeEventListener('resize', listener);
     window.addEventListener('resize', listener);
 
-    // const { board } = vnode.attrs;
+    const { board } = vnode.attrs;
+
+    $chessBoard = vnode.dom;
 
     chessBoard = new Chessboard( $('div.chessboard'), {
       position: "start",                   // set as fen, "start" or "empty"
@@ -70,21 +73,21 @@ const ChessboardCell: ICellComponent<IChessBoardAttrs> & IChessBoardState = {
 
     chessBoard.enableMoveInput((event: any) => {
       switch (event.type) {
-          case INPUT_EVENT_TYPE.moveStart:
-              console.log(`moveStart: ${event.square}`);
-              // return `true`, if input is accepted/valid, `false` aborts the interaction, the piece will not move
-              return true;
-          case INPUT_EVENT_TYPE.moveDone:
-              console.log(`moveDone: ${event.squareFrom}-${event.squareTo}`);
-              // return true, if input is accepted/valid, `false` takes the move back
-              return true;
-          case INPUT_EVENT_TYPE.moveCanceled:
-              console.log(`moveCanceled`);
-              return false; //??
-          default:
-            return false;
-        }
-      }, COLOR.white);
+        case INPUT_EVENT_TYPE.moveStart:
+            console.log(`moveStart: ${event.square}`);
+            // return `true`, if input is accepted/valid, `false` aborts the interaction, the piece will not move
+            return true;
+        case INPUT_EVENT_TYPE.moveDone:
+            console.log(`moveDone: ${event.squareFrom}-${event.squareTo}`);
+            // return true, if input is accepted/valid, `false` takes the move back
+            return true;
+        case INPUT_EVENT_TYPE.moveCanceled:
+            console.log(`moveCanceled`);
+            return false; //??
+        default:
+          return false;
+      }
+    }, COLOR.white);
 
       // console.log(chessBoard);
       listener();
@@ -101,7 +104,8 @@ const ChessboardCell: ICellComponent<IChessBoardAttrs> & IChessBoardState = {
 
   },
   view ( vnode ) {
-    DEBUG && console.log('ChessBoard.onbeforeremove.in');
+
+    DEBUG && console.log('ChessBoard.view.in');
 
     const { game, board, controller } = vnode.attrs;
       return m('div.chessboard',
@@ -111,22 +115,26 @@ const ChessboardCell: ICellComponent<IChessBoardAttrs> & IChessBoardState = {
       }, [m('div.dn')]),
     );
   },
+
+  onbeforeupdate ( vnode, oldnode ) {
+    console.log('ChessBoard.onbeforeupdate.in', vnode, oldnode);
+  },
   onupdate ( vnode ) {
 
-    DEBUG && console.log('ChessBoard.onafterupdates.in', vnode.attrs);
+    DEBUG && console.log('ChessBoard.onupdate.in', vnode.attrs);
 
       const { board, controller } = vnode.attrs;
 
       // controller.stopListening(chessBoard);
       // chessBoard.view.handleResize();
-      chessBoard.setOrientation('w'); //board.orientation);
+      // chessBoard.setOrientation('w'); //board.orientation);
 
       DEBUG && console.log('ChessBoard.onupdate.out', !!chessBoard,  !!board, vnode);
 
   },
   onafterupdate ( attrs ) {
 
-      DEBUG && console.log('ChessBoard.onafterupdates.in', attrs);
+      DEBUG && console.log('ChessBoard.onafterupdate.in', attrs);
       // const { game, board, controller } = attrs;
 
       chessBoard
@@ -139,22 +147,28 @@ const ChessboardCell: ICellComponent<IChessBoardAttrs> & IChessBoardState = {
 
   },
 
-  onbeforeremove (  ) {
+  onbeforeremove ( vnode ) {
 
     DEBUG && console.log('ChessBoard.onbeforeremove.in');
 
-    // const { controller } = vnode.attrs;
+    const { controller } = vnode.attrs;
       // const $chessboard = $$('div.chessboard'); // vnode.dom
 
       // $chessboard.removeEventListener('mousedown', controller.listener.onmousedown);
       // $chessboard.removeEventListener('touchdown', controller.listener.ontouchdown);
 
-      return chessBoard.destroy().then( () => {
-          chessBoard = undefined;
-          DEBUG && console.log('chessboard.destroyed');
-      });
+      chessBoard.destroy();
+      chessBoard = undefined;
+      DEBUG && console.log('chessboard.destroyed');
 
   },
+
+  onremove (  ) {
+
+    DEBUG && console.log('ChessBoard.onremove.in');
+
+  },
+
 };
 
 export { ChessboardCell };

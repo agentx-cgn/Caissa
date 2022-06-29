@@ -63,8 +63,9 @@ const common = {
         new MiniCssExtractPlugin(),
         new CopyPlugin({
           patterns: [
+              // { from: "other", to: "public" },
             { from: "assets/static", to: "static" },
-            // { from: "other", to: "public" },
+            // { from: "assets/publi", to: "publi" },
           ],
         }),
     ],

@@ -1,7 +1,7 @@
 import m from 'mithril';
 
 import { ICellContentComponent, IRoutesConfigs } from '@app/domain';
-import { LayoutCell, ContentCell, BoardCell } from '@app/cells';
+import { LayoutCell, ContentCellBasic, ContentCellBoard } from '@app/cells';
 import {
   MenuPage,
   SystemPage,
@@ -24,17 +24,17 @@ const RoutesConfig: IRoutesConfigs = {
     // routes must start with '/'
     // Route                Layout  Page              Content          Options (Title)
 
-    '/':                  [ LayoutCell, MenuPage,         ContentCell,   { title: 'Start 1',      description: 'aaa'}      ],
-    '/start/':            [ LayoutCell, MenuPage,         ContentCell,   { title: 'Start',        description: 'aab'}        ],
-    '/games/':            [ LayoutCell, MenuPage,         BoardCell,     { title: 'Games',        description: 'aac'}        ],
-    '/collections/':      [ LayoutCell, MenuPage,         BoardCell,     { title: 'Collections',  description: 'aad'}  ],
-    '/collection/:uuid/': [ LayoutCell, CollectionPage,   BoardCell,     { title: 'Collection',   description: 'aae'}  ],
-    '/games/:uuid/':      [ LayoutCell, GamesPage,        ContentCell,   { title: 'Games %s',     description: 'aaf'}    ],
-    '/preferences/':      [ LayoutCell, PreferencesPage,  ContentCell,   { title: 'Preferences',  description: 'aag'}  ],
-    '/help/':             [ LayoutCell, HelpPage,         Nothing,       { title: 'Help',         description: ''}         ],
-    '/system/':           [ LayoutCell, SystemPage,       Nothing,       { title: 'System',       description: ''}       ],
-    '/system/:module/':   [ LayoutCell, SystemPage,       Nothing,       { title: 'System %s',    description: ''}    ],
-    '/:404...':           [ LayoutCell, ErrorPage,        Nothing,       { title: 'Error %s',     description: ''}     ],
+    '/':                  [ LayoutCell, MenuPage,         ContentCellBoard,   { title: 'Start 1',      description: 'aaa'}      ],
+    '/start/':            [ LayoutCell, MenuPage,         ContentCellBoard,   { title: 'Start',        description: 'aab'}        ],
+    '/games/':            [ LayoutCell, MenuPage,         ContentCellBoard,   { title: 'Games',        description: 'aac'}        ],
+    '/collections/':      [ LayoutCell, MenuPage,         ContentCellBoard,   { title: 'Collections',  description: 'aad'}  ],
+    '/collection/:uuid/': [ LayoutCell, CollectionPage,   ContentCellBoard,   { title: 'Collection',   description: 'aae'}  ],
+    '/games/:uuid/':      [ LayoutCell, GamesPage,        ContentCellBasic,   { title: 'Games %s',     description: 'aaf'}    ],
+    '/preferences/':      [ LayoutCell, PreferencesPage,  ContentCellBasic,   { title: 'Preferences',  description: 'aag'}  ],
+    '/help/':             [ LayoutCell, HelpPage,         Nothing,            { title: 'Help',         description: ''}         ],
+    '/system/':           [ LayoutCell, SystemPage,       Nothing,            { title: 'System',       description: ''}       ],
+    '/system/:module/':   [ LayoutCell, SystemPage,       Nothing,            { title: 'System %s',    description: ''}    ],
+    '/:404...':           [ LayoutCell, ErrorPage,        Nothing,            { title: 'Error %s',     description: ''}     ],
 
     // '/sources/':          [ Layout, Sources,  Board,     { title: 'Sources'}     ],
     // '/games/':            [ Layout, Games,    Board,     { title: 'Games'}       ],

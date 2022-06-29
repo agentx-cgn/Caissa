@@ -7,7 +7,7 @@ import { YScrollAtom, SectionTitleAtom, FlexListHeaderAtom, FlexListAtom, FlexLi
 
 // import { ListFilter, FlexListEntry, PageTitle } from '../../components/misc';
 
-const DEBUG = true;
+const DEBUG = false;
 
 // const read  = H.interprete;
 // let filter  = '';
@@ -16,7 +16,7 @@ const CollectionPage = FactoryService.create('Games', {
 
   async onmatch (route: string, params: IParams, data: IPageData): Promise<unknown> {
 
-    console.log('CollectionPage.onmatch', route, params);
+    // console.log('CollectionPage.onmatch', route, params);
 
     Object.assign(data, { test3: 'test3' });
 
@@ -47,7 +47,7 @@ const CollectionPage = FactoryService.create('Games', {
 
         const { params: { uuid }, className, style, options: { title, description } } = vnode.attrs;
 
-        console.log(vnode.state.data);
+        // console.log(vnode.state.data);
 
         const provider = ProviderService.find( p => p.uuid === uuid );
 

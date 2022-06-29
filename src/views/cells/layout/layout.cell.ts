@@ -14,13 +14,20 @@ import { AsideCell } from './../aside/aside.cell';
 import { FooterCell } from './../footer/footer.cell';
 import { SplashCell } from './../splash/splash.cell';
 
+const DEBUG = false;
+
 let break2: number;
+
 
 const LayoutCell: ILayoutComponent = {
 
   oninit () {
     break2 = parseInt(H.cssvar('--mediabreak2'), 10);
   //   break3 = parseInt(H.cssvar('--mediabreak3'), 10);
+  },
+
+  onbeforeupdate ( vnode, oldnode ) {
+    DEBUG && console.log('LayoutCell.onbeforeupdate.in', vnode, oldnode);
   },
 
   view ( vnode ) {
@@ -35,9 +42,9 @@ const LayoutCell: ILayoutComponent = {
           m(BackdropCell),
           m(HeaderCell),
           m('main', [
-            m('section.stage',   {}, m(StageCell)),
-            m('section.content', {}, innerWidth >= break2 ? m( center, { route, params, options } )  : m(NothingAtom)),
-            m('section.aside',   {}, m(AsideCell)), //innerWidth >= break3 ? m(AsideCell) : m(NothingAtom))
+            m('section.stage',   m(StageCell)),
+            m('section.content', innerWidth >= break2 ? m( center, { route, params, options } )  : m(NothingAtom)),
+            m('section.aside',   m(AsideCell)), //innerWidth >= break3 ? m(AsideCell) : m(NothingAtom))
           ]),
           m(FooterCell),
         ]
