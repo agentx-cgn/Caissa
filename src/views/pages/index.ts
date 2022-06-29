@@ -7,4 +7,4 @@ export * from './collections/collections.page';
 export * from './collections/collection.page';
 export * from './games.page';
 export * from './help.page';
-export * from './game.page';
+export * from './game/game.page';

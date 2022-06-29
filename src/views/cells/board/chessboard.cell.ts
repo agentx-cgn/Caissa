@@ -7,7 +7,7 @@ import { ICellComponent } from '@app/domain';
 
 const $ = document.querySelector.bind(document);
 
-const DEBUG = true;
+const DEBUG = false;
 
 let chessBoard: any;
 let $chessBoard: Element;

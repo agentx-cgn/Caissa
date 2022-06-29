@@ -35,6 +35,7 @@
   "dependencies": {
     "@mliebelt/pgn-parser": "^1.4.4",
     "chess.js": "^0.13.2",
+    "cm-chess": "^2.3.4",
     "cm-chessboard": "^4.1.3",
     "deepmerge": "^4.2.2",
     "local-storage": "^2.0.0",

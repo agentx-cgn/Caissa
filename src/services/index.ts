@@ -6,4 +6,5 @@ export * from './system.service';
 export * from './factory.service';
 export * from './history.service';
 export * from './provider.service';
+export * from './tools.service';
 export * from './database/database.service';

@@ -1,5 +1,5 @@
 
-import { parse, ParseTree, PgnMove } from '@mliebelt/pgn-parser';
+import { parse, ParseTree, IPgnMove } from '@mliebelt/pgn-parser';
 
 
 
@@ -65,7 +65,7 @@ const PgnService = {
 
   reducePgn (game: ParseTree): string {
 
-    const pgn = game.moves.reduce((acc: string, move: PgnMove) => {
+    const pgn = game.moves.reduce((acc: string, move: IPgnMove) => {
       return acc + move.notation.notation + ' ';
     }, '');
 
@@ -86,6 +86,7 @@ const PgnService = {
         round:  game.tags?.Round  || '',
         date: (
           game.tags?.EventDate?.value  ? game.tags.EventDate.value :
+          game.tags?.Date?.value       ? game.tags.Date.value :
           game.tags?.Date       ? game.tags?.Date      :
           game.tags?.UTCDate    ? game.tags?.UTCDate   :
           '????.??.??'
@@ -108,6 +109,7 @@ const PgnService = {
         searchtext: values.join(' ').toLowerCase(),
         plycount:   game.tags?.PlyCount || game.moves.length || 0,
         moves:      game.moves,
+        score:      { maxcp: 0 },
 
       } as IGameTree;
 

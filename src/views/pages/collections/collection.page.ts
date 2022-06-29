@@ -2,12 +2,11 @@
 import m from 'mithril';
 import './collection.page.scss';
 
-import { IEvent, IGameTree, IPageData, IParams } from '@app/domain';
+import { IEvent, IPageData, IParams } from '@app/domain';
 import { App } from '@app/views';
 import { FactoryService, ProviderService }  from '@app/services';
 import { YScrollAtom, SectionTitleAtom, FlexListHeaderAtom, FlexListAtom, FlexListLinkAtom, FlexListInputTextAtom } from '@app/atoms';
 import { CollectionCell } from './collection.cell';
-
 
 const DEBUG = false;
 
@@ -15,7 +14,6 @@ const DEBUG = false;
 // let filter  = '';
 
 let searchtext = '';
-
 
 const CollectionPage = FactoryService.create('Games', {
 
@@ -60,8 +58,8 @@ const CollectionPage = FactoryService.create('Games', {
 
           return m('div.page.collection', { className, style }, [
             m(SectionTitleAtom, { title, description } ),
-            m(FlexListHeaderAtom, `No games found for '${uuid}'` ),
-            m(FlexListLinkAtom, { route: '', params: {} }, 'This is a Link' ),
+            m(FlexListHeaderAtom, `No games found for this collection '${uuid}'` ),
+            m(FlexListLinkAtom, { route: '', params: {} }, 'This is a broken Link' ),
           ]);
 
           // return m('div.page.games', { className, style }, m(FlexListEntryAtom, [
@@ -101,12 +99,11 @@ const CollectionPage = FactoryService.create('Games', {
               m(FlexListLinkAtom, { route: '/collection/:uuid/', params: { uuid: 'pgnimport02'} }, 'Link: pgnimport02' ),
               m(FlexListInputTextAtom, { onChange: (e: IEvent) => {
                 searchtext = (String(e.value) || '' ).toLowerCase();
-                m.redraw();
-                console.log(e.value);
+                App.redraw();
               } }),
               m(YScrollAtom,
                 m(FlexListAtom,
-                  m(CollectionCell, { className, style, provider, searchtext })
+                  m(CollectionCell, { provider, searchtext })
                 )
               )
             ]);

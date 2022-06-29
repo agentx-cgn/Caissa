@@ -1,15 +1,19 @@
 
 import m from 'mithril';
-import { IEvent, ICellComponent, ICellAttrs } from '@app/domain';
+import { IEvent, ICellComponent, ICellAttrs, IGameTree } from '@app/domain';
+import { DatabaseService as DB } from '@app/services';
+import { AppConfig } from '@app/config';
+import { App } from '@app/views';
+import { GameMovesCell } from '@app/pages';
 
 // import GameEcos   from './game-ecos';
 
-interface IPanelAttrs extends ICellAttrs {
+interface IPanelAttrs {
+  className: string;
   show: boolean;
   onclick: (e: IEvent) => void;
 }
-
-const PanelHeader: ICellComponent<IPanelAttrs> = {
+const PanelHeaderCell: ICellComponent<IPanelAttrs> = {
   view ( vnode ) {
     const { onclick, show, className } = vnode.attrs;
     return m('div.panel-header.flex.flex-row', { className, onclick }, [
@@ -19,39 +23,43 @@ const PanelHeader: ICellComponent<IPanelAttrs> = {
   },
 };
 
-const Panel: ICellComponent<IPanelAttrs> = {
+const PanelCell: ICellComponent<IPanelAttrs> = {
   view ( vnode ) {
-    const { show, className } = vnode.attrs;
+    const { show, className, onclick } = vnode.attrs;
     const [ caption, panel ] = vnode.children as [string, m.Vnode<IPanelAttrs>[]];
     return m('div.panel', { className }, [
-      m(PanelHeader, vnode.attrs, caption),
+      m(PanelHeaderCell, { className, show, onclick }, caption),
       show && m('div.panel-content', panel),
     ]);
 
   },
 };
 
+interface IPanelMovesAttrs  {
+  game: IGameTree;
+}
+const PanelMovesCell: ICellComponent<IPanelMovesAttrs> = {
+    view ( vnode ) {
 
-// const PanelMoves = FactoryService.create('PanelMoves', {
-//     view (vnode: any) {
+      const { game } = vnode.attrs;
 
-//         //TODO: exchange onclick with group
-//         const group   = 'game-panel-toggles';
-//         const show    = DB.Options.first[group].moves === 'show';
+        //TODO: exchange onclick with group
+        const group   = 'game-panel-toggles';
+        const show    = DB.Options.first[group].moves === 'show';
 
-//         const onclick = function (e) {
-//             const value = show ? 'hide' : 'show';
-//             DB.Options.update('0', { [group]: { moves: value } }, true);
-//             App.redraw(e);
-//         };
+        const onclick = function (e: IEvent) {
+            const value = show ? 'hide' : 'show';
+            DB.Options.update('0', { [group]: { moves: value } }, true);
+            App.redraw(e);
+        };
 
-//         return m(Panel, { onclick, show, className: 'moves'},
-//             'Moves',
-//             m(Moves, { game: vnode.attrs.game }),
-//         );
+        return m(PanelCell, { onclick, show, className: 'moves'},
+            'Moves',
+            m(GameMovesCell, { game }),
+        );
 
-//     },
-// });
+    },
+};
 
 // const PanelIllus = FactoryService.create('PanelIllus', {
 //     view () {
@@ -95,7 +103,8 @@ const Panel: ICellComponent<IPanelAttrs> = {
 // });
 
 export {
-    Panel,
+    PanelCell,
+    PanelMovesCell,
     // PanelMoves,
     // PanelIllus,
     // PanelEcos,

@@ -5,12 +5,22 @@ import { IObj } from '@app/domain';
 
 const H = {
 
+      /**    N U M B E R S     */
+
+    scale (x: number, xMin: number, xMax: number, min: number, max: number){
+      return (max-min)*(x-xMin)/(xMax-xMin)+min;
+    },
+
+    clamp (val: number, min: number, max: number){
+      return val < min ? min : val > max ? max : val;
+    },
+
     wait (msecs: number) {
       return new Promise(resolve => setTimeout(resolve, msecs));
     },
 
     interprete (val: any): any{
-        return typeof val === 'function' ? val() : val;
+      return typeof val === 'function' ? val() : val;
     },
 
     each (obj: any, fn: (key: string, val: any) => void) {

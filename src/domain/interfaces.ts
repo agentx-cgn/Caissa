@@ -2,7 +2,7 @@
 
 import m  from 'mithril';
 import { Move } from 'chess.js';
-import { ParseTree, PgnMove } from '@mliebelt/pgn-parser';
+import { GameComment } from '@mliebelt/pgn-parser';
 
 export type TVoid = () => void;
 
@@ -101,6 +101,28 @@ export interface IEvent extends Event {
 
 //  ##############   C H E S S    ##############
 
+declare type IPgnMove = {
+  drawOffer: boolean;
+  moveNumber: number;
+  notation: {
+      fig?: string | null;
+      strike?: 'x' | null;
+      col: string;
+      row: string;
+      check?: string;
+      promotion: string | null;
+      notation: string;
+      disc?: string;
+      drop?: boolean;
+  };
+  variations: IPgnMove[][];
+  nag: string[];
+  commentDiag: GameComment;
+  commentMove?: string;
+  commentAfter?: string;
+  turn: 'w' | 'b';
+};
+
 export interface IGameTree {
   header: {
     white: string;
@@ -116,7 +138,11 @@ export interface IGameTree {
   searchtext: string;
   over: boolean;
   plycount: number;
-  moves: PgnMove[];
+  moves: IPgnMove[];
+  score: {
+    maxcp: number;
+  },
+
 }
 
 export type ICollection = {

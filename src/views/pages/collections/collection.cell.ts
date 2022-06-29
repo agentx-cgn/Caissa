@@ -1,10 +1,12 @@
 import m from 'mithril';
 
-import { ICellAttrs, ICellComponent, ICollectionProvider, IEvent, IGameTree } from '@app/domain';
+import { ICellComponent, ICollectionProvider, IEvent, IGameTree } from '@app/domain';
+import { AppConfig } from '@app/config';
 import { App } from '@app/views';
+import { DatabaseService as DB } from '@app/services';
 import { GameEntryAtom } from './gameentry.atom';
 
-interface IAttrs extends ICellAttrs{
+interface IAttrs {
   provider: ICollectionProvider;
   searchtext: string
 }
@@ -20,12 +22,24 @@ export const CollectionCell: ICellComponent<IAttrs> = {
         .filter( (game: IGameTree) => searchtext ? game.searchtext.includes(searchtext) : true)
         .map( ( game: IGameTree ) => {
 
-          return m(GameEntryAtom, { game, onclick: (e: IEvent) => {
+          const onclick = (e: IEvent) => {
+
+            if (!DB.Games.exists(game.uuid)) {
+              game = Object.assign({}, AppConfig.templates.game, game, { turn: game.moves.length -1 });
+              // // spend games a prototype
+              // game.moves = Array.from(game.moves);
+              // Tools.Games.updateMoves(game);
+              DB.Games.create(game, true);
+              // DB.Games.update(game.uuid, { turn: game.moves.length -1 }, true);
+              DB.Boards.create(Object.assign(AppConfig.templates.board, { uuid: game.uuid }));
+          }
 
             e.redraw = false;
             App.route('/game/:turn/:uuid/', { uuid: game.uuid, turn: game.moves.length -1 });
 
-          }});
+          };
+
+          return m(GameEntryAtom, { game, onclick });
 
         })
       ,

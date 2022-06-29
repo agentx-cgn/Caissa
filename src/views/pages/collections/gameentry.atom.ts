@@ -24,7 +24,7 @@ const GameEntryAtom: IAtomComponent<IAttrs> = {
       const { game, onclick } = vnode.attrs;
 
       let line1 = `${game.header.white} - ${game.header.black}`.trim();
-      let item1 = `<b class="fiob">${game.header.result}</b> (${game.plycount}) `.trim();
+      let item1 = `<b class="fiob">${game.header.result}</b> (${game.plycount}) &nbsp`.trim();
       let item2 = unique(`${game.header.date} ${game.header.site} ${game.header.event}`.trim());
 
       return m('game-entry.db.pt2.pointer', { onclick }, [
