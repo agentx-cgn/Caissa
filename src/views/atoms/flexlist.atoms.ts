@@ -1,25 +1,22 @@
 import m from 'mithril';
-// import { Ripple as RipplePoly } from 'polythene-mithril';
+
+import {
+  // CheckboxCSS,
+  // ButtonCSS,
+  TextFieldCSS,
+  // SwitchCSS,
+  // ButtonGroupCSS
+} from 'polythene-css';
+import {
+  // Button as polyButton,
+  // Checkbox as polyCheckbox,
+  TextField as polyTextField,
+  // Switch as polySwitch,
+  // ButtonGroup as polyButtonGroup,
+} from 'polythene-mithril';
 
 import { IAtomAttrs, IAtomComponent, IEvent} from '@app/domain';
 import { App } from '@app/views';
-
-// interface IRippleAttrs extends IAtomAttrs {
-//   onend?: (e: IEvent) => void;
-// }
-// const RippleAtom: IAtomComponent<IRippleAttrs> = {
-//   view ( vnode ) {
-//     const { onend } = vnode.attrs;
-//     return m(RipplePoly, {
-//       startOpacity: 0.7,
-//       duration: 1.5,
-//       style: {
-//         color: "#fff8"
-//       },
-//       end: onend
-//     });
-//   },
-// };
 
 export const NothingAtom: IAtomComponent = {
   view ( ) {
@@ -154,6 +151,64 @@ export const FlexListLinkAtom: IAtomComponent<ILinkAttrs> = {
 
 
 
+
+TextFieldCSS.addStyle(`.atom-textfield-17`, {
+  color_light_input_background: 'white',
+  color_light_input_text: '#333',
+  color_light_background: '#688799',
+  color_light_focus_border: "transparent",
+  input_padding_h: 16,
+  font_size_input: 16,
+  lineheight_input: 16,
+  dense_full_width_font_size_input: 16,
+  dense_full_width_input_padding_v: 0,
+  dense_full_width_input_padding_h: 16,
+  input_border_width: 0,
+  input_focus_border_width: 0,
+  vertical_spacing_bottom: 4,
+  vertical_spacing_top: 4,
+
+  font_size_floating_label: 56
+
+});
+
+interface ITextInputAttrs extends Partial<polyTextField> {
+  onChange: (event: any) => void
+}
+
+export const FlexListInputTextAtom: m.Component<ITextInputAttrs> = {
+  view ( vnode ) {
+    return m('atom-flexlist-input-text.fiob.pv2',
+      m(polyTextField, {
+        ...vnode.attrs,
+        className: 'atom-textfield-17',
+        floatingLabel: false,
+        dense: true,
+        fullWidth: true,
+        label: 'type to search',
+        tone: 'light'
+      })
+    );
+  },
+};
+
+
+
+// TextFieldCSS.addStyle(`.atom-textfield`, {
+//   color_light_input_background: 'white',
+//   color_light_input_text: '#333',
+//   color_light_background: '#688799',
+// });
+
+
+// const FormTextField: m.Component<ITextFieldAttrs> = {
+//   view: ( vnode ) => m('atom-form-textfield.fior',
+//     m(polyTextField, { ...vnode.attrs,
+//       className: 'atom-textfield',
+//       floatingLabel: true,
+//       // dense:     true,
+//   })),
+// };
 
 // export const FixedListAtom: IAtomComponent = {
 //   view ( vnode ) {

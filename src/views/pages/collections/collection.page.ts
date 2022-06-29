@@ -1,16 +1,21 @@
 
 import m from 'mithril';
+import './collection.page.scss';
 
-import { IGameTree, IPageData, IParams } from '@app/domain';
+import { IEvent, IGameTree, IPageData, IParams } from '@app/domain';
+import { App } from '@app/views';
 import { FactoryService, ProviderService }  from '@app/services';
-import { YScrollAtom, SectionTitleAtom, FlexListHeaderAtom, FlexListAtom, FlexListLinkAtom } from '@app/atoms';
+import { YScrollAtom, SectionTitleAtom, FlexListHeaderAtom, FlexListAtom, FlexListLinkAtom, FlexListInputTextAtom } from '@app/atoms';
+import { CollectionCell } from './collection.cell';
 
-// import { ListFilter, FlexListEntry, PageTitle } from '../../components/misc';
 
 const DEBUG = false;
 
 // const read  = H.interprete;
 // let filter  = '';
+
+let searchtext = '';
+
 
 const CollectionPage = FactoryService.create('Games', {
 
@@ -86,20 +91,39 @@ const CollectionPage = FactoryService.create('Games', {
               //         :  true;
               // });
 
+
             return m('div.page.collection', { className, style }, [
+
 
               m(SectionTitleAtom, { title, description } ),
               m(FlexListHeaderAtom, `lore ipsum dolor sit amet, consectetur adipiscing elit.` ),
               m(FlexListLinkAtom, { route: '/collection/:uuid/', params: { uuid: 'pgnimport01'} }, 'Link: pgnimport01' ),
               m(FlexListLinkAtom, { route: '/collection/:uuid/', params: { uuid: 'pgnimport02'} }, 'Link: pgnimport02' ),
+              m(FlexListInputTextAtom, { onChange: (e: any) => {
+                searchtext = (e.value);
+                m.redraw();
+                console.log(e.value);
+              } }),
               m(YScrollAtom,
-                m(FlexListAtom, [
-                  ...provider.collection.map( ( game: IGameTree ) => {
-                    return m('div', game.tags?.White);
-                  } ),
-                ])
+                m(FlexListAtom,
+                  m(CollectionCell, { className, style, provider, searchtext })
+                )
               )
             ]);
+
+
+                //   [
+                //   ...provider.collection.map( ( game: IGameTree ) => {
+                //     return m('div.white', {onclick: (e: IEvent) => {
+
+                //       e.redraw = false;
+                //       App.route('/game/:turn/:uuid/', { uuid: game.uuid, turn: game.moves.length -1 });
+
+                //     }}, game.tags?.White);
+                //   } ),
+                // ])
+            //   )
+            // ]);
 
                   // m(PageTitle, filter.length
                   //     ? read(provider.header) + `[${games.length}/${provider.collection.length}]`
