@@ -101,7 +101,39 @@ export interface IEvent extends Event {
 
 //  ##############   C H E S S    ##############
 
-declare type IPgnMove = {
+export interface IBoard {
+  uuid:        string,
+  fen:         string,
+  moveStart:   string,
+  bestmove:    {
+    move: {
+      from: string,
+      to: string
+    },
+    ponder: {
+      from: string,
+      to: string
+    }
+  },
+  captured:    {
+    white: string[],
+    black: string[]
+  },
+  orientation: 'w' | 'b',  //COLOR.white
+  buttons:   {
+      rotate:   boolean | null, // tristate buttons
+      backward: boolean | null,
+      forward:  boolean | null,
+      left:     boolean | null,
+      right:    boolean | null,
+      play:     boolean | null,
+      pause:    boolean | null,
+      evaluate: boolean | null,
+      spinner:  boolean | null,
+  }
+};
+
+export interface IPgnMove {
   drawOffer: boolean;
   moveNumber: number;
   notation: {

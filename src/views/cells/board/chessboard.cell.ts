@@ -3,7 +3,7 @@ import m from 'mithril';
 import { Chessboard, BORDER_TYPE, COLOR, MARKER_TYPE, INPUT_EVENT_TYPE } from "../../../extern/cm-chessboard/index";
 // import './chessboard.cell.scss';
 
-import { ICellComponent } from '@app/domain';
+import { ICellComponent, IGameTree } from '@app/domain';
 
 const $ = document.querySelector.bind(document);
 
@@ -28,7 +28,7 @@ const listener = () => {
 };
 
 interface IChessBoardAttrs {
-  game: any;
+  game: IGameTree;
   board: any;
   controller: any;
 }
@@ -47,7 +47,7 @@ const ChessboardCell: ICellComponent<IChessBoardAttrs> & IChessBoardState = {
     window.removeEventListener('resize', listener);
     window.addEventListener('resize', listener);
 
-    const { board } = vnode.attrs;
+    const { board, game, controller } = vnode.attrs;
 
     $chessBoard = vnode.dom;
 

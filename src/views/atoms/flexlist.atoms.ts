@@ -164,7 +164,7 @@ TextFieldCSS.addStyle(`.atom-textfield-17`, {
 });
 
 interface ITextInputAttrs extends Partial<polyTextField> {
-  onChange: (event: any) => void
+  onChange: (event: any) => void;
 }
 
 export const FlexListInputTextAtom: m.Component<ITextInputAttrs> = {

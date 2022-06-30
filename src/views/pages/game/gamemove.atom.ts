@@ -1,11 +1,10 @@
 
 import m from 'mithril';
 
-import { IAtomComponent, IEvent, IGameTree } from '@app/domain';
+import { IAtomComponent, IEvent, IGameTree, IPgnMove } from '@app/domain';
 import { AppConfig } from '@app/config';
 import { App } from '@app/views';
-import { H, DatabaseService as DB} from '@app/services';
-import { IPgnMove } from '@mliebelt/pgn-parser';
+import { H, DatabaseService as DB } from '@app/services';
 
 const clampScale = function (game: IGameTree, cp: number): number {
     return H.scale(H.clamp(Math.abs(cp), 0.001, game.score.maxcp), 0, game.score.maxcp, 1, 20);
