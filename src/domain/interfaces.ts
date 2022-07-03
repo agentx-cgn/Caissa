@@ -96,6 +96,8 @@ export interface IEvent extends Event {
   redraw?: boolean;
   code?:   string;
   value?: string | number | boolean;
+  squareFrom?: string;
+  squareTo?: string;
 }
 
 
@@ -133,17 +135,27 @@ export interface IBoard {
   }
 };
 
+
+export interface IMove { //extends Move {
+  from: string;
+  to:   string;
+  fen:  string;
+  ply:  number;
+  move: string;
+  san:  string;
+}
+
 export interface IPgnMove {
   drawOffer: boolean;
   moveNumber: number;
   notation: {
-      fig?: string | null;
-      strike?: 'x' | null;
-      col: string;
-      row: string;
+    col: string;
+    row: string;
+    promotion: string | null;
+    notation: string;
+    fig?: string | null;
+    strike?: 'x' | null;
       check?: string;
-      promotion: string | null;
-      notation: string;
       disc?: string;
       drop?: boolean;
   };
@@ -152,29 +164,80 @@ export interface IPgnMove {
   commentDiag: GameComment;
   commentMove?: string;
   commentAfter?: string;
+
   turn: 'w' | 'b';
+  color: 'w' | 'b';
+  fen?: string;
+  from?: string;
+  to: string;
 };
 
+export interface IPgnHeader {
+  White:        string;
+  Black:        string;
+  Event:        string;
+  Site:         string;
+  Round:        string;
+  Date:         string;
+  Result:       string;
+  EventDate?:   string;
+  UTCDate?:     string;
+  Termination?: string;
+  TimeControl?: string;
+}
+
+export interface IGameHeader {
+  white:        string;
+  black:        string;
+  event:        string;
+  site:         string;
+  round:        string;
+  date:         string;
+  result:       string;
+  termination?: string;
+  timecontrol?: string;
+}
+
 export interface IGameTree {
-  header: {
-    white: string;
-    black: string;
-    date: string;
-    result: string;
-    event: string;
-    site: string;
-    round: string;
-  }
-  uuid: string;
-  pgn: string;
+  header:     IGameHeader
+  uuid:       string;
+  pgn:        string;
   searchtext: string;
-  over: boolean;
-  plycount: number;
-  moves: IPgnMove[];
+  plycount:   number;
+  moves:      IPgnMove[];
   score: {
-    maxcp: number;
+    maxcp:    number;
+    maxmate:  number;
   },
 
+}
+
+export interface IPlayMove extends IPgnMove {
+  variations: any[][];
+  from: string;
+  to:   string;
+  fen:  string;
+  ply:  number;
+  move: string;
+  san:  string;
+  color: 'w' | 'b';
+}
+
+
+export interface ITimeControl {
+  budget: number;
+  increment: number;
+}
+export type TRival = 'h' | 'm' | 's' | 'l' | '*';
+export interface IPlayTree extends IGameTree {
+  rivals: {
+    'w': TRival;
+    'b': TRival;
+  };
+  moves: IPlayMove[]
+  ply: number;
+  over: boolean;
+  timecontrol: ITimeControl;
 }
 
 export type ICollection = {
@@ -188,53 +251,13 @@ export type ICollection = {
 }
 
 export interface ICollectionProvider extends ICollection {
-  collection: IGameTree[];
+  collection: IPlayTree[];
   error: string;
   progress: number;
   header: () => string;
   fetch: () => Promise<void>;
 }
 
-export type TMove = Move & {
-  from: string;
-  to: string;
-  fen: string;
-  turn: number;
-  move: string;
-  san: string;
-}
-
-export type TPgnHeader = {
-  White:       string;
-  Black:       string;
-  Event:       string;
-  Site:        string;
-  Round:       string;
-  Date:        string;
-  EventDate?:        string;
-  UTCDate?:        string;
-  Result:      string;
-  Termination: string;
-  TimeControl: string;
-}
-
-export type TGame = {
-  uuid:         string;     // string, 6 or 8 alphanums
-  date:         string;     // string, ISO date
-  timestamp?:   number;     // number, unix timestamp
-  over:         boolean;
-  rivals:       string;
-  turn:         number;
-  moves:        TMove[];
-  plycount:     number;
-  score:       {
-      maxcp:    number;
-      maxmate:  number;
-  },
-  header:      TPgnHeader
-  pgn:         string;             // game moves in pgn notation
-  searchtext:  string;             // search text
-}
 
 export type TOpponent = 'h' | 's' | 'l';
 export type IOpponents = {

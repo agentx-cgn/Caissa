@@ -61,4 +61,4 @@ const Pool = {
 
 };
 
-export default Pool;
+export { Pool };

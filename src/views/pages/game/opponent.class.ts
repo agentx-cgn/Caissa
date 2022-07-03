@@ -1,51 +1,54 @@
 
-import Chess  from 'chess.js';
-import { H }  from '../../services/helper';
-import Tools  from '../../tools/tools';
-import Pool   from '../../services/engine/pool';
+import { Pool } from  "../../../extern/pool/index";
+import { Chessboard, BORDER_TYPE, COLOR, MARKER_TYPE, INPUT_EVENT_TYPE } from "../../../extern/cm-chessboard/index";
+import { Chess } from "../../../extern/cm-chess/index";
 
-import { INPUT_EVENT_TYPE } from '../../../extern/cm-chessboard/Chessboard';
-import { H } from '@app/services';
-import { IEvent } from '@app/domain';
+import { H, ToolsService as Tools } from '@app/services';
+import { IEvent, TRival } from '@app/domain';
+
+import { BoardController } from './controller.class';
 
 const DEBUG = false;
 
 type TColor = 'w' | 'b' | 'n';
-type TMode  = 'x' | 'h' | 's';
 
 class Opponent {
 
     private color: TColor;
-    private mode:  TMode;
+    private rival: TRival;
     private chess: Chess;
     private engine: any;
+
+    private fen: string = '';
 
     private initialization: Promise<void>;
 
     private slot: any;
 
+    private controller: undefined | BoardController;
 
-    constructor (color: TColor, mode: TMode) {
+
+    constructor (color: TColor, rival: TRival) {
 
         this.color = color; // w, b, n
-        this.mode  = mode;  // x, h, s,
+        this.rival  = rival;  // x, h, s,
         this.chess = new Chess();
 
-        if (this.mode === 's'){
+        if (this.rival === 's'){
 
             this.initialization = new Promise((resolve) => {
                 this.slot = Pool.request(1)[0];
                 this.slot.engine.init()
-                    .then( engine => {
+                    .then( (engine: any) => {
                         return engine.isready();
                     })
-                    .then( engine => {
+                    .then( (engine: any) => {
                         return engine.ucinewgame();
                     })
-                    .then( engine => {
+                    .then( (engine: any) => {
                         this.engine = engine;
                         this.slot.name   = this.color;
-                        DEBUG && console.log('Opponent.engine', this.color, this.mode, this.engine);
+                        DEBUG && console.log('Opponent.engine', this.color, this.rival, this.engine);
                         resolve();
                     })
                 ;
@@ -56,7 +59,7 @@ class Opponent {
 
         }
 
-        DEBUG && console.log('Opponent.create', {color: this.color, mode: this.mode});
+        DEBUG && console.log('Opponent.create', {color: this.color, rival: this.rival});
     }
 
     public destroy () {
@@ -64,23 +67,24 @@ class Opponent {
             this.slot.idle = true;
             this.slot.name = '';
         }
-        DEBUG && console.log('Opponent.destroy', {color: this.color, mode: this.mode});
+        DEBUG && console.log('Opponent.destroy', {color: this.color, rival: this.rival});
     }
 
-    public update (controller) {
+    public update (controller: BoardController) {
         this.controller = controller;
-        this.fen        = Tools.Games.fen(controller.game);
+        this.fen        = Tools.Games.fen(controller.playtree);
         !this.chess.load(this.fen) && console.warn('Opponent.update.load.failed', this.fen);
     }
     public pause () {
 
     }
-    public async domove (chessBoard) {
+    public async domove (chessBoard: Chessboard, event?: IEvent) {
 
-        if (this.mode === 's'){
+        // Stockfish
+        if (this.rival === 's'){
 
             await this.initialization;
-            await H.sleep(300);
+            await H.wait(300);
             await this.engine.position(this.fen);
 
             const answer   = await this.engine.go({depth: 4});
@@ -93,14 +97,14 @@ class Opponent {
             const bestmove = answer.bestmove;
             return bestmove;
 
-
-        } else if (this.mode === 'x'){
+        // Human
+        } else if (this.rival === 'h'){
 
             return new Promise(resolve => {
 
                 let move, result;
 
-                const dragHandler = (event: IEvent) => {
+                const dragHandler = (event: IEvent): any => {
                     switch (event.type) {
                     case INPUT_EVENT_TYPE.moveDone:
 

@@ -31,7 +31,7 @@ const RoutesConfig: IRoutesConfigs = {
     '/collections/':      [ LayoutCell, MenuPage,         ContentCellBoard,   { title: 'Collections',  description: 'aad'}  ],
     '/collection/:uuid/': [ LayoutCell, CollectionPage,   ContentCellBoard,   { title: 'Collection',   description: 'aae'}  ],
     '/games/:uuid/':      [ LayoutCell, GamesPage,        ContentCellBasic,   { title: 'Games %s',     description: 'aaf'}    ],
-    '/game/:turn/:uuid/': [ LayoutCell, GamePage,         ContentCellBoard,   { title: 'Game %s',      description: '5678'}     ],
+    '/game/:ply/:uuid/':  [ LayoutCell, GamePage,         ContentCellBoard,   { title: 'Game %s',      description: '5678'}     ],
 
     '/preferences/':      [ LayoutCell, PreferencesPage,  ContentCellBasic,   { title: 'Preferences',  description: 'aag'}  ],
     '/help/':             [ LayoutCell, HelpPage,         Nothing,            { title: 'Help',         description: ''}         ],

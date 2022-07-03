@@ -85,8 +85,8 @@ const PlySPAtom: IAtomComponent<IPlyAtomAttrs> = {
 interface IMoveRowAtomAttrs {
     game: IGameTree;
     num: number;
-    white: { move: IPgnMove, turn: number };
-    black: { move: IPgnMove, turn: number };
+    white: { move: any, turn: number };
+    black: { move: any, turn: number };
 }
 const MoveRowAtom: IAtomComponent<IMoveRowAtomAttrs> = {
     view (vnode) {

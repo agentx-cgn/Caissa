@@ -24,7 +24,7 @@ const movetemplate = {
 };
 
 const clocktemplate = {
-    timecontrol : { budget: 0, bonus:    0 },
+    timecontrol : { budget: 0, increment:    0 },
     white:        { budget: 0, consumed: 0, pressure: false },
     black:        { budget: 0, consumed: 0, pressure: false },
 };

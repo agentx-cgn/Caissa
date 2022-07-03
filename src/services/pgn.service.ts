@@ -1,10 +1,10 @@
 
-import { parse, ParseTree, IPgnMove } from '@mliebelt/pgn-parser';
+import { parse, ParseTree } from '@mliebelt/pgn-parser';
 
 
 
 import { AppConfig } from '@app/config';
-import { TGame, TPgnHeader, IGameTree } from '@app/domain';
+import { IPgnMove, IGameTree, IGameHeader, IPlayTree, IPlayMove } from '@app/domain';
 import { ToolsService as Tools }  from './tools.service';
 import { H }  from './helper.service';
 
@@ -65,7 +65,7 @@ const PgnService = {
 
   reducePgn (game: ParseTree): string {
 
-    const pgn = game.moves.reduce((acc: string, move: IPgnMove) => {
+    const pgn: string = game.moves.reduce((acc: string, move: any) => {
       return acc + move.notation.notation + ' ';
     }, '');
 
@@ -73,11 +73,35 @@ const PgnService = {
 
   },
 
-  sanitizeCollection (games: ParseTree[]): IGameTree[] {
+  sanitizeCollection (pgnTrees: ParseTree[]): IGameTree[] {
 
-    return games.map( (game: ParseTree): IGameTree => {
+    return pgnTrees.map( (pgnTree: ParseTree): IGameTree => {
+      return PgnService.sanitizeGame(pgnTree);
+    });
 
-      const header = {
+  },
+
+  enhanceCollection (gameTrees: IGameTree[]): IPlayTree[] {
+
+    return gameTrees.map( (gameTree: IGameTree): IPlayTree => {
+      return PgnService.enhanceGame(gameTree);
+    });
+
+  },
+
+  enhanceGame (gameTree: IGameTree): IPlayTree {
+
+    return Object.assign({}, gameTree, {
+      rivals: { b: '*', w: '*' },    // Could be any,
+      ply: 0,                        // TODO: actually last ply
+      over: true,                    // collections are always over, but consider for games
+      timecontrol: {budget: 0, increment: 0},
+    }) as IPlayTree;
+
+  },
+  sanitizeGame (game: ParseTree): IGameTree {
+
+      const header: IGameHeader = {
         black:  game.tags?.Black  || 'Black',
         white:  game.tags?.White  || 'White',
         site:   game.tags?.Site   || '',
@@ -87,10 +111,10 @@ const PgnService = {
         date: (
           game.tags?.EventDate?.value  ? game.tags.EventDate.value :
           game.tags?.Date?.value       ? game.tags.Date.value :
-          game.tags?.Date       ? game.tags?.Date      :
-          game.tags?.UTCDate    ? game.tags?.UTCDate   :
+          game.tags?.Date              ? game.tags?.Date      :
+          game.tags?.UTCDate           ? game.tags?.UTCDate   :
           '????.??.??'
-          ),
+          ) as string,
         }
       ;
       const pgn    = PgnService.reducePgn(game);
@@ -101,26 +125,39 @@ const PgnService = {
       });
 
 
-      const gameTree = {
+      const gameTree: IGameTree = {
         pgn,
         header,
-        over:       true,
         uuid:       H.hash(unique),
         searchtext: values.join(' ').toLowerCase(),
-        plycount:   game.tags?.PlyCount || game.moves.length || 0,
-        moves:      game.moves,
-        score:      { maxcp: 0 },
+        plycount:   game.moves.length || 0,
+        moves:      game.moves as IPgnMove[],
+        score:      { maxcp: 0, maxmate: 0 },
 
-      } as IGameTree;
+      };
 
       return gameTree;
 
+  },
+
+  processMoves (moves: IPgnMove[]): IPlayMove[] {
+
+    return moves.map( (move: IPgnMove): IPlayMove => {
+      return Object.assign({}, move, {
+        color: 'w', //move.col,
+        san: '', //move.notation.san,
+        from: '',
+        to: '',
+        fen: '',
+        ply: 0,
+        move: '',
+      }) as IPlayMove;
     });
 
   },
 
 
-    readGames1 (pgns: string, delimiter='\n', deleteComments=false): TGame[] {
+    readGames1 (pgns: string, delimiter='\n', deleteComments=false): IGameTree[] {
 
         const t0 = Date.now();
 
@@ -177,38 +214,38 @@ const PgnService = {
     },
 
 
-    sanitizeGames1 (games: TGame[]): TGame[] {
+    // sanitizeGames1 (games: IGameTree[]): IGameTree[] {
 
-      return games.map( game => {
+    //   return games.map( game => {
 
-        // https://en.wikipedia.org/wiki/Portable_Game_Notation#Tag_pairs
+    //     // https://en.wikipedia.org/wiki/Portable_Game_Notation#Tag_pairs
 
-        game.uuid  = Tools.Games.hash(game);
+    //     game.uuid  = Tools.Games.hash(game);
 
-        DEBUG && console.log(H.shrink(game));
-        game.date  = (
-          game.header.Date       ? game.header.Date      :
-          game.header.EventDate  ? game.header.EventDate :
-          game.header.UTCDate    ? game.header.UTCDate   :
-          '????.??.??'
-        );
+    //     DEBUG && console.log(H.shrink(game));
+    //     game.date  = (
+    //       game.header.Date       ? game.header.Date      :
+    //       game.header.EventDate  ? game.header.EventDate :
+    //       game.header.UTCDate    ? game.header.UTCDate   :
+    //       '????.??.??'
+    //     ) as string;
 
-        H.each(game.header, (key: string, val) => {
-          val === undefined && delete game.header[key as keyof TPgnHeader];
-        });
+    //     H.each(game.header, (key: string, val) => {
+    //       val === undefined && delete game.header[key as keyof IGameHeader];
+    //     });
 
-        game.searchtext = H.map(game.header, (_, val) => val).join(' ').toLowerCase();
+    //     game.searchtext = H.map(game.header, (_, val) => val).join(' ').toLowerCase();
 
-        if (!game.pgn) {
-          // eslint-disable-next-line no-debugger
-          debugger;
-        }
+    //     if (!game.pgn) {
+    //       // eslint-disable-next-line no-debugger
+    //       debugger;
+    //     }
 
-        return game;
+    //     return game;
 
-      });
+    //   });
 
-    },
+    // },
 
 };
 

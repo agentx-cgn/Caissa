@@ -16,7 +16,8 @@ function renderMoves (game: IGameTree) {
                 game,
                 num: 17,
                 white: { move: moves[i], turn: i },
-                black: { move: moves[i+1] || { piece: '', fen: '', flags: {}, san: '', cp: 0}, turn: i+1 },
+                // black: { move: moves[i+1] || { piece: '', fen: '', flags: {}, san: '', cp: 0}, turn: i+1 },
+                black: { move: moves[i+1], turn: i+1 },
             });
         })
 

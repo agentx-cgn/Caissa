@@ -3,10 +3,11 @@
 import game      from './tools/game-tools';
 // import global    from './tools/global-tools';
 import format    from './tools/format-tools';
+import board    from './tools/board-tools';
 
 const ToolsService = {
     Games:  { ...game   },
-    // Board:  { ...board  },
+    Board:  { ...board  },
     Format: { ...format },
 };
 

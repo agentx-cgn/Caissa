@@ -1,26 +1,28 @@
-import Pool from '../../services/engine/pool';
+import { Pool } from  "../../../extern/pool/index";
 
 const DEBUG = false;
 
 const Proposer = {
 
     enabled:        false,    // flag
-    initialization: null,     // or a promise resolving to slots
+    initialization: Promise.resolve([]),     // or a promise resolving to slots
 
-    start() {
+    start (): Promise<any> {
 
         Proposer.enabled = true;
 
-        return Proposer.initialization = new Promise( resolve => {
+        Proposer.initialization = new Promise<any>( resolve => {
 
             Pool.request('proposer', 1)
-                .then( slots => {
+                .then( (slots: any) => {
                     resolve(slots);
                     DEBUG && console.log('Proposer.resolved', slots);
                 })
             ;
 
         });
+
+        return Proposer.initialization;
 
     },
 
@@ -31,15 +33,15 @@ const Proposer = {
         const slots = await Proposer.initialization;
 
         Pool.release(slots);
-        Proposer.initialization = null;
+        Proposer.initialization = Promise.resolve([]);
 
         DEBUG && console.log('Proposer.stopped', slots);
 
     },
 
-    async propose(fen, conditions={ depth: 10, maxtime: 1 }) {
+    async propose (fen: string, conditions={ depth: 10, maxtime: 1 }): Promise<any> {
 
-        const slots = await Proposer.initialization;
+        const slots: any[] = await Proposer.initialization;
         const slot  = slots[0];
 
         await slot.engine.isready();
@@ -55,4 +57,4 @@ const Proposer = {
 
 };
 
-export default Proposer;
+export { Proposer };

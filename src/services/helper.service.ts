@@ -5,7 +5,66 @@ import { IObj } from '@app/domain';
 
 const H = {
 
-      /**    N U M B E R S     */
+    /**    T I M E     */
+
+    sleep (msecs: number) {
+        return new Promise(resolve => setTimeout(resolve, msecs));
+    },
+
+    msec2HMSm (msecs: number) {
+        const d = new Date(msecs) ;
+        return [
+            H.padZero(d.getUTCHours()),
+            H.padZero(d.getUTCMinutes()),
+            H.padZero(d.getUTCSeconds()),
+        ].join(':') + '.' + Math.floor(d.getMilliseconds() / 100);
+    },
+    msec2HMS (msecs: number) {
+        const d = new Date(msecs) ;
+        return [
+            H.padZero(d.getUTCHours()),
+            H.padZero(d.getUTCMinutes()),
+            H.padZero(d.getUTCSeconds()),
+        ].join(':');
+    },
+    date2isoUtc (date: Date) {
+        const d = date || new Date();
+        return [
+            d.getUTCFullYear(),
+            H.padZero(d.getUTCMonth() +1),
+            H.padZero(d.getUTCDate()),
+        ].join('-') + ' ' + [
+            H.padZero(d.getUTCHours()),
+            H.padZero(d.getUTCMinutes()),
+            H.padZero(d.getUTCSeconds()),
+        ].join(':');
+    },
+
+    date2isoLocal (date: Date) {
+        const d = date || new Date();
+        return [
+            d.getFullYear(),
+            H.padZero(d.getMonth() +1),
+            H.padZero(d.getDate()),
+        ].join('-') + ' ' + [
+            H.padZero(d.getHours()),
+            H.padZero(d.getMinutes()),
+            H.padZero(d.getSeconds()),
+        ].join(':');
+    },
+
+    /**    C S S     */
+
+    classes (def = {} as any, sep = ' ', classes = '') {
+      for (const cls in def) {
+        if (def[cls]) {
+          classes += `${classes && sep}` + cls;
+        }
+      }
+      return classes;
+    },
+
+    /**    N U M B E R S     */
 
     scale (x: number, xMin: number, xMax: number, min: number, max: number){
       return (max-min)*(x-xMin)/(xMax-xMin)+min;
@@ -47,18 +106,18 @@ const H = {
     },
 
 
-    date2isoUtc (date: Date) {
-      const d = date || new Date();
-      return [
-          d.getUTCFullYear(),
-          H.padZero(d.getUTCMonth() +1),
-          H.padZero(d.getUTCDate()),
-      ].join('-') + ' ' + [
-          H.padZero(d.getUTCHours()),
-          H.padZero(d.getUTCMinutes()),
-          H.padZero(d.getUTCSeconds()),
-      ].join(':');
-    },
+    // date2isoUtc (date: Date) {
+    //   const d = date || new Date();
+    //   return [
+    //       d.getUTCFullYear(),
+    //       H.padZero(d.getUTCMonth() +1),
+    //       H.padZero(d.getUTCDate()),
+    //   ].join('-') + ' ' + [
+    //       H.padZero(d.getUTCHours()),
+    //       H.padZero(d.getUTCMinutes()),
+    //       H.padZero(d.getUTCSeconds()),
+    //   ].join(':');
+    // },
 
 
     /**    D O M     */

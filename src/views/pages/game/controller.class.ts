@@ -2,7 +2,7 @@
 // import Chess           from 'chess.js';
 // import Config          from '../../data/config';
 // import DB              from '../../services/database';
-// import { H, $$ }       from '../../services/helper';
+// import { H, $ }       from '../../services/helper';
 // // import Pool            from '../../services/engine/pool';
 // import Tools           from '../../tools/tools';
 // import ChessClock      from '../../components/chessclock';
@@ -14,9 +14,11 @@ import { Proposer }        from './proposer.class';
 
 import { App } from '@app/views';
 import { Chessboard, BORDER_TYPE, COLOR, MARKER_TYPE, INPUT_EVENT_TYPE } from "../../../extern/cm-chessboard/index";
-import { IBoard, IEvent, IGameTree, IOpponents } from '@app/domain';
-import { DatabaseService as DB } from '@app/services';
-
+import { Chess } from "../../../extern/cm-chess/index";
+import { IBoard, IEvent, IPlayTree } from '@app/domain';
+import { DatabaseService as DB, H, $, ToolsService as Tools } from '@app/services';
+import { ChessClockCell } from './chessclock.cell';
+import { AppConfig } from '@app/config';
 const DEBUG = false;
 
 /**
@@ -31,25 +33,29 @@ class BoardController {
   private isEvaluating: boolean = false;
   private isRunning:    boolean = false;
 
-  private game: IGameTree;
+  public playtree: IPlayTree;
+//   public static playtree: IPlayTree;
   private board: IBoard;
 
   private chessBoard: any;
 
-  private turn: number;
+  private ply: number;
   private color: string;
 
   private chess: Chess;
-  private clock: ChessClock;
+  private clock: typeof ChessClockCell;
 
 
   private newmove: string;
   private bestmove: string;
-  private ponder: string;
+  private ponder: string = '';
+;
   private selectedSquare: string;
   private selectedPiece: string;
   private squareMoves: string[];
   private validMoves: string[];
+
+  private illustrations: any;
 
   private tomove: 'n' | 'w' | 'b' = 'n';
   private towait: 'n' | 'w' | 'b' = 'n';
@@ -57,30 +63,27 @@ class BoardController {
   private opponents: {
     w: Opponent,
     b: Opponent,
-    n: Opponent, // null opponent
+    n?: Opponent, // null opponent
   };
 
   private listener: {
     onmove:        ( candidate: string ) => void,
-    onclockover:   ( whitebudget: any, blackbudget: any ) => void,
+    onclockover:   ( whitebudget: number, blackbudget: number ) => void,
     onfieldselect: ( e: IEvent ) => void,
-    ongameover:    ( msg: { reason: string; } ) => void,
+    ongameover:    ( msg: { reason: string, whitebudget: number, blackbudget: number} ) => void,
   };
 
+  constructor (playtree: IPlayTree, board: IBoard) {
 
-
-
-  constructor (game: IGameTree, board: IBoard) {
-
-            this.destroy();
+        this.destroy();
 
         this.isEvaluating   = false; // scoring moves
         this.isRunning     = false; // scoring moves
 
-        this.game           = game;
+        this.playtree       = playtree;
         this.board          = board;
         this.chess          = new Chess();
-        this.clock          = ChessClock;
+        this.clock          = ChessClockCell;
 
         this.newmove        = '';
 
@@ -91,8 +94,8 @@ class BoardController {
         this.validMoves     = []; // these are all possible moves, for current color
 
         this.opponents      = {
-            'w': new Opponent('w', this.game.rivals[0]),
-            'b': new Opponent('b', this.game.rivals[2]),
+            'w': new Opponent('w', this.playtree.rivals.w),
+            'b': new Opponent('b', this.playtree.rivals.b),
         };
         this.listener = {
             onmove:        this.onmove.bind(this),
@@ -101,7 +104,7 @@ class BoardController {
             ongameover:    this.ongameover.bind(this),
         };
 
-        this.turn  = parseInt(this.game.turn, 10);
+        this.ply    = this.playtree.ply;
         this.color  = this.chess.turn();
 
         this.update();
@@ -110,26 +113,26 @@ class BoardController {
 
 
     public destroy () {
-        if (this.opponents){
-            this.opponents.w && this.opponents.w.destroy();
-            this.opponents.b && this.opponents.b.destroy();
-        }
+      if (this.opponents){
+        this.opponents.w && this.opponents.w.destroy();
+        this.opponents.b && this.opponents.b.destroy();
+      }
     }
 
     public updateChess () {
 
-        if (this.turn === -2) {
-            this.chess.load(Config.fens.empty);
+        if (this.ply === -2) {
+            this.chess.load(AppConfig.fens.empty);
 
-        } else if (this.turn === -1) {
-            this.chess.load(Config.fens.start);
+        } else if (this.ply === -1) {
+            this.chess.load(AppConfig.fens.start);
 
         } else {
-            if (this.game.over) {
-                this.chess.load(this.game.moves[this.turn].fen);
+            if (this.playtree.over) {
+                this.chess.load(this.playtree.moves[this.ply].fen);
 
             } else {
-                this.chess.load_pgn(Tools.Games.pgnFromMoves(this.game, this.turn));
+                this.chess.load_pgn(Tools.Games.pgnFromMoves(this.playtree, this.ply));
 
             }
 
@@ -138,18 +141,18 @@ class BoardController {
     }
     public update () {
 
-        this.turn  = ~~this.game.turn;
+        this.ply  = ~~this.playtree.ply;
 
         this.updateChess();
 
-        this.color  = this.chess.turn();
+        this.color  = this.chess.ply();
         this.tomove = (
-            this.turn === -2 ? 'n' :
-            this.turn  %   2 ? 'w' : 'b'
+            this.ply === -2 ? 'n' :
+            this.ply  %   2 ? 'w' : 'b'
         );
         this.towait = (
-            this.turn === -2 ? 'n' :
-            this.turn  %   2 ? 'b' : 'w'
+            this.ply === -2 ? 'n' :
+            this.ply  %   2 ? 'b' : 'w'
         );
 
         // forget onfield clicks
@@ -161,7 +164,7 @@ class BoardController {
         // actions have no moves, so update here too
         this.updateButtons();
 
-        DEBUG && console.log('BoardController.update.out', {uuid: this.game.uuid, turn: this.turn, color: this.color});
+        DEBUG && console.log('BoardController.update.out', {uuid: this.playtree.uuid, turn: this.ply, color: this.color});
 
     }
 
@@ -207,8 +210,8 @@ class BoardController {
         // true  => .enabled
 
         const btns     = this.board.buttons;
-        const lastTurn = this.game.moves.length -1;
-        const rivals   = this.game.rivals;
+        const lastTurn = this.playtree.moves.length -1;
+        const rivals   = this.playtree.rivals;
 
         // always possible
         btns.rotate = true;
@@ -218,7 +221,8 @@ class BoardController {
         btns.pause = null;
 
         // game with timecontrol and not empty board
-        if ( rivals !== 'h-h' && rivals !== 'x-x' && this.turn > -2 ){
+        // if ( rivals !== 'h-h' && rivals !== 'x-x' && this.ply > -2 ){
+        if ( this.ply > -2 ){
 
             btns.play       = true;
             btns.pause      = null;
@@ -235,21 +239,21 @@ class BoardController {
         btns.evaluate  = this.isEvaluating ? false : lastTurn > 0 && !this.isRunning;
 
         // game moves navigation
-        btns.backward  = this.turn > 0;
-        btns.left      = this.turn > -2;
-        btns.right     = this.turn < lastTurn;
-        btns.forward   = this.turn < lastTurn;
+        btns.backward  = this.ply > 0;
+        btns.left      = this.ply > -2;
+        btns.right     = this.ply < lastTurn;
+        btns.forward   = this.ply < lastTurn;
 
         DB.Boards.update(this.board.uuid, { buttons: btns }, true);
         //TODO: When is a game terminated?
         DEBUG && console.log('BoardController.updateButtons', 'btn.play', btns.play);
     }
 
-    public ongameover (msg: {reason: string, whitebudget: number, blackbudget: number}) {
+    public ongameover ( msg: { reason: string, whitebudget: number, blackbudget: number } ) {
 
         console.log('BoardController.ongameover', msg);
 
-        this.game.over = true;
+        this.playtree.over = true;
 
         if (msg.reason === 'timeout'){
             // App.redraw();
@@ -277,12 +281,12 @@ class BoardController {
         if (this.clock.isPaused()) {
             this.clock.continue();
         } else {
-            this.clock.start(this.game.clock, this.listener.onclockover);
+            this.clock.start(this.playtree.timecontrol, this.listener.onclockover);
         }
 
         ( async () => {
-            this.opponents[this.towait].pause(this.chessBoard);
-            const move = await this.opponents[this.tomove].domove(this.chessBoard);
+            this.opponents[this.towait]?.pause();
+            const move = await this.opponents[this.tomove]?.domove(this.chessBoard);
             this.listener.onmove(move);
         })();
 
@@ -291,81 +295,83 @@ class BoardController {
     }
     public pause () {
         DEBUG && console.log('BoardController.pause.clicked');
-        this.opponents[this.tomove].pause();
-        this.opponents[this.towait].pause();
+        this.opponents[this.tomove]!.pause();
+        this.opponents[this.towait]!.pause();
         this.clock.pause();
         App.redraw();
     }
     public rotate () {
         const orientation = this.board.orientation === 'w' ? 'b' : 'w';
-        DB.Boards.update(this.game.uuid, { orientation });
+        DB.Boards.update(this.playtree.uuid, { orientation });
         App.redraw();
     }
-    public evaluate () {
+    // public evaluate () {
 
-        this.isEvaluating = true;
-        evaluate(this.game, () => {
-            this.isEvaluating = false;
-            App.redraw();
-        });
+    //     this.isEvaluating = true;
+    //     evaluate(this.playtree, () => {
+    //         this.isEvaluating = false;
+    //         App.redraw();
+    //     });
 
-    }
+    // }
 
     public interpreteDiff (diff: number | string) {
-        const turn = this.game.turn;
+        const ply = this.playtree.ply;
         return (
             diff === '0' ? 0 :
-            diff === 'e' ? this.game.moves.length -1 :
-            turn === -2 && diff < 0  ? -2 :
-            turn === this.game.moves.length -1 && diff > 0  ? this.game.moves.length -1 :
-            turn + diff
+            diff === 'e' ? this.playtree.moves.length -1 :
+            ply === -2 && diff < 0  ? -2 :
+            ply === this.playtree.moves.length -1 && diff > 0  ? this.playtree.moves.length -1 :
+            ply + parseInt(String(diff), 10)
         );
     }
 
     public step (diff: number | string) {
         const turn = this.interpreteDiff(diff);
-        DB.Games.update(this.game.uuid, { turn });
-        App.route('/game/:turn/:uuid/', { turn, uuid: this.game.uuid }, { replace: true });
+        DB.Games.update(this.playtree.uuid, { turn });
+        App.route('/game/:turn/:uuid/', { turn, uuid: this.playtree.uuid }, { replace: true });
     }
 
     // called from board.onupdate
     public stopListening (chessBoard: IBoard) {
-        chessBoard.disableMoveInput();
-        $$('div.chessboard').removeEventListener('mousedown',  this.listener.onfieldselect);
-        $$('div.chessboard').removeEventListener('touchstart', this.listener.onfieldselect);
+        // chessBoard.disableMoveInput();
+        $('div.chessboard')!.removeEventListener('mousedown',  this.listener.onfieldselect);
+        $('div.chessboard')!.removeEventListener('touchstart', this.listener.onfieldselect);
     }
     public startListening () {
 
         // No pieces, no moves either
-        if (this.turn === -2){ return; }
+        if (this.ply === -2){ return; }
 
-        const $chessboard = $$('div.chessboard');
+        const $chessboard = $('div.chessboard');
         const oppToMove   = this.opponents[this.tomove];
         const oppToWait   = this.opponents[this.towait];
 
         // if mobile div might not exist yet
         if ($chessboard){
-            $$('div.chessboard').addEventListener('mousedown', this.listener.onfieldselect);
-            $$('div.chessboard').addEventListener('touchdown', this.listener.onfieldselect);
+            $('div.chessboard')!.addEventListener('mousedown', this.listener.onfieldselect);
+            $('div.chessboard')!.addEventListener('touchdown', this.listener.onfieldselect);
         }
 
         // updates opps with position/fen
-        oppToMove.update(this);
-        oppToWait.update(this);
+        oppToMove!.update(this);
+        oppToWait!.update(this);
 
-        if (this.clock.isTicking() || this.game.rivals === 'x-x'){
+        const isExperiment = this.playtree.rivals.b === '*' || this.playtree.rivals.w === '*';
+
+        if (this.clock.isTicking() || isExperiment){
             ( async () => {
-                this.opponents[this.towait].pause(this.chessBoard);
-                const move = await this.opponents[this.tomove].domove(this.chessBoard);
+                this.opponents[this.towait]!.pause();
+                const move = await this.opponents[this.tomove]!.domove(this.chessBoard);
                 this.listener.onmove(move);
             })();
         }
 
-        DEBUG && console.log('BoardController.startListening.out', { rivals: this.game.rivals, tomove: this.tomove });
+        DEBUG && console.log('BoardController.startListening.out', { rivals: this.playtree.rivals, tomove: this.tomove });
 
     }
 
-    public onfieldselect (e) {
+    public onfieldselect (e: any) {
 
         const idx    = e.target.dataset.index;
         const square = Tools.Board.squareIndexToField(idx);
@@ -395,40 +401,40 @@ class BoardController {
 
         } else {
 
-            move.fen  = this.chess.fen();
-            move.turn = this.turn +1;
-            let pgn   = this.chess.pgn().trim();
+            move.fen = this.chess.fen();
+            move.ply = this.ply +1;
+            let pgn  = this.chess.pgn().trim();
 
             // if first move of default, create new game + board and reroute to
-            if (this.game.uuid === 'default'){
+            if (this.playtree.uuid === 'default'){
 
                 const timestamp = Date.now();
                 const uuid = H.hash(String(timestamp));
-                const game = H.clone(this.game, {
+                const game = H.clone(this.playtree, {
                     uuid, pgn, timestamp,
-                    rivals: 'x-x',
+                    rivals: { b: '*', w: '*' },
                     turn :  0,
                 });
 
                 Tools.Games.updateMoves(game);
                 DB.Games.create(game, true);
-                DB.Boards.create(H.clone(Config.templates.board, { uuid }));
-                App.route('/game/:turn/:uuid/', {turn: game.turn, uuid: game.uuid});
+                DB.Boards.create(Object.assign({}, AppConfig.templates.board, { uuid }));
+                App.route('/game/:ply/:uuid/', { ply: game.ply, uuid: game.uuid });
 
             // update move with turn, game with move and reroute to next turn
             } else {
 
-                if (move.turn < this.game.moves.length) {
+                if (move.ply < this.playtree.moves.length) {
                     // throw away all moves after this new one
-                    this.game.moves.splice(this.turn +1);
+                    this.playtree.moves.splice(this.ply +1);
                 }
 
-                this.game.turn = move.turn;
+                this.playtree.ply = move.ply;
                 this.newmove   = move;
-                this.game.moves.push(move);
+                this.playtree.moves.push(move);
 
-                DB.Games.update(this.game.uuid, this.game, true);
-                App.route('/game/:turn/:uuid/', {turn: this.game.turn, uuid: this.game.uuid}, {replace: true});
+                DB.Games.update(this.playtree.uuid, this.playtree, true);
+                App.route('/game/:turn/:uuid/', {turn: this.playtree.ply, uuid: this.playtree.uuid}, {replace: true});
 
             }
 
@@ -439,7 +445,7 @@ class BoardController {
     }
 
     // comes with with every redraw, after move was animated
-    public onafterupdates (chessBoard: IChessBoard) {
+    public onafterupdates (chessBoard: any) {
 
         this.chessBoard = chessBoard;
 
@@ -448,7 +454,7 @@ class BoardController {
 
             this.color === 'w' && this.clock.whiteclick();
             this.color === 'b' && this.clock.blackclick();
-            this.game.timecontrol = this.clock.state();
+            this.playtree.timecontrol = this.clock.state().timecontrol;
 
         }
 
@@ -462,15 +468,17 @@ class BoardController {
         this.updateIllustration();
         this.updateProposer();
 
-        if (!this.game.over && this.chess.game_over()) {
+        if (!this.playtree.over && this.chess.game_over()) {
             this.ongameover({
                 reason        : 'rules',
-                over          : this.chess.game_over(),
-                checkmate     : this.chess.in_checkmate(),
-                draw          : this.chess.in_draw(),
-                stalemate     : this.chess.in_stalemate(),
-                insufficient  : this.chess.insufficient_material(),
-                repetition    : this.chess.in_threefold_repetition(),
+                whitebudget: NaN,
+                blackbudget: NaN,
+                // over          : this.chess.game_over(),
+                // checkmate     : this.chess.in_checkmate(),
+                // draw          : this.chess.in_draw(),
+                // stalemate     : this.chess.in_stalemate(),
+                // insufficient  : this.chess.insufficient_material(),
+                // repetition    : this.chess.in_threefold_repetition(),
             });
 
         } else {
@@ -485,18 +493,18 @@ class BoardController {
 
     public updateIllustration () {
 
-        const squareFilter  = m =>  m.from === this.selectedSquare || m.to === this.selectedSquare;
+        const squareFilter  = (move: any) =>  move.from === this.selectedSquare || move.to === this.selectedSquare;
 
         this.illustrations  = DB.Options.first['board-illustrations'];
         this.validMoves     = this.chess.moves({verbose: true});
         this.squareMoves    = this.validMoves.filter(squareFilter);
 
         // DEBUG && console.log('BoardController.updateIllustration', {
-        //     square: this.selectedSquare, piece: this.selectedPiece, color: this.color, turn: this.turn, moves: this.squareMoves.length,
+        //     square: this.selectedSquare, piece: this.selectedPiece, color: this.color, turn: this.ply, moves: this.squareMoves.length,
         // });
 
         // chessboard on page w/ dn has height 0
-        if (this.chessBoard && this.chessBoard.view.height && this.game.turn !== -2){
+        if (this.chessBoard && this.chessBoard.view.height && this.playtree.ply !== -2){
 
             // this.chessBoard.removeArrows( null );
 
@@ -541,7 +549,7 @@ class BoardController {
 
         if (illus.validmoves){
             this.chessBoard.removeArrows('arrow validmove');
-            this.squareMoves.forEach( move => {
+            this.squareMoves.forEach( (move: any) => {
                 this.chessBoard.addArrow(move.from, move.to, {class: 'arrow validmove'});
             });
 
@@ -553,7 +561,7 @@ class BoardController {
         if (illus.lastmove){
             this.chessBoard.removeArrows('arrow lastmove white');
             this.chessBoard.removeArrows('arrow lastmove black');
-            const lastmove = this.game.moves[this.turn];
+            const lastmove = this.playtree.moves[this.ply];
             if (lastmove) {
                 this.chessBoard.addArrow(
                     lastmove.from, lastmove.to,
@@ -609,7 +617,7 @@ class BoardController {
         }
 
         if (illus.attack){
-            this.validMoves.forEach( square => {
+            this.validMoves.forEach( (square: any) => {
                 this.chessBoard.addMarker(square.to, this.color === 'w' ? MARKER_TYPE.rectwhite : MARKER_TYPE.rectblack);
             });
         }

@@ -1,11 +1,6 @@
 
-// import pgnimport00   from '../../assets/games/famous-chess-games.pgn';
-// import pgnimport01   from '../../assets/games/capablanca-best-games.pgn';
-// import imgLichess    from '../../assets/images/lichess.trans.128.png';
-// import imgFloppy     from '../../assets/images/floppy.256.png';
-
 import { PgnService } from './pgn.service';
-import { ICollection, ICollectionProvider, IGameTree } from '@app/domain';
+import { ICollection, ICollectionProvider, IPlayTree } from '@app/domain';
 import { CollectionsConfig } from '@app/config';
 
 const DEBUG = false;
@@ -28,112 +23,81 @@ Games are always pgn files and the provider also parses them into moves
 
 */
 
-
-// function genProviderList (templates) {
-
-//     const params = {
-//         user  : DB.Options.first['user-data'].name,
-//         month : ('00' + ((new Date()).getUTCMonth() +1)).slice(-2),
-//         year  : (new Date()).getUTCFullYear(),
-//     };
-
-//     return templates.map( tpl => tpl.constructor(tpl, params));
-
-// }
-
-// let providerList = [];
-
-// const Providers = {
-//     list () {
-//         if (!providerList.length) {
-//             providerList = genProviderList(Collections);
-//         }
-//         return providerList;
-//     },
-//     find (filter) {
-//         return Providers.list().find(filter);
-
-//     },
-//     filter (filter) {
-//         return Providers.list().filter(filter);
-//     },
-// };
-
-// Also needed if changes, think APIs
-// providers.list = genProviderList(Collections);
-// console.log(providers);
-
-
 const providers = [] as ICollectionProvider[];
-
 
 const ImportProvider = function (cfgCollection: ICollection): ICollectionProvider {
 
-    const provider = {
+  const provider = {
 
-        ...cfgCollection ,
+    ...cfgCollection ,
 
-        error:    '',
-        progress: 0,
-        collection:    [] as IGameTree[],
-        header () {
-            return `${provider.caption} `;
-        },
-        fetch () {
-            provider.progress = 10;
-            return new Promise<void> ((resolve /*, reject */ ) => {
-                const parseTree   = PgnService.parseCollection(cfgCollection.source);
-                provider.progress = 60;
-                provider.collection    = PgnService.sanitizeCollection(parseTree);
-                provider.progress = 0;
-                DEBUG && console.log(provider.caption, provider.collection.length);
-                resolve();
-            });
-        },
-    };
+    error:      '',
+    progress:   0,
+    collection: [] as IPlayTree[],
+    header () {
+      return `${provider.caption} `;
+    },
+    fetch () {
+      provider.progress = 10;
+      return new Promise<void> ((resolve /*, reject */ ) => {
+        const parseTrees    = PgnService.parseCollection(cfgCollection.source);
+        provider.progress   = 60;
+        const gameTrees     = PgnService.sanitizeCollection(parseTrees);
+        provider.progress   = 70;
+        const playTrees     = PgnService.enhanceCollection(gameTrees);
+        provider.collection = playTrees;
+        provider.progress   = 70;
+        DEBUG && console.log(provider.caption, provider.collection.length);
+        resolve();
+      });
+    },
+  };
 
-    return provider;
+  return provider;
 };
 
 const UrlProvider = function (cfgCollection: ICollection): ICollectionProvider {
 
-    const provider = {
+  const provider = {
 
-        ...cfgCollection ,
+    ...cfgCollection ,
 
-        error:    '',
-        progress: 0,
-        collection:    [] as IGameTree[],
-        header () {
-            return `${provider.collection.length} downloaded Games`;
-        },
-        fetch () {
-            provider.progress = 10;
-            return fetch(provider.source)
-                .then( (result) => {
-                    if (!result.ok) {
-                        throw(result.status + ' - ' + result.statusText);
-                    }
-                    provider.progress = 30;
-                    return result.text();
-                })
-                .then( text => {
-                    provider.progress = 50;
-                    return PgnService.parseCollection(text);
-                })
-                .then( parseTree => {
-                    provider.progress = 70;
-                    provider.collection = PgnService.sanitizeCollection(parseTree);
-                    console.log(provider.caption, provider.collection.length);
-                    provider.progress = 0;
-                })
-                .catch( e => {
-                    provider.progress = 0;
-                    provider.error = String(e);
-                })
-            ;
-        },
-    };
+    error:       '',
+    progress:    0,
+    collection:  [] as IPlayTree[],
+    header () {
+      return `${provider.collection.length} downloaded Games`;
+    },
+    fetch () {
+      provider.progress = 10;
+      return fetch(provider.source)
+        .then( (result) => {
+          if (!result.ok) {
+            throw(result.status + ' - ' + result.statusText);
+          }
+          provider.progress = 30;
+          return result.text();
+        })
+        .then( text => {
+          provider.progress = 50;
+          return PgnService.parseCollection(text);
+        })
+        .then( parseTrees => {
+          provider.progress = 70;
+          return PgnService.sanitizeCollection(parseTrees);
+        })
+        .then( gameTrees => {
+          provider.progress = 90;
+          const playTrees = PgnService.enhanceCollection(gameTrees);
+          provider.collection = playTrees;
+        })
+        .catch( e => {
+          provider.progress = 0;
+          provider.error = String(e);
+        })
+      ;
+    },
+  };
 
     return provider;
 
