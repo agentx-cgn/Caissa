@@ -40,5 +40,6 @@
     }
   },
   "include": ["src", "src/images.d.ts", "globals.d.ts"],
-  "exclude": ["node_modules", "**/*.spec.ts", "**/*.tsx"],
+  "exclude": ["node_modules", "**/*.spec.ts", "**/*.tsx", "**/*.old"],
+  "types":   ["./src/extern/chess/index.d.ts"],
 }

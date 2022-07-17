@@ -1,7 +1,8 @@
 
 
-import { Chessboard, BORDER_TYPE, COLOR, MARKER_TYPE, INPUT_EVENT_TYPE } from "../../../extern/cm-chessboard/index";
-import { Chess } from "../../../extern/cm-chess/index";
+
+// import { Chessboard, BORDER_TYPE, COLOR, MARKER_TYPE, INPUT_EVENT_TYPE } from "../../../extern/cm-chessboard/index";
+// import { Chess } from "../../../extern/cm-chess/index";
 
 import { App } from '@app/views';
 import { AppConfig } from '@app/config';
@@ -13,6 +14,12 @@ import { Proposer }        from './proposer.class';
 import { ChessClockCell } from './chessclock.cell';
 
 const DEBUG = false;
+
+import { CM } from "CMGChess";
+
+console.log("=>", CM.Chess.load("e2e4"));
+
+
 
 /**
  * game modes:
@@ -30,12 +37,12 @@ class BoardController {
 //   public static playtree: IPlayTree;
   private board: IBoard;
 
-  private chessBoard: any;
+  private chessBoard: CM.IChessboard | undefined; //any;
 
   private ply: number;
   private color: string;
 
-  private chess: Chess;
+  private chess: CM.IChess;
   private clock: typeof ChessClockCell;
 
 
@@ -75,7 +82,7 @@ class BoardController {
 
         this.playtree       = playtree;
         this.board          = board;
-        this.chess          = new Chess();
+        this.chess          = new CM.Chess();
         this.clock          = ChessClockCell;
 
         this.newmove        = '';
@@ -138,7 +145,7 @@ class BoardController {
 
         this.updateChess();
 
-        this.color  = this.chess.ply();
+        // this.color  = this.chess.color();
         this.tomove = (
             this.ply === -2 ? 'n' :
             this.ply  %   2 ? 'w' : 'b'
@@ -371,7 +378,7 @@ class BoardController {
 
         if (idx) {
             this.selectedSquare = square !== this.selectedSquare ? square : '';
-            this.selectedPiece  = this.chessBoard.getPiece(this.selectedSquare) || '';
+            this.selectedPiece  = this.chessBoard?.getPiece(this.selectedSquare) || '';
             this.updateIllustration();
 
             DEBUG && console.log('BoardController.onfieldselect.out', {
@@ -497,15 +504,16 @@ class BoardController {
         // });
 
         // chessboard on page w/ dn has height 0
-        if (this.chessBoard && this.chessBoard.view.height && this.playtree.ply !== -2){
+        // if (this.chessBoard && this.chessBoard?.view.height && this.playtree.ply !== -2){
+        if (this.chessBoard) {
 
-            // this.chessBoard.removeArrows( null );
+            // this.chessBoard?.removeArrows( null );
 
             // keep internal markers (move, emphasize)
-            this.chessBoard.removeMarkers( null, MARKER_TYPE.rectwhite);
-            this.chessBoard.removeMarkers( null, MARKER_TYPE.rectblack);
-            this.chessBoard.removeMarkers( null, MARKER_TYPE.selectedmoves);
-            this.chessBoard.removeMarkers( null, MARKER_TYPE.selectednomoves);
+            this.chessBoard?.removeMarkers( null, CM.MARKER_TYPE.rectwhite);
+            this.chessBoard?.removeMarkers( null, CM.MARKER_TYPE.rectblack);
+            this.chessBoard?.removeMarkers( null, CM.MARKER_TYPE.selectedmoves);
+            this.chessBoard?.removeMarkers( null, CM.MARKER_TYPE.selectednomoves);
 
             this.updateArrows();
             this.updateMarker();
@@ -533,59 +541,59 @@ class BoardController {
             const from = this.bestmove.slice(0, 2);
             const to   = this.bestmove.slice(2, 4);
 
-            this.chessBoard.removeArrows('arrow bestmove');
-            this.chessBoard.addArrow(from, to, {class: 'arrow bestmove'});
+            this.chessBoard?.removeArrows('arrow bestmove');
+            this.chessBoard?.addArrow(from, to, {class: 'arrow bestmove'});
 
         } else {
-            this.chessBoard.removeArrows('arrow bestmove');
+            this.chessBoard?.removeArrows('arrow bestmove');
         }
 
         if (illus.validmoves){
-            this.chessBoard.removeArrows('arrow validmove');
+            this.chessBoard?.removeArrows('arrow validmove');
             this.squareMoves.forEach( (move: any) => {
-                this.chessBoard.addArrow(move.from, move.to, {class: 'arrow validmove'});
+                this.chessBoard?.addArrow(move.from, move.to, {class: 'arrow validmove'});
             });
 
         } else {
-            this.chessBoard.removeArrows('arrow validmove');
+            this.chessBoard?.removeArrows('arrow validmove');
 
         }
 
         if (illus.lastmove){
-            this.chessBoard.removeArrows('arrow lastmove white');
-            this.chessBoard.removeArrows('arrow lastmove black');
+            this.chessBoard?.removeArrows('arrow lastmove white');
+            this.chessBoard?.removeArrows('arrow lastmove black');
             const lastmove = this.playtree.moves[this.ply];
             if (lastmove) {
-                this.chessBoard.addArrow(
+                this.chessBoard?.addArrow(
                     lastmove.from, lastmove.to,
                     { class: lastmove.color === 'w' ? 'arrow lastmove white' : 'arrow lastmove black' },
                 );
             }
         } else {
-            this.chessBoard.removeArrows('arrow lastmove white');
-            this.chessBoard.removeArrows('arrow lastmove black');
+            this.chessBoard?.removeArrows('arrow lastmove white');
+            this.chessBoard?.removeArrows('arrow lastmove black');
 
         }
 
         if (illus.test){
-            this.chessBoard.addArrow('e2', 'e4', {class: 'arrow test'} );
-            this.chessBoard.addArrow('f2', 'h4', {class: 'arrow test'} );
-            this.chessBoard.addArrow('d2', 'c4', {class: 'arrow test'} );
-            this.chessBoard.addArrow('c2', 'a3', {class: 'arrow test'} );
-            this.chessBoard.addArrow('d7', 'd5', {class: 'arrow test'} );
-            this.chessBoard.addArrow('c7', 'c5', {class: 'arrow test'} );
+            this.chessBoard?.addArrow('e2', 'e4', {class: 'arrow test'} );
+            this.chessBoard?.addArrow('f2', 'h4', {class: 'arrow test'} );
+            this.chessBoard?.addArrow('d2', 'c4', {class: 'arrow test'} );
+            this.chessBoard?.addArrow('c2', 'a3', {class: 'arrow test'} );
+            this.chessBoard?.addArrow('d7', 'd5', {class: 'arrow test'} );
+            this.chessBoard?.addArrow('c7', 'c5', {class: 'arrow test'} );
 
-            this.chessBoard.addArrow('g7', 'g8', {class: 'arrow test'} );
-            this.chessBoard.addArrow('g7', 'h8', {class: 'arrow test'} );
-            this.chessBoard.addArrow('g7', 'h7', {class: 'arrow test'} );
-            this.chessBoard.addArrow('g7', 'h6', {class: 'arrow test'} );
-            this.chessBoard.addArrow('g7', 'g6', {class: 'arrow test'} );
-            this.chessBoard.addArrow('g7', 'f6', {class: 'arrow test'} );
-            this.chessBoard.addArrow('g7', 'f7', {class: 'arrow test'} );
-            this.chessBoard.addArrow('g7', 'f8', {class: 'arrow test'} );
+            this.chessBoard?.addArrow('g7', 'g8', {class: 'arrow test'} );
+            this.chessBoard?.addArrow('g7', 'h8', {class: 'arrow test'} );
+            this.chessBoard?.addArrow('g7', 'h7', {class: 'arrow test'} );
+            this.chessBoard?.addArrow('g7', 'h6', {class: 'arrow test'} );
+            this.chessBoard?.addArrow('g7', 'g6', {class: 'arrow test'} );
+            this.chessBoard?.addArrow('g7', 'f6', {class: 'arrow test'} );
+            this.chessBoard?.addArrow('g7', 'f7', {class: 'arrow test'} );
+            this.chessBoard?.addArrow('g7', 'f8', {class: 'arrow test'} );
 
         } else {
-            this.chessBoard.removeArrows('arrow test');
+            this.chessBoard?.removeArrows('arrow test');
 
         }
 
@@ -603,15 +611,15 @@ class BoardController {
 
         if (this.selectedSquare){
             if (this.squareMoves.length){
-                this.chessBoard.addMarker(this.selectedSquare, MARKER_TYPE.selectedmoves);
+                this.chessBoard?.addMarker(this.selectedSquare, CM.MARKER_TYPE.selectedmoves);
             } else {
-                this.chessBoard.addMarker(this.selectedSquare, MARKER_TYPE.selectednomoves);
+                this.chessBoard?.addMarker(this.selectedSquare, CM.MARKER_TYPE.selectednomoves);
             }
         }
 
         if (illus.attack){
             this.validMoves.forEach( (square: any) => {
-                this.chessBoard.addMarker(square.to, this.color === 'w' ? MARKER_TYPE.rectwhite : MARKER_TYPE.rectblack);
+                this.chessBoard?.addMarker(square.to, this.color === 'w' ? CM.MARKER_TYPE.rectwhite : CM.MARKER_TYPE.rectblack);
             });
         }
 
