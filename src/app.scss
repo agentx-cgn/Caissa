@@ -9,7 +9,11 @@
 @import './assets/fonts/saira/saira.css';
 @import './assets/fonts/novamono/novamono.css';
 
+// can't import directly because od errors
+// @import 'node_modules/cm-chessboard/assets/styles/cm-chessboard.scss';
 @import './extern/cm-chessboard/styles/cm-chessboard.scss';
+
+
 
 
 @import '@app/atoms/flexlist.atoms.scss';

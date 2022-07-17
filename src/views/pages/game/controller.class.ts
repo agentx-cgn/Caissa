@@ -1,24 +1,17 @@
 
-// import Chess           from 'chess.js';
-// import Config          from '../../data/config';
-// import DB              from '../../services/database';
-// import { H, $ }       from '../../services/helper';
-// // import Pool            from '../../services/engine/pool';
-// import Tools           from '../../tools/tools';
-// import ChessClock      from '../../components/chessclock';
-// import evaluate        from '../game/game-evaluate';
-// import Proposer        from './proposer';
+
+import { Chessboard, BORDER_TYPE, COLOR, MARKER_TYPE, INPUT_EVENT_TYPE } from "../../../extern/cm-chessboard/index";
+import { Chess } from "../../../extern/cm-chess/index";
+
+import { App } from '@app/views';
+import { AppConfig } from '@app/config';
+import { IBoard, IEvent, IPlayTree } from '@app/domain';
+import { DatabaseService as DB, H, $, ToolsService as Tools } from '@app/services';
 
 import { Opponent }        from './opponent.class';
 import { Proposer }        from './proposer.class';
-
-import { App } from '@app/views';
-import { Chessboard, BORDER_TYPE, COLOR, MARKER_TYPE, INPUT_EVENT_TYPE } from "../../../extern/cm-chessboard/index";
-import { Chess } from "../../../extern/cm-chess/index";
-import { IBoard, IEvent, IPlayTree } from '@app/domain';
-import { DatabaseService as DB, H, $, ToolsService as Tools } from '@app/services';
 import { ChessClockCell } from './chessclock.cell';
-import { AppConfig } from '@app/config';
+
 const DEBUG = false;
 
 /**
