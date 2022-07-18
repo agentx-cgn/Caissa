@@ -31,7 +31,7 @@ const RoutesConfig: IRoutesConfigs = {
     '/collections/':      [ LayoutCell, MenuPage,         ContentCellBoard,   { title: 'Collections',  description: 'aad'}  ],
     '/collection/:uuid/': [ LayoutCell, CollectionPage,   ContentCellBoard,   { title: 'Collection',   description: 'aae'}  ],
     '/games/:uuid/':      [ LayoutCell, GamesPage,        ContentCellBasic,   { title: 'Games %s',     description: 'aaf'}    ],
-    '/game/:ply/:uuid/':  [ LayoutCell, GamePage,         ContentCellBoard,   { title: 'Game %s',      description: '5678'}     ],
+    '/game/:uuid/:ply/':  [ LayoutCell, GamePage,         ContentCellBoard,   { title: 'Game %s',      description: '5678'}     ],
 
     '/preferences/':      [ LayoutCell, PreferencesPage,  ContentCellBasic,   { title: 'Preferences',  description: 'aag'}  ],
     '/help/':             [ LayoutCell, HelpPage,         Nothing,            { title: 'Help',         description: ''}         ],
@@ -41,7 +41,7 @@ const RoutesConfig: IRoutesConfigs = {
 
     // '/sources/':          [ Layout, Sources,  Board,     { title: 'Sources'}     ],
     // '/games/':            [ Layout, Games,    Board,     { title: 'Games'}       ],
-    // '/game/:turn/:uuid/': [ Layout, Game,     Board,     { title: 'Game %s'}     ],
+    // '/game/:ply/:uuid/': [ Layout, Game,     Board,     { title: 'Game %s'}     ],
     // '/plays/':            [ Layout, Plays,    Board,     { title: 'Plays'}       ],
     // '/plays/:rivals/':    [ Layout, Plays,    Board,     { title: 'Plays'}       ],
 

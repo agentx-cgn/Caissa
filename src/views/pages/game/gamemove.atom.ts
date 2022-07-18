@@ -40,7 +40,7 @@ const PlyTDAtom: IAtomComponent<IPlyAtomAttrs> = {
         const onclick   = (e: IEvent) => {
             e.redraw = false;
             DB.Games.update(game.uuid, { turn: move.turn });
-            App.route('/game/:turn/:uuid/', {turn: move.turn, uuid: game.uuid}, { replace: true });
+            App.route('/game/:ply/:uuid/', {turn: move.turn, uuid: game.uuid}, { replace: true });
         };
 
         const matetext  = 'mate text'; //move.mate ? '# in ' + Math.abs(move.mate) : '';
@@ -73,7 +73,7 @@ const PlySPAtom: IAtomComponent<IPlyAtomAttrs> = {
         const onclick   = (e: IEvent) => {
             e.redraw = false;
             DB.Games.update(game.uuid, { turn: move.turn });
-            App.route('/game/:turn/:uuid/', {turn: move.turn, uuid: game.uuid}, { replace: true });
+            App.route('/game/:ply/:uuid/', {turn: move.turn, uuid: game.uuid}, { replace: true });
         };
         return m('span.mh1', {'data-turn': move.turn}, [
             // m('span.gm-ply-pic-' + player + back, { onclick, title }, piece ),

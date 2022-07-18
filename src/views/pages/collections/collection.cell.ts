@@ -35,7 +35,7 @@ export const CollectionCell: ICellComponent<IAttrs> = {
           }
 
             e.redraw = false;
-            App.route('/game/:turn/:uuid/', { uuid: game.uuid, turn: game.moves.length -1 });
+            App.route('/game/:ply/:uuid/', { uuid: game.uuid, ply: game.moves.length -1 });
 
           };
 

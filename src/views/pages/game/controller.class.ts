@@ -6,7 +6,7 @@
 
 import { App } from '@app/views';
 import { AppConfig } from '@app/config';
-import { IBoard, IEvent, IPlayTree } from '@app/domain';
+import { IBoard, IEvent, IPlayMove, IPlayTree } from '@app/domain';
 import { DatabaseService as DB, H, $, ToolsService as Tools } from '@app/services';
 
 import { Opponent }        from './opponent.class';
@@ -329,7 +329,7 @@ class BoardController {
     public step (diff: number | string) {
         const turn = this.interpreteDiff(diff);
         DB.Games.update(this.playtree.uuid, { turn });
-        App.route('/game/:turn/:uuid/', { turn, uuid: this.playtree.uuid }, { replace: true });
+        App.route('/game/:ply/:uuid/', { turn, uuid: this.playtree.uuid }, { replace: true });
     }
 
     // called from board.onupdate
@@ -430,11 +430,11 @@ class BoardController {
                 }
 
                 this.playtree.ply = move.ply;
-                this.newmove   = move;
-                this.playtree.moves.push(move);
+                this.newmove   = move.san || '';
+                this.playtree.moves.push(move as IPlayMove);
 
                 DB.Games.update(this.playtree.uuid, this.playtree, true);
-                App.route('/game/:turn/:uuid/', {turn: this.playtree.ply, uuid: this.playtree.uuid}, {replace: true});
+                App.route('/game/:ply/:uuid/', {turn: this.playtree.ply, uuid: this.playtree.uuid}, {replace: true});
 
             }
 
