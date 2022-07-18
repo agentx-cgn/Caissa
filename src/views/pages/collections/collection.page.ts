@@ -114,7 +114,7 @@ const CollectionPage = FactoryService.create('Games', {
                 //     return m('div.white', {onclick: (e: IEvent) => {
 
                 //       e.redraw = false;
-                //       App.route('/game/:ply/:uuid/', { uuid: game.uuid, turn: game.moves.length -1 });
+                //       App.route('/game/:uuid/:ply/', { uuid: game.uuid, turn: game.moves.length -1 });
 
                 //     }}, game.tags?.White);
                 //   } ),

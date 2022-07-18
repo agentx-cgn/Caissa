@@ -329,7 +329,7 @@ class BoardController {
     public step (diff: number | string) {
         const turn = this.interpreteDiff(diff);
         DB.Games.update(this.playtree.uuid, { turn });
-        App.route('/game/:ply/:uuid/', { turn, uuid: this.playtree.uuid }, { replace: true });
+        App.route('/game/:uuid/:ply/', { turn, uuid: this.playtree.uuid }, { replace: true });
     }
 
     // called from board.onupdate
@@ -419,7 +419,7 @@ class BoardController {
                 Tools.Games.updateMoves(game);
                 DB.Games.create(game, true);
                 DB.Boards.create(Object.assign({}, AppConfig.templates.board, { uuid }));
-                App.route('/game/:ply/:uuid/', { ply: game.ply, uuid: game.uuid });
+                App.route('/game/:uuid/:ply/', { ply: game.ply, uuid: game.uuid });
 
             // update move with turn, game with move and reroute to next turn
             } else {
@@ -434,7 +434,7 @@ class BoardController {
                 this.playtree.moves.push(move as IPlayMove);
 
                 DB.Games.update(this.playtree.uuid, this.playtree, true);
-                App.route('/game/:ply/:uuid/', {turn: this.playtree.ply, uuid: this.playtree.uuid}, {replace: true});
+                App.route('/game/:uuid/:ply/', {turn: this.playtree.ply, uuid: this.playtree.uuid}, {replace: true});
 
             }
 

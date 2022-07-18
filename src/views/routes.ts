@@ -41,7 +41,7 @@ const RoutesConfig: IRoutesConfigs = {
 
     // '/sources/':          [ Layout, Sources,  Board,     { title: 'Sources'}     ],
     // '/games/':            [ Layout, Games,    Board,     { title: 'Games'}       ],
-    // '/game/:ply/:uuid/': [ Layout, Game,     Board,     { title: 'Game %s'}     ],
+    // '/game/:uuid/:ply/': [ Layout, Game,     Board,     { title: 'Game %s'}     ],
     // '/plays/':            [ Layout, Plays,    Board,     { title: 'Plays'}       ],
     // '/plays/:rivals/':    [ Layout, Plays,    Board,     { title: 'Plays'}       ],
 

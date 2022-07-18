@@ -35,12 +35,14 @@ const PlyTDAtom: IAtomComponent<IPlyAtomAttrs> = {
 
         const { game, player, move, back } = vnode.attrs;
 
+        if (!move) { return m('td', {colspan: 3}, 'huhuh'); }
+
         const width     = 16; //calcWidth(game, move);
         const piece     = 'w'; //AppConfig.pieces.font[move.piece];
         const onclick   = (e: IEvent) => {
             e.redraw = false;
             DB.Games.update(game.uuid, { turn: move.turn });
-            App.route('/game/:ply/:uuid/', {turn: move.turn, uuid: game.uuid}, { replace: true });
+            App.route('/game/:uuid/:ply/', {ply: move.turn, uuid: game.uuid}, { replace: true });
         };
 
         const matetext  = 'mate text'; //move.mate ? '# in ' + Math.abs(move.mate) : '';
@@ -73,7 +75,7 @@ const PlySPAtom: IAtomComponent<IPlyAtomAttrs> = {
         const onclick   = (e: IEvent) => {
             e.redraw = false;
             DB.Games.update(game.uuid, { turn: move.turn });
-            App.route('/game/:ply/:uuid/', {turn: move.turn, uuid: game.uuid}, { replace: true });
+            App.route('/game/:uuid/:ply/', {turn: move.turn, uuid: game.uuid}, { replace: true });
         };
         return m('span.mh1', {'data-turn': move.turn}, [
             // m('span.gm-ply-pic-' + player + back, { onclick, title }, piece ),
